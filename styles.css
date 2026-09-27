@@ -40,6 +40,7 @@
   --shadow-card: 0 1px 2px rgba(20, 22, 31, 0.04), 0 10px 28px rgba(60, 50, 140, 0.07);
   --grain-opacity: 0.05;
   --edge-light: rgba(255, 255, 255, 0.9);
+  --scroll-thumb: rgba(91, 77, 251, 0.4);
 }
 
 :root[data-theme="dark"] {
@@ -64,6 +65,7 @@
   --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 32px rgba(0, 0, 0, 0.35);
   --grain-opacity: 0.08;
   --edge-light: rgba(255, 255, 255, 0.05);
+  --scroll-thumb: rgba(150, 135, 255, 0.4);
 }
 
 [data-theme="dark"] .user-menu-dropdown,
@@ -2668,6 +2670,12 @@ a { color: inherit; }
   font-size: 0.92rem;
   line-height: 1.5;
   color: var(--text);
+}
+
+/* Themed scrollbars: thin, brand-tinted thumb on a transparent track */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scroll-thumb) transparent;
 }
 
 /* ===== Atmosphere: page backgrounds, surfaces, and the Linh Hua arc motif =====
