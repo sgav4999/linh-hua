@@ -39,6 +39,7 @@
   --motif-on-dark: rgba(150, 135, 255, 0.3);
   --shadow-card: 0 1px 2px rgba(20, 22, 31, 0.04), 0 10px 28px rgba(60, 50, 140, 0.07);
   --grain-opacity: 0.05;
+  --edge-light: rgba(255, 255, 255, 0.9);
 }
 
 :root[data-theme="dark"] {
@@ -55,13 +56,14 @@
   --danger: #ff8a80;
   --danger-soft: rgba(179, 38, 30, 0.18);
   --page-bg: #0d111d;
-  --surface: #131829;
+  --surface: #181e35;
   --glow-a: rgba(91, 77, 251, 0.2);
   --glow-b: rgba(70, 90, 220, 0.14);
   --pattern: rgba(160, 170, 255, 0.05);
   --motif: rgba(150, 135, 255, 0.2);
   --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 32px rgba(0, 0, 0, 0.35);
   --grain-opacity: 0.08;
+  --edge-light: rgba(255, 255, 255, 0.05);
 }
 
 [data-theme="dark"] .user-menu-dropdown,
@@ -2863,6 +2865,72 @@ body:has(#studyGuideRoot)::after {
   background-size: 56px 56px;
   -webkit-mask-image: radial-gradient(ellipse 70% 90% at 25% 15%, #000, transparent 75%);
   mask-image: radial-gradient(ellipse 70% 90% at 25% 15%, #000, transparent 75%);
+}
+
+/* Dashboard welcome banner: rings radiating from the avatar, plus a lit lower edge */
+#dashboardRoot .page-hero {
+  border-bottom: 1px solid rgba(150, 135, 255, 0.18);
+  box-shadow: inset 0 -60px 80px -60px rgba(91, 77, 251, 0.25);
+}
+
+.dashboard-header-info {
+  position: relative;
+}
+
+.dashboard-header-info::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  width: 320px;
+  height: 320px;
+  left: calc(38px - 160px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--motif-on-dark);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 320' fill='none' stroke='%23000' stroke-width='1.2'%3E%3Ccircle cx='160' cy='160' r='62'/%3E%3Ccircle cx='160' cy='160' r='96' stroke-opacity='.7'/%3E%3Ccircle cx='160' cy='160' r='130' stroke-opacity='.45'/%3E%3Ccircle cx='160' cy='160' r='158' stroke-opacity='.25'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 320' fill='none' stroke='%23000' stroke-width='1.2'%3E%3Ccircle cx='160' cy='160' r='62'/%3E%3Ccircle cx='160' cy='160' r='96' stroke-opacity='.7'/%3E%3Ccircle cx='160' cy='160' r='130' stroke-opacity='.45'/%3E%3Ccircle cx='160' cy='160' r='158' stroke-opacity='.25'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.dashboard-header-info > * {
+  position: relative;
+  z-index: 1;
+}
+
+[data-theme="dark"] .progress-bar-track {
+  background: rgba(255, 255, 255, 0.09);
+}
+
+/* Card depth: inner highlight, and a soft light that follows hover */
+.dashboard-card,
+.course-card,
+.contact-card {
+  box-shadow: var(--shadow-card), inset 0 1px 0 var(--edge-light);
+}
+
+.dashboard-card-link:hover,
+.course-card:hover {
+  background-image: radial-gradient(320px 180px at 50% 0%, var(--glow-a), transparent 70%);
+}
+
+/* Thin gradient seams between homepage sections */
+.section-alt::after,
+.testimonial-section::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, var(--motif), transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-card-link,
+  .course-card {
+    transition: none;
+  }
 }
 
 /* Keep real content above the decorative layers */
