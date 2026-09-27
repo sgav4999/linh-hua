@@ -2,7 +2,7 @@
   --ink: #0b0e17;
   --ink-soft: #171b29;
   --bg: #ffffff;
-  --surface-alt: #f6f7fb;
+  --surface-alt: #eeeff8;
   --text: #14161f;
   --muted: #656b7e;
   --line: #e7e8f0;
@@ -30,11 +30,20 @@
   --success-soft: rgba(20, 108, 67, 0.12);
   --danger: #b3261e;
   --danger-soft: rgba(179, 38, 30, 0.1);
+  --page-bg: #f5f5fb;
+  --surface: #ffffff;
+  --glow-a: rgba(91, 77, 251, 0.11);
+  --glow-b: rgba(143, 125, 255, 0.09);
+  --pattern: rgba(91, 77, 251, 0.06);
+  --motif: rgba(91, 77, 251, 0.16);
+  --motif-on-dark: rgba(150, 135, 255, 0.3);
+  --shadow-card: 0 1px 2px rgba(20, 22, 31, 0.04), 0 10px 28px rgba(60, 50, 140, 0.07);
+  --grain-opacity: 0.05;
 }
 
 :root[data-theme="dark"] {
   --bg: #0f1320;
-  --surface-alt: #171c2e;
+  --surface-alt: #1a2036;
   --text: #eef0f6;
   --muted: #9096ab;
   --line: #272c40;
@@ -45,6 +54,14 @@
   --success-soft: rgba(20, 108, 67, 0.22);
   --danger: #ff8a80;
   --danger-soft: rgba(179, 38, 30, 0.18);
+  --page-bg: #0d111d;
+  --surface: #131829;
+  --glow-a: rgba(91, 77, 251, 0.2);
+  --glow-b: rgba(70, 90, 220, 0.14);
+  --pattern: rgba(160, 170, 255, 0.05);
+  --motif: rgba(150, 135, 255, 0.2);
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 32px rgba(0, 0, 0, 0.35);
+  --grain-opacity: 0.08;
 }
 
 [data-theme="dark"] .user-menu-dropdown,
@@ -79,7 +96,7 @@ body {
   margin: 0;
   font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   color: var(--text);
-  background: var(--bg);
+  background: var(--page-bg);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
@@ -1000,7 +1017,7 @@ a { color: inherit; }
 }
 
 .contact-card {
-  background: var(--surface-alt);
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 36px;
@@ -2651,6 +2668,182 @@ a { color: inherit; }
   color: var(--text);
 }
 
+/* ===== Atmosphere: page backgrounds, surfaces, and the Linh Hua arc motif =====
+   Everything here reads theme tokens (--page-bg, --surface, --glow-*,
+   --pattern, --motif), so it follows the existing data-theme switch. */
+
+/* Ambient light + grain (behind everything, never interactive) */
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+body::before {
+  background:
+    radial-gradient(900px 520px at 6% -6%, var(--glow-a), transparent 65%),
+    radial-gradient(800px 480px at 97% -4%, var(--glow-b), transparent 65%);
+}
+
+/* Extremely subtle grain */
+html::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .7 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+body::after {
+  background-image:
+    linear-gradient(var(--pattern) 1px, transparent 1px),
+    linear-gradient(90deg, var(--pattern) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: linear-gradient(to bottom, #000, transparent 55%);
+  mask-image: linear-gradient(to bottom, #000, transparent 55%);
+}
+
+/* Reading and exam pages: no pattern anywhere near the text */
+body:has(#courseRoot)::after,
+body:has(#examRoot)::after,
+body:has(#studyGuideRoot)::after {
+  display: none;
+}
+
+/* Elevated surfaces sit clearly above the tinted page */
+.dashboard-card,
+.course-sidebar,
+.course-content,
+.study-guide-body,
+.manage-module-card,
+.inbox-card,
+.checkout-course-card,
+.review-item,
+.students-table-wrap,
+.course-card,
+.contact-card {
+  background: var(--surface);
+}
+
+.course-sidebar,
+.course-content,
+.study-guide-body,
+.contact-card,
+.dashboard-card {
+  box-shadow: var(--shadow-card);
+}
+
+.course-layout > * { min-width: 0; }
+
+/* Layered lighting on the dark bands */
+.hero {
+  background:
+    radial-gradient(900px 520px at 12% 0%, rgba(91, 77, 251, 0.24), transparent 60%),
+    radial-gradient(760px 460px at 92% 100%, rgba(70, 90, 220, 0.2), transparent 60%),
+    var(--ink);
+}
+
+.page-hero {
+  background:
+    radial-gradient(760px 340px at 10% 0%, rgba(91, 77, 251, 0.22), transparent 62%),
+    radial-gradient(620px 320px at 95% 100%, rgba(70, 90, 220, 0.16), transparent 62%),
+    var(--ink);
+}
+
+.stats-band {
+  background:
+    radial-gradient(700px 280px at 50% 0%, rgba(91, 77, 251, 0.2), transparent 65%),
+    var(--ink);
+}
+
+.cta-band {
+  background:
+    radial-gradient(700px 320px at 15% 0%, rgba(255, 255, 255, 0.16), transparent 60%),
+    linear-gradient(135deg, var(--accent), #8f7dff);
+}
+
+/* Light/dark neutral sections, each lit differently */
+.section-alt {
+  background:
+    radial-gradient(640px 320px at 100% 0%, var(--glow-a), transparent 70%),
+    var(--surface-alt);
+}
+
+.testimonial-section {
+  background: radial-gradient(560px 300px at 50% 0%, var(--glow-a), transparent 70%);
+}
+
+.auth-section {
+  background: radial-gradient(640px 360px at 50% 0%, var(--glow-a), transparent 70%);
+}
+
+/* The Linh Hua motif: large, partly cropped concentric arcs */
+.hero,
+.page-hero,
+.stats-band,
+.cta-band,
+.section-alt,
+.auth-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before,
+.page-hero::before,
+.stats-band::before,
+.cta-band::before,
+.section-alt::before,
+.auth-section::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  width: min(760px, 140vw);
+  aspect-ratio: 1;
+  background: var(--motif-on-dark);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 800' fill='none' stroke='%23000' stroke-width='1.4'%3E%3Ccircle cx='400' cy='400' r='90'/%3E%3Ccircle cx='400' cy='400' r='160' stroke-opacity='.85'/%3E%3Ccircle cx='400' cy='400' r='230' stroke-opacity='.7'/%3E%3Ccircle cx='400' cy='400' r='300' stroke-opacity='.5'/%3E%3Ccircle cx='400' cy='400' r='370' stroke-opacity='.32'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 800' fill='none' stroke='%23000' stroke-width='1.4'%3E%3Ccircle cx='400' cy='400' r='90'/%3E%3Ccircle cx='400' cy='400' r='160' stroke-opacity='.85'/%3E%3Ccircle cx='400' cy='400' r='230' stroke-opacity='.7'/%3E%3Ccircle cx='400' cy='400' r='300' stroke-opacity='.5'/%3E%3Ccircle cx='400' cy='400' r='370' stroke-opacity='.32'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.hero::before { right: -240px; top: -300px; }
+.page-hero::before { right: -260px; top: -380px; width: min(620px, 130vw); }
+.stats-band::before { left: -300px; bottom: -430px; width: min(620px, 130vw); }
+.cta-band::before { right: -240px; top: -360px; width: min(600px, 130vw); background: rgba(255, 255, 255, 0.28); }
+.section-alt::before { left: -300px; bottom: -400px; width: min(620px, 130vw); background: var(--motif); }
+.auth-section::before { right: -300px; top: -260px; width: min(640px, 130vw); background: var(--motif); }
+
+/* Faint architectural grid inside the hero bands */
+.hero::after,
+.page-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 90% at 25% 15%, #000, transparent 75%);
+  mask-image: radial-gradient(ellipse 70% 90% at 25% 15%, #000, transparent 75%);
+}
+
+/* Keep real content above the decorative layers */
+.hero > :not(.hero-glow),
+.page-hero .container,
+.stats-band .container,
+.cta-band .container,
+.section-alt .container,
+.auth-section .container {
+  position: relative;
+  z-index: 1;
+}
+
 /* Keyboard focus states. Most interactive elements previously had hover
    styling but no visible focus ring, relying on the browser default — easy
    to lose against this site's dark header/hero backgrounds. Split into two
@@ -2705,7 +2898,12 @@ a { color: inherit; }
     --accent: #5b4dfb !important;
     --accent-dark: #4636e0 !important;
     --accent-soft: #eeecff !important;
+    --page-bg: #ffffff !important;
+    --surface: #ffffff !important;
+    --surface-alt: #f6f7fb !important;
   }
+  html::before, body::before, body::after,
+  .page-hero::before, .page-hero::after { display: none !important; }
   .site-header, .site-footer, .back-link, .study-guide-toolbar, .hero-glow { display: none !important; }
   body { background: #fff; color: #000; }
   .page-hero { background: none; color: #000; padding: 0 0 24px; }
