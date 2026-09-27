@@ -125,6 +125,15 @@ if (heroIllustration && window.matchMedia("(hover: hover)").matches && !window.m
 const revealEls = document.querySelectorAll(".reveal:not(.visible)");
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+// Cards stagger their one-time reveal via an inline transition-delay (e.g.
+// 0.08s/0.16s/0.24s). Since that delay isn't scoped to just this transition,
+// it would otherwise also apply to hover feedback on the same element —
+// clearing it once the reveal finishes keeps hover instant afterward.
+function clearRevealDelay(el) {
+  const delayMs = (parseFloat(el.style.transitionDelay) || 0) * 1000;
+  setTimeout(() => { el.style.transitionDelay = "0s"; }, delayMs + 900);
+}
+
 if (prefersReducedMotion) {
   revealEls.forEach((el) => el.classList.add("visible"));
   document.querySelectorAll(".stat-num").forEach((el) => {}); // leave static text as-is
@@ -133,6 +142,7 @@ if (prefersReducedMotion) {
     (entries) => {
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
+        clearRevealDelay(entry.target);
         entry.target.classList.add("visible");
         const statNum = entry.target.matches(".stat-num")
           ? entry.target
