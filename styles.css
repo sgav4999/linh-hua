@@ -2673,11 +2673,18 @@ a { color: inherit; }
    --pattern, --motif), so it follows the existing data-theme switch. */
 
 /* Ambient light + grain (behind everything, never interactive) */
+body {
+  position: relative;
+}
+
 body::before,
 body::after {
   content: "";
-  position: fixed;
-  inset: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 900px;
   z-index: -1;
   pointer-events: none;
 }
@@ -2775,7 +2782,7 @@ body:has(#studyGuideRoot)::after {
 }
 
 .testimonial-section {
-  background: radial-gradient(560px 300px at 50% 0%, var(--glow-a), transparent 70%);
+  background: radial-gradient(520px 260px at 50% 55%, var(--glow-b), transparent 72%);
 }
 
 .auth-section {
