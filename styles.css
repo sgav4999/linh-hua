@@ -2793,7 +2793,21 @@ body:has(#studyGuideRoot)::after {
 }
 
 .testimonial-section {
-  background: radial-gradient(520px 260px at 50% 55%, var(--glow-b), transparent 72%);
+  position: relative;
+  background: radial-gradient(640px 320px at 50% 0%, var(--glow-a), transparent 70%);
+}
+
+.testimonial-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--pattern) 1px, transparent 1px),
+    linear-gradient(90deg, var(--pattern) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: linear-gradient(to bottom, #000, transparent 70%);
+  mask-image: linear-gradient(to bottom, #000, transparent 70%);
 }
 
 .auth-section {
