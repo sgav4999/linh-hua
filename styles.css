@@ -2776,13 +2776,13 @@ body:has(#studyGuideRoot)::after {
 
 [data-theme="dark"] .cta-band {
   background:
-    radial-gradient(720px 340px at 15% 0%, rgba(124, 111, 255, 0.3), transparent 62%),
-    radial-gradient(640px 320px at 95% 100%, rgba(70, 90, 220, 0.25), transparent 62%),
-    linear-gradient(135deg, #171241, #2a2189);
+    radial-gradient(720px 340px at 15% 0%, rgba(91, 77, 251, 0.2), transparent 62%),
+    radial-gradient(640px 320px at 95% 100%, rgba(70, 90, 220, 0.14), transparent 62%),
+    linear-gradient(135deg, #0e0b2a, #191357);
 }
 
 [data-theme="dark"] .cta-band::before {
-  background: rgba(170, 155, 255, 0.24);
+  background: rgba(150, 135, 255, 0.18);
 }
 
 /* Light/dark neutral sections, each lit differently */
