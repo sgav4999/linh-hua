@@ -1342,9 +1342,9 @@ a { color: inherit; }
 }
 
 .dashboard-avatar {
-  width: 56px;
-  height: 56px;
-  font-size: 1.35rem;
+  width: 76px;
+  height: 76px;
+  font-size: 1.8rem;
   flex-shrink: 0;
   border: 2px solid rgba(255, 255, 255, 0.15);
   background-size: cover;
