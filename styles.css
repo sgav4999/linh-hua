@@ -3047,6 +3047,16 @@ body:has(#studyGuideRoot)::after {
   .study-guide-body { padding: 28px; }
 }
 
+/* Just above the hamburger breakpoint the full desktop row (~780px) doesn't
+   fit, so tighten its spacing. Sits before the 720px block so mobile wins. */
+@media (max-width: 900px) {
+  .nav { gap: 20px; }
+  .nav-wrap { gap: 16px; }
+
+  .btn-header,
+  .btn-header-secondary { padding-left: 16px; padding-right: 16px; }
+}
+
 @media (max-width: 720px) {
   .nav-wrap {
     position: absolute;
