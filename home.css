@@ -1729,8 +1729,8 @@ html.motion-ok .home .btn:not(:disabled):active {
   --hh-ghost-border: rgba(255, 255, 255, 0.22);
   --hh-ghost-border-hover: rgba(255, 255, 255, 0.5);
   --hh-ghost-fill: rgba(255, 255, 255, 0.06);
-  --hh-primary: #7c6fff;
-  --hh-primary-hover: #6c5ef5;
+  --hh-primary: #6c5ef5;
+  --hh-primary-hover: #5b4de6;
   --hh-focus: rgba(255, 255, 255, 0.85);
   --hh-focus-ring: rgba(199, 192, 255, 0.55);
   --hh-panel: #10152a;

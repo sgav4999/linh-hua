@@ -9,6 +9,10 @@
   --accent: #5b4dfb;
   --accent-dark: #4636e0;
   --accent-soft: #eeecff;
+  /* Filled accent surfaces that carry white text (buttons, badges, active
+     tabs): kept separate from --accent, which is also a text colour. */
+  --accent-fill: #5b4dfb;
+  --accent-fill-hover: #4636e0;
   --gold: #f2b544;
   --max-width: 1160px;
   --radius: 14px;
@@ -52,6 +56,9 @@
   --accent: #7c6fff;
   --accent-dark: #c7c0ff;
   --accent-soft: rgba(91, 77, 251, 0.18);
+  /* Deeper than --accent so white text passes AA (4.61:1; hover 5.75:1). */
+  --accent-fill: #6c5ef5;
+  --accent-fill-hover: #5b4de6;
   --success: #6fe3a8;
   --success-soft: rgba(20, 108, 67, 0.22);
   --danger: #ff8a80;
@@ -282,13 +289,13 @@ a { color: inherit; }
 .btn-lg { padding: 15px 32px; font-size: 1rem; }
 
 .btn-primary {
-  background: var(--accent);
+  background: var(--accent-fill);
   color: #fff;
   box-shadow: 0 8px 24px rgba(91, 77, 251, 0.35);
 }
 
 .btn-primary:hover {
-  background: var(--accent-dark);
+  background: var(--accent-fill-hover);
   box-shadow: 0 14px 32px rgba(91, 77, 251, 0.45);
 }
 
@@ -362,7 +369,7 @@ a { color: inherit; }
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  background: var(--accent);
+  background: var(--accent-fill);
   color: #fff;
   display: flex;
   align-items: center;
@@ -763,7 +770,7 @@ a { color: inherit; }
 }
 
 .process-step:hover .process-num {
-  background: var(--accent);
+  background: var(--accent-fill);
   color: #fff;
 }
 
@@ -1175,7 +1182,7 @@ a { color: inherit; }
   right: -18px;
   width: 200px;
   transform: rotate(45deg);
-  background: var(--accent);
+  background: var(--accent-fill);
   color: #fff;
   font-size: 0.7rem;
   font-weight: 700;
@@ -2325,8 +2332,8 @@ a { color: inherit; }
 .inbox-filter-btn:hover { border-color: var(--accent); color: var(--accent); }
 
 .inbox-filter-btn.active {
-  background: var(--accent);
-  border-color: var(--accent);
+  background: var(--accent-fill);
+  border-color: var(--accent-fill);
   color: #fff;
 }
 
@@ -2489,7 +2496,7 @@ a { color: inherit; }
 [data-theme="dark"] .exam-nav-item.correct { background: rgba(20, 108, 67, 0.22); color: #6fe3a8; }
 [data-theme="dark"] .exam-nav-item.incorrect { background: rgba(179, 38, 30, 0.18); color: #ff8a80; }
 
-.exam-nav-item.current { background: var(--accent); border-color: var(--accent); color: #fff; }
+.exam-nav-item.current { background: var(--accent-fill); border-color: var(--accent-fill); color: #fff; }
 
 .exam-question {
   font-size: 1.4rem;
@@ -2662,8 +2669,8 @@ a { color: inherit; }
 .study-guide-tab:hover { border-color: var(--accent); }
 
 .study-guide-tab.active {
-  background: var(--accent);
-  border-color: var(--accent);
+  background: var(--accent-fill);
+  border-color: var(--accent-fill);
   color: #fff;
 }
 
@@ -3042,6 +3049,8 @@ body:has(#studyGuideRoot)::after {
     --accent: #5b4dfb !important;
     --accent-dark: #4636e0 !important;
     --accent-soft: #eeecff !important;
+    --accent-fill: #5b4dfb !important;
+    --accent-fill-hover: #4636e0 !important;
     --page-bg: #ffffff !important;
     --surface: #ffffff !important;
     --surface-alt: #f6f7fb !important;
