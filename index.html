@@ -3,18 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script>(function(){try{if(localStorage.getItem("linhhoa_theme")==="dark"){document.documentElement.setAttribute("data-theme","dark");}}catch(e){}})();</script>
+<script>(function(){document.documentElement.classList.add("js");try{if(localStorage.getItem("linhhoa_theme")==="dark"){document.documentElement.setAttribute("data-theme","dark");}}catch(e){}try{if(!window.matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("motion-ok");}}catch(e){}})();</script>
 <title>Linh Hua — Life &amp; Health Insurance Licensing Courses</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=20260928f">
+<link rel="stylesheet" href="styles.css?v=20260929a">
+<link rel="stylesheet" href="home.css?v=20261011a">
+<link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="brand/apple-touch-icon.png">
 </head>
-<body>
+<body class="home">
 
 <header class="site-header">
   <div class="container header-inner">
-    <a href="index.html" class="logo">Linh<span>Hua</span></a>
+    <a href="index.html" class="logo"><img class="logo-mark" src="brand/logo-mark.svg" alt="" width="30" height="30"><span class="logo-word">Linh Hua</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
     <div class="nav-wrap" id="navWrap">
       <nav class="nav">
         <a href="index.html" class="active">Home</a>
@@ -22,6 +28,7 @@
         <a href="about.html">About</a>
         <a href="contact.html">Contact</a>
       </nav>
+      <div class="header-actions">
       <a href="login.html" class="btn-header-secondary" id="navLoginLink">Log In</a>
       <a href="signup.html" class="btn btn-primary btn-header" id="navSignupLink">Sign Up</a>
       <button class="theme-toggle js-theme-toggle" id="themeToggleNav" type="button" aria-label="Toggle dark mode">
@@ -47,205 +54,391 @@
           <button type="button" id="logoutBtn">Log Out</button>
         </div>
       </div>
+      </div>
     </div>
-    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
-      <span></span><span></span><span></span>
-    </button>
   </div>
 </header>
 
 <main>
 
-  <section class="hero">
-    <div class="hero-glow"></div>
-    <div class="container hero-inner">
-      <div class="hero-copy reveal visible">
-        <span class="eyebrow">State-Approved Pre-Licensing Education</span>
+  <section class="home-hero">
+    <div class="home-grid" aria-hidden="true"><span></span><i></i></div>
+    <div class="container home-hero-inner">
+      <div class="home-hero-copy reveal visible">
+        <span class="home-eyebrow"><i class="home-eyebrow-rule" aria-hidden="true"></i>Life &amp; health licensing</span>
         <h1>Get <span class="accent-text">licensed</span> to sell life &amp; health insurance.</h1>
-        <p class="hero-sub">Self-paced online courses that prepare you to pass your state licensing exam — built by licensed agents, approved for continuing and pre-licensing education nationwide.</p>
+        <p class="home-hero-sub">Self-paced online courses that prepare you to pass your state licensing exam, with lessons, quizzes, and a full practice exam included.</p>
         <div class="hero-actions">
-          <a href="checkout.html?course=combo" class="btn btn-primary btn-lg">Enroll Now</a>
-          <a href="courses.html" class="btn btn-ghost btn-lg">View Courses &rarr;</a>
+          <a href="courses.html" class="btn btn-primary btn-lg">View Courses &rarr;</a>
+          <button type="button" class="btn btn-lg btn-coming-soon" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Enrollment Coming Soon</button>
         </div>
       </div>
-      <div class="hero-illustration reveal visible" aria-hidden="true">
-        <svg viewBox="0 0 440 440" xmlns="http://www.w3.org/2000/svg">
+      <div class="home-hero-visual" aria-hidden="true">
+        <div class="home-satin home-satin--desktop home-satin--static"></div>
+        <div class="home-satin home-satin--mobile home-satin--static"></div>
+        <svg class="home-satin home-satin--desktop" viewBox="0 0 2200 1800" focusable="false">
           <defs>
-            <clipPath id="cardClip">
-              <rect x="90" y="128" width="260" height="172" rx="18"/>
-            </clipPath>
-            <filter id="softBlur" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="18"/>
-            </filter>
+            <mask id="satinLifeA" maskUnits="userSpaceOnUse" x="0" y="0" width="2200" height="1800"><path class="satin-reveal satin-reveal--life" style="--rs:0ms;--rd:810ms;--re:cubic-bezier(0.885,0,0.857,0.545)" pathLength="1" d="M-1393 2324C-1320 2299 -1041 2206 -956 2177C-871 2149 -908 2161 -884 2153C-859 2145 -835 2137 -810 2129C-786 2121 -761 2113 -737 2105C-712 2097 -687 2089 -663 2081C-638 2073 -613 2065 -588 2056C-564 2048 -539 2040 -514 2032C-489 2024 -464 2015 -439 2007C-414 1998 -388 1990 -363 1981C-338 1973 -313 1964 -287 1955C-262 1946 -237 1937 -212 1928C-186 1919 -160 1909 -135 1899C-110 1890 -85 1880 -59 1870C-34 1860 -9 1850 17 1839C42 1829 68 1818 93 1807C119 1797 144 1786 170 1775C195 1764 221 1753 247 1742C272 1731 298 1720 323 1709C349 1697 374 1686 400 1675C426 1664 452 1653 478 1642C503 1631 529 1620 555 1610C580 1600 606 1590 632 1580C658 1570 684 1560 710 1550C736 1539 763 1529 789 1518C815 1508 841 1497 868 1485C894 1473 920 1461 946 1447C972 1434 997 1419 1023 1405C1048 1391 1074 1376 1099 1361C1124 1347 1150 1332 1175 1316C1199 1301 1224 1285 1246 1267C1269 1249 1292 1231 1310 1210C1328 1190 1344 1167 1356 1144C1368 1121 1375 1096 1381 1072C1386 1049 1389 1025 1391 1002C1392 979 1391 956 1388 934C1384 913 1380 891 1370 872C1360 854 1346 837 1329 823C1312 809 1291 799 1271 789C1250 780 1228 772 1206 766C1183 761 1160 755 1136 755C1112 755 1087 758 1064 766C1041 774 1018 789 997 803C976 818 956 834 938 853C921 871 902 890 891 912C880 934 874 959 873 982C871 1006 877 1030 883 1053C889 1076 898 1099 910 1120C921 1140 934 1162 951 1179C968 1196 989 1210 1010 1221C1032 1233 1069 1243 1080 1248" fill="none" stroke="#fff" stroke-width="426" stroke-linecap="round" stroke-linejoin="round"/></mask>
+            <mask id="satinLifeB" maskUnits="userSpaceOnUse" x="0" y="0" width="2200" height="1800"><path class="satin-reveal satin-reveal--life" style="--rs:787ms;--rd:813ms;--re:cubic-bezier(0.098,0.519,0.253,1)" pathLength="1" d="M891 912C888 924 874 959 873 982C871 1006 877 1030 883 1053C889 1076 898 1099 910 1120C921 1140 934 1162 951 1179C968 1196 989 1210 1010 1221C1032 1233 1056 1241 1080 1248C1105 1255 1130 1260 1156 1263C1182 1267 1210 1270 1237 1270C1264 1271 1292 1270 1319 1267C1347 1263 1374 1256 1400 1248C1426 1240 1450 1230 1475 1219C1499 1209 1522 1197 1545 1185C1568 1174 1590 1161 1613 1150C1635 1138 1658 1126 1680 1114C1703 1103 1726 1091 1748 1079C1770 1067 1792 1055 1813 1042C1835 1029 1856 1016 1877 1003C1897 990 1918 977 1939 965C1960 953 1981 940 2002 929C2023 917 2044 907 2066 896C2087 886 2109 876 2130 866C2151 856 2172 847 2194 838C2215 829 2237 820 2258 812C2279 803 2301 795 2322 787C2344 779 2365 771 2387 763C2408 755 2430 748 2452 740C2473 733 2495 726 2517 719C2539 712 2560 705 2582 698C2604 692 2626 685 2647 679C2669 672 2691 666 2712 659C2734 653 2756 647 2777 641C2799 634 2820 628 2841 622C2863 616 2884 610 2905 604C2927 598 2948 592 2969 586C2990 580 3011 574 3032 568C3053 562 3073 556 3094 550C3115 544 3084 553 3156 531C3227 510 3463 440 3525 422" fill="none" stroke="#fff" stroke-width="426" stroke-linecap="round" stroke-linejoin="round"/></mask>
+            <mask id="satinHealthA" maskUnits="userSpaceOnUse" x="0" y="0" width="2200" height="1800"><path class="satin-reveal satin-reveal--health" style="--rs:140ms;--rd:590ms;--re:cubic-bezier(0.844,0,0.882,0.52)" pathLength="1" d="M1975 -364C1965 -327 1927 -184 1916 -141C1904 -97 1909 -116 1906 -103C1902 -91 1899 -78 1896 -66C1893 -53 1890 -40 1887 -28C1883 -15 1880 -2 1877 11C1874 23 1871 36 1868 49C1864 62 1861 75 1858 88C1855 101 1851 114 1848 127C1845 139 1841 152 1838 165C1834 178 1830 191 1827 204C1823 217 1819 230 1815 243C1811 256 1807 268 1802 281C1798 294 1794 307 1789 319C1784 332 1779 345 1775 357C1770 370 1765 383 1759 395C1754 408 1749 420 1743 433C1738 446 1732 458 1727 471C1721 483 1715 496 1710 508C1704 521 1698 533 1692 546C1686 558 1681 571 1675 583C1669 596 1663 608 1657 620C1651 633 1645 645 1639 657C1633 670 1626 682 1620 694C1613 706 1606 717 1599 729C1592 741 1585 753 1578 765C1571 776 1564 788 1557 800C1550 812 1543 824 1537 836C1530 848 1524 861 1518 874C1512 886 1507 899 1502 913C1497 926 1493 940 1489 953C1485 967 1481 981 1478 995C1474 1008 1471 1022 1468 1036C1464 1050 1461 1065 1459 1079C1457 1093 1454 1108 1453 1123C1452 1138 1453 1154 1456 1169C1459 1185 1465 1201 1473 1216C1480 1230 1491 1245 1502 1258C1514 1270 1528 1282 1543 1290C1557 1299 1573 1306 1589 1311C1604 1315 1621 1317 1636 1316C1652 1316 1667 1312 1681 1308C1695 1303 1708 1296 1721 1289C1734 1282 1746 1275 1758 1267C1770 1259 1782 1251 1794 1243C1805 1235 1822 1222 1828 1218" fill="none" stroke="#fff" stroke-width="426" stroke-linecap="round" stroke-linejoin="round"/></mask>
+            <mask id="satinHealthB" maskUnits="userSpaceOnUse" x="0" y="0" width="2200" height="1800"><path class="satin-reveal satin-reveal--health" style="--rs:712ms;--rd:628ms;--re:cubic-bezier(0.098,0.496,0.198,1)" pathLength="1" d="M1589 1311C1597 1311 1621 1317 1636 1316C1652 1316 1667 1312 1681 1308C1695 1303 1708 1296 1721 1289C1734 1282 1746 1275 1758 1267C1770 1259 1782 1251 1794 1243C1805 1235 1817 1226 1828 1218C1840 1210 1851 1202 1863 1194C1875 1186 1887 1179 1899 1171C1911 1163 1923 1156 1935 1148C1947 1141 1958 1133 1970 1125C1982 1117 1993 1109 2005 1101C2017 1092 2028 1084 2040 1076C2051 1068 2063 1060 2075 1053C2086 1045 2098 1037 2110 1030C2121 1022 2133 1015 2145 1008C2157 1001 2169 994 2181 988C2193 981 2205 974 2217 968C2229 961 2241 954 2253 948C2265 942 2277 935 2290 929C2302 923 2314 917 2326 911C2338 906 2351 900 2363 895C2376 889 2388 884 2401 879C2413 873 2425 869 2437 864C2450 859 2463 854 2476 849C2488 844 2501 840 2513 835C2526 831 2539 827 2551 823C2564 818 2577 814 2589 810C2602 806 2615 802 2627 798C2640 794 2652 790 2665 786C2678 782 2690 779 2703 775C2715 771 2728 767 2741 764C2753 760 2766 756 2778 753C2790 749 2803 745 2815 742C2828 738 2840 734 2853 731C2865 727 2877 724 2889 720C2902 717 2914 713 2926 710C2938 706 2951 703 2963 699C2975 696 2987 692 2999 689C3011 685 3023 682 3035 678C3047 675 3059 671 3071 668C3083 664 3094 660 3106 657C3118 653 3100 659 3141 646C3182 634 3317 593 3353 582" fill="none" stroke="#fff" stroke-width="426" stroke-linecap="round" stroke-linejoin="round"/></mask>
           </defs>
-
-          <circle cx="220" cy="216" r="164" fill="#5b4dfb" opacity="0.35" filter="url(#softBlur)"/>
-          <circle cx="220" cy="216" r="188" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" stroke-dasharray="3 9"/>
-
-          <g class="float-slow">
-            <g clip-path="url(#cardClip)">
-              <rect x="90" y="128" width="260" height="172" fill="#ffffff"/>
-              <rect x="90" y="128" width="260" height="42" fill="#5b4dfb"/>
-            </g>
-            <rect x="90" y="128" width="260" height="172" rx="18" fill="none" stroke="rgba(11,14,23,0.08)" stroke-width="1.5"/>
-
-            <circle cx="113" cy="149" r="9" fill="#ffffff" opacity="0.9"/>
-            <rect x="130" y="144" width="70" height="6" rx="3" fill="#ffffff" opacity="0.85"/>
-            <rect x="130" y="154" width="44" height="5" rx="2.5" fill="#ffffff" opacity="0.6"/>
-
-            <rect x="112" y="192" width="150" height="8" rx="4" fill="#e7e8f0"/>
-            <rect x="112" y="210" width="190" height="8" rx="4" fill="#e7e8f0"/>
-            <rect x="112" y="228" width="110" height="8" rx="4" fill="#e7e8f0"/>
-
-            <rect x="112" y="256" width="70" height="20" rx="10" fill="#eeecff"/>
-            <text x="147" y="270" font-family="Plus Jakarta Sans, sans-serif" font-size="10" font-weight="700" fill="#4636e0" text-anchor="middle">LICENSED</text>
-
-            <circle cx="332" cy="292" r="40" fill="#f2b544" opacity="0.25" class="pulse-soft"/>
-            <circle cx="332" cy="292" r="30" fill="#f2b544" stroke="#ffffff" stroke-width="4"/>
-            <path d="M317,292 L328,303 L349,280" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-          </g>
-
-          <g class="float-med">
-            <path d="M368,84 L393,95 L393,118 C393,137 380,151 368,157 C356,151 343,137 343,118 L343,95 Z" fill="#0b0e17" stroke="#5b4dfb" stroke-width="2"/>
-            <path d="M357,118 L366,127 L381,107" fill="none" stroke="#f2b544" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-          </g>
-
-          <circle class="float-med" cx="120" cy="86" r="5" fill="#ffffff" opacity="0.5"/>
-          <circle class="float-slow" cx="302" cy="66" r="4" fill="#f2b544" opacity="0.6"/>
-          <circle class="float-fast" cx="70" cy="196" r="6" fill="#5b4dfb" opacity="0.4"/>
-          <circle class="float-slow" cx="392" cy="238" r="5" fill="#ffffff" opacity="0.4"/>
+          <g class="satin-shadow"><image class="art-light" data-href="assets/hero/satin-desktop-shadow-light.webp" width="2200" height="1800"/><image class="art-dark" data-href="assets/hero/satin-desktop-shadow-dark.webp" width="2200" height="1800"/></g>
+          <g class="satin-strand satin-strand--health"><g mask="url(#satinHealthB)"><image class="art-light" data-href="assets/hero/satin-desktop-health-b-light.webp" width="2200" height="1800"/><image class="art-dark" data-href="assets/hero/satin-desktop-health-b-dark.webp" width="2200" height="1800"/></g><g mask="url(#satinHealthA)"><image class="art-light" data-href="assets/hero/satin-desktop-health-a-light.webp" width="2200" height="1800"/><image class="art-dark" data-href="assets/hero/satin-desktop-health-a-dark.webp" width="2200" height="1800"/></g></g>
+          <g class="satin-strand satin-strand--life"><g mask="url(#satinLifeB)"><image class="art-light" data-href="assets/hero/satin-desktop-life-b-light.webp" width="2200" height="1800"/><image class="art-dark" data-href="assets/hero/satin-desktop-life-b-dark.webp" width="2200" height="1800"/></g><g mask="url(#satinLifeA)"><image class="art-light" data-href="assets/hero/satin-desktop-life-a-light.webp" width="2200" height="1800"/><image class="art-dark" data-href="assets/hero/satin-desktop-life-a-dark.webp" width="2200" height="1800"/></g></g>
+        </svg>
+        <svg class="home-satin home-satin--mobile" viewBox="0 0 1170 840" preserveAspectRatio="xMidYMid slice" focusable="false">
+          <defs>
+            <mask id="satinLifeAM" maskUnits="userSpaceOnUse" x="0" y="0" width="1170" height="840"><path class="satin-reveal satin-reveal--life" style="--rs:0ms;--rd:608ms;--re:cubic-bezier(0.886,0,0.856,0.546)" pathLength="1" d="M-1302 1002C-1252 993 -1063 958 -1006 948C-948 937 -973 942 -956 939C-940 936 -923 933 -907 930C-890 927 -874 924 -857 921C-840 918 -823 915 -806 912C-790 909 -773 906 -756 903C-739 900 -722 897 -705 894C-688 891 -671 888 -654 885C-637 882 -619 879 -602 875C-585 872 -568 869 -550 865C-533 862 -516 858 -498 854C-481 851 -463 847 -445 843C-427 839 -410 835 -393 830C-375 826 -357 822 -339 817C-322 813 -304 808 -286 803C-268 799 -250 794 -232 789C-214 784 -197 779 -179 774C-161 769 -143 764 -125 759C-107 754 -89 749 -71 745C-53 740 -34 734 -16 730C2 725 19 720 37 716C55 711 73 707 91 703C109 699 128 695 146 690C164 686 182 682 201 677C219 673 237 668 256 662C274 657 293 651 312 645C330 638 349 631 367 623C386 616 405 609 423 601C441 594 460 586 478 578C496 570 514 561 532 552C549 542 566 531 580 519C595 507 608 493 619 479C629 465 637 449 643 434C650 418 655 403 658 387C662 372 664 357 664 343C665 328 664 313 660 300C656 287 648 275 639 264C630 254 618 245 605 237C593 229 580 222 566 217C552 211 538 205 523 203C508 201 491 201 476 204C460 207 444 215 429 222C414 230 399 239 386 249C372 259 358 270 349 283C339 296 333 312 329 327C326 343 327 359 328 375C329 390 333 406 338 421C342 436 349 451 358 464C366 476 378 488 391 497C404 507 426 517 433 521" fill="none" stroke="#fff" stroke-width="286" stroke-linecap="round" stroke-linejoin="round"/></mask>
+            <mask id="satinLifeBM" maskUnits="userSpaceOnUse" x="0" y="0" width="1170" height="840"><path class="satin-reveal satin-reveal--life" style="--rs:591ms;--rd:609ms;--re:cubic-bezier(0.098,0.52,0.254,1)" pathLength="1" d="M349 283C346 291 333 312 329 327C326 343 327 359 328 375C329 390 333 406 338 421C342 436 349 451 358 464C366 476 378 488 391 497C404 507 418 514 433 521C448 528 464 534 481 539C497 544 515 548 532 551C550 554 569 557 587 557C606 557 624 555 643 552C661 549 678 544 695 540C713 535 729 529 746 524C762 518 778 512 795 506C811 500 827 495 843 489C859 483 875 478 891 472C907 466 923 460 938 453C953 447 968 440 983 434C998 427 1013 421 1028 415C1043 408 1058 402 1073 397C1088 391 1103 386 1118 381C1133 376 1148 372 1163 367C1178 363 1192 359 1207 355C1222 351 1237 347 1251 344C1266 340 1281 337 1296 333C1310 330 1325 327 1340 324C1355 321 1369 318 1384 315C1399 312 1413 310 1428 307C1443 305 1457 302 1472 300C1487 298 1501 296 1516 293C1531 291 1545 289 1560 287C1574 285 1589 283 1603 281C1618 279 1632 277 1646 275C1661 273 1675 271 1689 269C1703 267 1717 265 1731 263C1745 261 1759 259 1773 257C1787 255 1801 253 1815 251C1829 249 1808 252 1856 245C1903 238 2060 215 2101 209" fill="none" stroke="#fff" stroke-width="286" stroke-linecap="round" stroke-linejoin="round"/></mask>
+            <mask id="satinHealthAM" maskUnits="userSpaceOnUse" x="0" y="0" width="1170" height="840"><path class="satin-reveal satin-reveal--health" style="--rs:100ms;--rd:433ms;--re:cubic-bezier(0.846,0,0.881,0.521)" pathLength="1" d="M1174 -437C1164 -415 1127 -328 1116 -301C1104 -275 1109 -286 1106 -278C1103 -271 1099 -263 1096 -255C1093 -248 1090 -240 1087 -232C1083 -224 1080 -216 1077 -208C1074 -201 1071 -193 1067 -185C1064 -177 1061 -169 1057 -161C1054 -153 1051 -145 1047 -137C1044 -129 1041 -121 1037 -113C1033 -105 1030 -97 1026 -89C1023 -82 1019 -74 1015 -66C1011 -58 1007 -50 1003 -42C999 -35 995 -27 991 -19C987 -11 982 -4 978 4C974 12 969 19 965 27C960 35 955 42 951 50C946 58 941 65 936 73C931 80 926 88 921 95C916 103 911 110 906 118C901 125 896 133 891 140C886 148 881 155 876 163C871 170 866 178 860 185C855 193 850 200 844 207C838 214 833 221 827 228C821 235 815 242 809 249C804 256 798 263 792 270C786 278 780 285 775 292C769 300 764 307 758 315C753 323 748 331 743 339C739 347 735 356 731 365C726 373 722 382 719 391C715 400 711 409 707 418C703 427 700 436 697 445C693 455 690 464 688 474C686 484 684 495 685 505C685 516 687 527 691 538C694 549 700 560 706 569C713 578 721 587 730 595C739 602 749 608 759 613C769 617 781 620 791 621C801 622 812 620 822 619C832 617 842 613 851 610C860 607 869 602 878 598C887 594 896 590 904 585C913 581 926 574 930 572" fill="none" stroke="#fff" stroke-width="286" stroke-linecap="round" stroke-linejoin="round"/></mask>
+            <mask id="satinHealthBM" maskUnits="userSpaceOnUse" x="0" y="0" width="1170" height="840"><path class="satin-reveal satin-reveal--health" style="--rs:520ms;--rd:460ms;--re:cubic-bezier(0.098,0.496,0.198,1)" pathLength="1" d="M759 613C765 614 781 620 791 621C801 622 812 620 822 619C832 617 842 613 851 610C860 607 869 602 878 598C887 594 896 590 904 585C913 581 921 576 930 572C938 568 947 563 956 559C964 555 973 551 982 547C990 543 999 539 1008 535C1016 531 1025 527 1033 523C1042 519 1050 514 1059 510C1067 506 1076 501 1084 497C1092 493 1101 489 1109 485C1118 481 1126 477 1134 473C1143 469 1151 465 1160 462C1168 458 1177 455 1185 452C1194 448 1202 445 1211 442C1219 439 1227 435 1236 432C1244 429 1253 426 1261 424C1270 421 1278 418 1287 415C1296 413 1304 410 1313 408C1321 405 1330 403 1338 401C1347 398 1355 396 1364 394C1372 392 1381 390 1390 388C1398 386 1407 385 1415 383C1424 381 1433 380 1441 378C1450 376 1458 375 1467 373C1475 372 1484 370 1492 369C1501 368 1509 366 1518 365C1526 364 1535 362 1543 361C1552 360 1560 358 1568 357C1577 356 1585 355 1594 354C1602 352 1610 351 1618 350C1627 349 1635 348 1643 346C1651 345 1660 344 1668 343C1676 342 1684 341 1692 339C1700 338 1709 337 1717 336C1725 335 1733 334 1741 333C1749 331 1757 330 1765 329C1773 328 1780 327 1788 326C1796 324 1804 323 1812 322C1820 321 1808 323 1835 318C1862 314 1952 300 1975 296" fill="none" stroke="#fff" stroke-width="286" stroke-linecap="round" stroke-linejoin="round"/></mask>
+          </defs>
+          <g class="satin-shadow"><image class="art-light" data-href="assets/hero/satin-mobile-shadow-light.webp" width="1170" height="840"/><image class="art-dark" data-href="assets/hero/satin-mobile-shadow-dark.webp" width="1170" height="840"/></g>
+          <g class="satin-strand satin-strand--health"><g mask="url(#satinHealthBM)"><image class="art-light" data-href="assets/hero/satin-mobile-health-b-light.webp" width="1170" height="840"/><image class="art-dark" data-href="assets/hero/satin-mobile-health-b-dark.webp" width="1170" height="840"/></g><g mask="url(#satinHealthAM)"><image class="art-light" data-href="assets/hero/satin-mobile-health-a-light.webp" width="1170" height="840"/><image class="art-dark" data-href="assets/hero/satin-mobile-health-a-dark.webp" width="1170" height="840"/></g></g>
+          <g class="satin-strand satin-strand--life"><g mask="url(#satinLifeBM)"><image class="art-light" data-href="assets/hero/satin-mobile-life-b-light.webp" width="1170" height="840"/><image class="art-dark" data-href="assets/hero/satin-mobile-life-b-dark.webp" width="1170" height="840"/></g><g mask="url(#satinLifeAM)"><image class="art-light" data-href="assets/hero/satin-mobile-life-a-light.webp" width="1170" height="840"/><image class="art-dark" data-href="assets/hero/satin-mobile-life-a-dark.webp" width="1170" height="840"/></g></g>
         </svg>
       </div>
+      <script>
+      (function () {
+        // Loads only the satin art the visitor sees: the current view (desktop or
+        // mobile) in the current theme. The other theme loads when the theme
+        // toggle is reached for, or on the change itself. Each art SVG keeps
+        // showing the layers it has (data-art) until the new theme's layers have
+        // all loaded, so a sculpture never disappears on a slow connection.
+        // window.satinArt is reused by later sections (lazily, as they approach).
+        var root = document.documentElement;
+        var reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+        function theme() { return root.getAttribute("data-theme") === "dark" ? "dark" : "light"; }
+
+        // Starts loading one SVG's layers in one theme; calls done once all are in.
+        function load(svg, t, done) {
+          var list = svg.querySelectorAll("image.art-" + t), left = list.length;
+          function one() { if (--left === 0 && done) done(); }
+          for (var i = 0; i < list.length; i++) {
+            var im = list[i];
+            if (im.__loaded) { one(); continue; }
+            if (!im.__loading) {
+              im.__loading = true;
+              im.addEventListener("load", function () { this.__loaded = true; }, { once: true });
+              im.setAttribute("href", im.getAttribute("data-href"));
+            }
+            if (done) im.addEventListener("load", one, { once: true });
+          }
+        }
+
+        // Ends a cross-fade early: with both layer sets up and the dark set on top,
+        // the SVG is showing the dark art.
+        function settle(svg) {
+          if (!svg.__fade) return;
+          svg.__fade.forEach(function (a) { a.cancel(); });
+          svg.__fade = null;
+          svg.setAttribute("data-art", "dark");
+        }
+
+        function swap(svg, want, fade) {
+          settle(svg);
+          if (!fade || reduce.matches || !svg.animate) { svg.setAttribute("data-art", want); return; }
+          // Both sets up; the dark set (drawn on top) fades in or out over the light.
+          svg.setAttribute("data-art", "both");
+          var from = want === "dark" ? 0 : 1, fadeAnims = [];
+          var darks = svg.querySelectorAll("image.art-dark");
+          for (var i = 0; i < darks.length; i++) {
+            fadeAnims.push(darks[i].animate([{ opacity: from }, { opacity: 1 - from }], { duration: 240, easing: "cubic-bezier(0.23, 1, 0.32, 1)", fill: "forwards" }));
+          }
+          svg.__fade = fadeAnims;
+          fadeAnims[0].onfinish = function () {
+            if (svg.__fade !== fadeAnims) return;
+            svg.setAttribute("data-art", want);
+            fadeAnims.forEach(function (a) { a.cancel(); });
+            svg.__fade = null;
+          };
+        }
+
+        // o: { query: media query for the mobile view, desktop, mobile: selectors,
+        //      lazy: element whose approach starts loading (optional) }.
+        // Sets data-ready on an SVG once its current layers have loaded.
+        window.satinArt = function (o) {
+          var mq = window.matchMedia(o.query);
+          var svgs = { desktop: document.querySelector(o.desktop), mobile: document.querySelector(o.mobile) };
+          if (!svgs.desktop || !svgs.mobile) return;
+          var active = false;
+
+          function view() { return mq.matches ? "mobile" : "desktop"; }
+
+          function show() {
+            if (!active) return;
+            var svg = svgs[view()], want = theme();
+            var token = svg.__token = (svg.__token || 0) + 1;
+            var sync = true;
+            load(svg, want, function () {
+              svg.setAttribute("data-ready", "");
+              if (svg.__token !== token) return;
+              if (svg.getAttribute("data-art") === want && !svg.__fade) return;
+              // Already loaded: swap in the same frame as the theme change.
+              swap(svg, want, !sync);
+            });
+            sync = false;
+          }
+
+          function start() { if (!active) { active = true; show(); } }
+          function other() { if (active) load(svgs[view()], theme() === "dark" ? "light" : "dark"); }
+
+          svgs.desktop.setAttribute("data-art", theme());
+          svgs.mobile.setAttribute("data-art", theme());
+          if (o.lazy && "IntersectionObserver" in window) {
+            var io = new IntersectionObserver(function (entries) {
+              if (entries[0].isIntersecting) { io.disconnect(); start(); }
+            }, { rootMargin: "900px 0px" });
+            io.observe(o.lazy);
+          } else {
+            start();
+          }
+
+          var toggles = document.querySelectorAll(".js-theme-toggle");
+          for (var j = 0; j < toggles.length; j++) {
+            toggles[j].addEventListener("pointerenter", other);
+            toggles[j].addEventListener("focus", other);
+            toggles[j].addEventListener("touchstart", other, { passive: true });
+          }
+          new MutationObserver(show).observe(root, { attributes: true, attributeFilter: ["data-theme"] });
+          if (mq.addEventListener) mq.addEventListener("change", show); else mq.addListener(show);
+        };
+
+        window.satinArt({ query: "(max-width: 960px)", desktop: "svg.home-satin--desktop", mobile: "svg.home-satin--mobile" });
+      })();
+      </script>
     </div>
-    <div class="logo-strip">
-      <div class="container logo-strip-inner">
-        <span class="logo-strip-label">Why students choose us</span>
-        <div class="logo-strip-track">
-          <div class="logo-strip-marks">
-            <span>50-STATE APPROVED</span>
-            <span>PSI &amp; PEARSON VUE PREP</span>
-            <span>100% ONLINE</span>
-            <span>SELF-PACED</span>
-            <span>50-STATE APPROVED</span>
-            <span>PSI &amp; PEARSON VUE PREP</span>
-            <span>100% ONLINE</span>
-            <span>SELF-PACED</span>
-          </div>
+    <div class="home-credentials">
+      <div class="container home-credentials-inner">
+        <div class="home-credential">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M8 3v3M16 3v3"/></svg>
+          <span>Self-paced, 100% online</span>
+        </div>
+        <div class="home-credential">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M11 18h2"/></svg>
+          <span>Study on any device</span>
+        </div>
+        <div class="home-credential">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+          <span>One-time price, no subscription</span>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="section" id="courses">
+  <section class="section home-courses" id="courses">
+    <div class="home-grid" aria-hidden="true"><span></span><i></i></div>
     <div class="container">
-      <div class="section-head reveal">
-        <span class="eyebrow eyebrow-dark">Our Courses</span>
+      <div class="home-section-head reveal">
         <h2>Choose your licensing path</h2>
-        <p class="section-sub">Every course includes video lessons, practice exams, and a printable study guide — all built around your state's exam content outline.</p>
+        <p class="section-sub">Every course includes lessons, quizzes, a full practice exam, and a printable study guide, all built around your state's exam content outline.</p>
       </div>
-      <div class="course-grid">
-        <div class="course-card reveal">
+      <div class="home-paths">
+        <div class="home-paths-art" aria-hidden="true">
+          <div class="home-paths-static home-paths-static--desktop"></div>
+          <div class="home-paths-static home-paths-static--mobile"></div>
+          <svg class="home-paths-svg home-paths-svg--desktop" viewBox="0 0 1540 1400" focusable="false">
+            <defs>
+              <mask id="pathsLife" maskUnits="userSpaceOnUse" x="0" y="0" width="1540" height="1400"><path class="paths-reveal paths-reveal--arm" style="--r0:0.629;--rs:0ms;--rd:787ms;--re:cubic-bezier(0.845,0,0.881,0.521)" pathLength="1" d="M-84 434C-58 424 46 388 76 378C106 367 89 373 96 371C102 368 109 366 116 364C123 362 129 359 136 357C143 355 150 352 157 350C163 348 170 345 177 343C184 340 191 338 198 335C205 333 211 330 218 328C225 325 232 323 239 320C246 318 253 315 260 312C266 309 273 306 280 304C287 301 294 298 301 295C308 292 315 289 322 286C328 283 335 280 342 277C349 274 356 271 363 268C370 265 377 262 384 260C391 257 398 254 405 251C412 248 419 245 426 242C433 239 440 236 446 233C453 229 460 226 467 223C474 221 481 218 488 216C496 214 503 212 510 211C518 210 525 210 533 211C540 211 548 213 555 215C563 217 570 219 577 222C585 225 592 228 599 232C605 236 612 240 618 245C625 250 631 256 636 262C641 268 646 275 650 282C655 289 658 296 662 304C665 311 668 319 672 327C675 335 678 343 681 351C684 359 688 367 692 374C696 382 700 389 704 397C708 404 713 412 717 420C721 427 725 435 729 443C733 450 737 458 740 466C743 474 746 483 749 491C751 499 753 508 756 516C758 525 759 534 761 542C762 551 764 560 765 568C767 577 768 586 769 595C770 603 771 617 771 621" fill="none" stroke="#fff" stroke-width="190" stroke-linecap="round" stroke-linejoin="round"/><path class="paths-reveal paths-reveal--stem" style="--rs:787ms;--rd:813ms;--re:cubic-bezier(0.098,0.519,0.253,1)" pathLength="1" d="M765 568C766 573 768 586 769 595C770 603 770 612 771 621C772 630 772 639 773 647C774 656 775 665 777 674C778 682 779 691 781 700C782 708 784 717 785 726C787 734 789 743 790 752C792 760 794 769 796 778C798 786 799 795 801 804C803 812 805 821 807 830C809 839 811 847 813 856C814 865 816 874 818 882C820 891 822 900 823 909C825 918 827 926 829 935C830 944 832 953 833 962C835 971 836 980 838 989C839 997 840 1006 842 1015C843 1024 844 1033 845 1042C846 1051 847 1060 848 1069C849 1078 850 1087 851 1096C851 1105 852 1114 853 1123C853 1132 854 1141 854 1150C855 1159 855 1168 855 1177C855 1186 856 1195 856 1204C856 1213 856 1222 856 1231C855 1240 855 1249 855 1259C854 1268 854 1277 854 1286C853 1295 852 1304 852 1313C851 1322 850 1331 849 1340C848 1349 847 1358 846 1367C845 1377 844 1386 843 1395C841 1404 840 1413 839 1422C837 1431 836 1440 834 1450C832 1459 831 1468 829 1477C827 1486 825 1495 823 1505C822 1514 820 1523 818 1532C816 1541 814 1550 812 1560C810 1569 808 1578 806 1587C804 1597 801 1606 799 1615C797 1624 802 1601 793 1643C784 1684 753 1827 745 1864" fill="none" stroke="#fff" stroke-width="190" stroke-linecap="round" stroke-linejoin="round"/></mask>
+              <mask id="pathsHealth" maskUnits="userSpaceOnUse" x="0" y="0" width="1540" height="1400"><path class="paths-reveal paths-reveal--arm" style="--r0:0.616;--rs:0ms;--rd:787ms;--re:cubic-bezier(0.845,0,0.881,0.521)" pathLength="1" d="M1620 520C1594 522 1494 528 1464 530C1435 531 1451 530 1445 531C1438 531 1432 532 1425 532C1419 533 1412 533 1405 534C1399 534 1392 535 1385 535C1379 536 1372 536 1365 537C1359 537 1352 537 1345 538C1339 538 1332 538 1325 538C1319 538 1312 538 1305 537C1299 537 1292 536 1286 536C1279 535 1272 534 1266 533C1259 533 1253 532 1246 531C1240 529 1233 528 1227 527C1220 526 1214 524 1207 523C1201 521 1194 519 1188 518C1182 516 1175 514 1169 512C1163 509 1156 507 1150 504C1144 501 1138 498 1132 495C1126 492 1120 488 1115 485C1109 481 1103 477 1098 473C1092 469 1087 464 1081 460C1075 456 1070 452 1064 448C1058 444 1052 441 1045 437C1039 434 1033 431 1026 428C1019 425 1012 423 1005 421C998 419 991 417 984 415C976 413 969 412 961 412C954 411 946 411 939 412C931 412 923 413 916 415C908 417 901 419 893 422C886 425 878 427 871 431C864 434 856 437 850 441C843 445 836 450 829 455C823 460 817 465 811 471C806 478 801 484 797 491C793 498 789 506 786 514C783 521 781 529 779 538C777 546 776 554 775 562C773 570 772 579 772 587C771 595 770 604 770 612C770 620 770 633 770 637" fill="none" stroke="#fff" stroke-width="190" stroke-linecap="round" stroke-linejoin="round"/><path class="paths-reveal paths-reveal--stem" style="--rs:787ms;--rd:813ms;--re:cubic-bezier(0.098,0.519,0.253,1)" pathLength="1" d="M772 587C771 591 770 604 770 612C770 620 770 629 770 637C770 645 771 654 771 662C771 670 772 679 772 687C773 696 773 704 774 712C775 721 776 729 777 737C778 745 779 754 780 762C782 770 783 778 785 787C786 795 788 803 790 811C791 819 793 828 795 836C797 844 799 852 801 860C804 868 806 876 808 884C810 892 812 901 815 909C817 917 819 925 822 933C824 941 826 949 828 957C831 965 833 973 835 982C837 990 840 998 842 1006C844 1014 846 1022 848 1031C850 1039 851 1047 853 1055C855 1064 857 1072 858 1081C860 1089 861 1097 862 1106C863 1114 865 1123 865 1131C866 1140 867 1148 868 1157C868 1165 869 1174 869 1183C869 1191 869 1200 869 1209C869 1217 868 1226 868 1234C867 1243 867 1252 866 1260C865 1269 864 1278 863 1286C861 1295 860 1303 859 1312C857 1320 856 1329 854 1337C852 1346 850 1354 848 1363C847 1371 845 1380 843 1388C840 1397 838 1405 836 1413C834 1422 832 1430 830 1438C827 1447 825 1455 823 1463C821 1472 818 1480 816 1488C814 1497 812 1505 810 1513C807 1522 805 1530 803 1538C801 1547 799 1555 797 1563C795 1572 794 1580 792 1589C790 1597 789 1605 787 1614C785 1622 789 1601 783 1639C776 1678 753 1809 747 1843" fill="none" stroke="#fff" stroke-width="190" stroke-linecap="round" stroke-linejoin="round"/></mask>
+            </defs>
+            <g class="paths-shadow"><image class="art-light" data-href="assets/courses/paths-desktop-shadow-light.webp" width="1540" height="1400"/><image class="art-dark" data-href="assets/courses/paths-desktop-shadow-dark.webp" width="1540" height="1400"/></g>
+            <g class="paths-strand paths-strand--health" mask="url(#pathsHealth)"><image class="art-light" data-href="assets/courses/paths-desktop-health-light.webp" width="1540" height="1400"/><image class="art-dark" data-href="assets/courses/paths-desktop-health-dark.webp" width="1540" height="1400"/></g>
+            <g class="paths-strand paths-strand--life" mask="url(#pathsLife)"><image class="art-light" data-href="assets/courses/paths-desktop-life-light.webp" width="1540" height="1400"/><image class="art-dark" data-href="assets/courses/paths-desktop-life-dark.webp" width="1540" height="1400"/></g>
+          </svg>
+          <svg class="home-paths-svg home-paths-svg--mobile" viewBox="0 0 1170 780" preserveAspectRatio="xMidYMid slice" focusable="false">
+            <defs>
+              <mask id="pathsLifeM" maskUnits="userSpaceOnUse" x="0" y="0" width="1170" height="780"><path class="paths-reveal paths-reveal--arm" style="--r0:0.535;--rs:0ms;--rd:575ms;--re:cubic-bezier(0.803,0,0.894,0.5)" pathLength="1" d="M102 -321C107 -300 128 -217 134 -192C140 -168 136 -182 138 -176C139 -171 140 -166 141 -160C143 -155 144 -149 145 -144C146 -138 148 -133 149 -127C150 -122 152 -117 153 -111C154 -106 155 -100 157 -95C158 -89 159 -84 161 -78C162 -73 163 -67 165 -62C166 -57 168 -51 169 -46C170 -40 172 -35 174 -30C175 -24 177 -19 178 -14C180 -8 182 -3 183 2C185 7 187 12 189 18C190 23 192 28 194 33C195 38 197 43 199 49C201 54 202 59 204 64C206 69 208 74 210 79C212 84 214 89 216 94C218 99 220 104 223 109C225 114 228 119 230 124C233 128 235 133 238 138C241 143 244 148 247 152C250 157 254 161 257 166C261 171 264 175 268 179C271 184 275 188 279 193C283 197 287 201 291 205C295 209 299 213 303 217C308 221 312 225 316 229C321 233 325 237 330 240C334 244 339 247 344 251C348 254 353 258 358 261C363 264 368 267 374 269C379 272 384 275 390 277C395 279 400 282 406 284C411 286 417 288 423 290C428 292 434 294 440 295C446 297 451 299 457 300C463 302 469 303 475 304C481 306 486 308 492 310C498 313 503 315 508 318C514 321 519 325 523 329C528 332 533 337 537 341C541 345 545 350 549 355C553 360 556 365 560 370C563 375 566 380 569 386C572 391 575 397 577 403C579 408 581 414 582 420C584 426 585 435 586 438" fill="none" stroke="#fff" stroke-width="186" stroke-linecap="round" stroke-linejoin="round"/><path class="paths-reveal paths-reveal--stem" style="--rs:575ms;--rd:625ms;--re:cubic-bezier(0.097,0.5,0.208,1)" pathLength="1" d="M577 403C578 405 581 414 582 420C584 426 585 432 586 438C587 444 587 451 588 457C589 463 590 469 591 475C592 481 593 487 594 493C595 499 596 505 597 511C598 517 599 523 600 530C601 536 602 542 602 548C603 554 604 560 605 566C605 572 606 579 607 585C607 591 608 597 608 603C609 610 609 616 610 622C611 628 611 634 612 641C612 647 613 653 613 659C614 666 614 672 615 678C616 684 617 690 618 696C618 702 619 709 620 715C621 721 622 727 624 733C625 739 626 745 627 751C629 757 630 763 631 769C633 775 634 781 635 787C637 793 638 799 640 805C641 811 642 818 644 824C645 830 646 836 647 842C648 848 649 855 650 861C651 867 652 873 653 880C653 886 654 893 654 899C654 905 654 912 654 918C654 924 654 931 653 937C653 944 652 950 651 956C651 963 650 969 649 975C648 982 646 988 645 994C644 1000 643 1007 641 1013C640 1019 643 1004 637 1031C630 1059 607 1155 602 1179" fill="none" stroke="#fff" stroke-width="186" stroke-linecap="round" stroke-linejoin="round"/></mask>
+              <mask id="pathsHealthM" maskUnits="userSpaceOnUse" x="0" y="0" width="1170" height="780"><path class="paths-reveal paths-reveal--arm" style="--r0:0.520;--rs:0ms;--rd:575ms;--re:cubic-bezier(0.803,0,0.894,0.5)" pathLength="1" d="M1070 -321C1066 -300 1048 -217 1042 -192C1037 -168 1040 -182 1039 -176C1038 -171 1037 -166 1036 -160C1034 -155 1033 -149 1032 -144C1031 -138 1030 -133 1029 -127C1028 -122 1027 -116 1026 -111C1025 -105 1024 -100 1023 -94C1022 -89 1021 -83 1020 -78C1018 -72 1017 -67 1016 -62C1015 -56 1013 -51 1012 -45C1010 -40 1009 -35 1007 -30C1005 -24 1004 -19 1002 -14C1000 -9 998 -4 996 1C994 6 992 11 990 16C987 20 985 25 983 30C981 35 978 39 976 44C974 49 971 53 969 58C966 63 963 67 961 72C958 76 955 81 952 85C950 90 947 94 944 98C941 103 938 107 934 112C931 116 928 120 924 125C921 129 917 133 914 137C910 142 906 146 903 150C899 154 895 158 891 162C887 166 883 170 878 174C874 178 870 182 866 186C861 190 857 193 852 197C848 201 843 205 839 208C834 212 830 215 825 219C820 222 815 226 811 229C806 232 801 236 796 239C791 242 786 245 781 248C776 251 771 254 766 257C761 260 756 263 751 266C745 268 740 271 735 274C730 276 724 279 719 282C714 284 708 287 703 289C698 292 692 294 687 297C681 299 676 301 671 304C666 307 660 311 656 314C651 318 646 322 642 326C637 330 633 335 629 340C626 344 622 349 618 354C615 359 612 365 609 370C606 375 603 381 600 386C597 392 595 398 593 404C591 409 589 415 588 421C587 427 586 437 585 440" fill="none" stroke="#fff" stroke-width="186" stroke-linecap="round" stroke-linejoin="round"/><path class="paths-reveal paths-reveal--stem" style="--rs:575ms;--rd:625ms;--re:cubic-bezier(0.097,0.5,0.208,1)" pathLength="1" d="M593 404C592 406 589 415 588 421C587 427 586 433 585 440C585 446 585 452 585 458C584 464 584 470 584 477C584 483 584 489 584 495C584 501 585 507 585 513C586 520 586 526 587 532C588 538 589 544 590 550C591 556 592 562 593 568C595 574 596 580 598 586C599 592 601 598 602 604C604 610 606 615 608 621C609 627 611 633 613 639C615 645 617 651 619 657C620 663 622 669 624 675C625 681 627 687 629 693C630 699 631 705 633 711C634 717 635 723 636 729C637 735 638 742 639 748C640 754 641 760 641 767C642 773 642 779 642 785C643 792 643 798 643 804C643 811 643 817 643 823C643 829 643 836 643 842C642 848 642 854 642 861C642 867 642 873 642 879C641 885 641 891 641 898C641 904 641 910 641 916C641 922 641 928 641 935C641 941 641 947 641 953C641 959 641 965 641 972C641 978 641 984 641 990C641 996 641 1003 641 1009C641 1015 641 1000 641 1028C640 1056 639 1154 639 1179" fill="none" stroke="#fff" stroke-width="186" stroke-linecap="round" stroke-linejoin="round"/></mask>
+            </defs>
+            <g class="paths-shadow"><image class="art-light" data-href="assets/courses/paths-mobile-shadow-light.webp" width="1170" height="780"/><image class="art-dark" data-href="assets/courses/paths-mobile-shadow-dark.webp" width="1170" height="780"/></g>
+            <g class="paths-strand paths-strand--health" mask="url(#pathsHealthM)"><image class="art-light" data-href="assets/courses/paths-mobile-health-light.webp" width="1170" height="780"/><image class="art-dark" data-href="assets/courses/paths-mobile-health-dark.webp" width="1170" height="780"/></g>
+            <g class="paths-strand paths-strand--life" mask="url(#pathsLifeM)"><image class="art-light" data-href="assets/courses/paths-mobile-life-light.webp" width="1170" height="780"/><image class="art-dark" data-href="assets/courses/paths-mobile-life-dark.webp" width="1170" height="780"/></g>
+          </svg>
+        </div>
+        <div class="course-card home-course-card home-course-card--life reveal">
           <span class="course-tag">Life</span>
           <h3>Life Insurance License</h3>
           <p class="course-desc">Everything you need to pass your state's Life Insurance licensing exam.</p>
           <div class="course-price">$149 <span>one-time</span></div>
           <div class="course-meta">20 course hours &middot; Self-paced</div>
           <ul class="course-features">
-            <li>State-approved curriculum</li>
             <li>Unlimited practice exams</li>
             <li>Printable study guide</li>
           </ul>
           <a href="courses.html" class="btn btn-secondary">Learn More</a>
         </div>
-        <div class="course-card featured reveal" style="transition-delay: 0.12s;">
-          <span class="course-badge">Most Popular</span>
-          <span class="course-tag">Life + Health</span>
-          <h3>Life &amp; Health Combo</h3>
-          <p class="course-desc">The most popular path — get licensed in both lines with one course.</p>
-          <div class="course-price">$249 <span>one-time</span></div>
-          <div class="course-savings">Save $49 vs. buying separately</div>
-          <div class="course-meta">40 course hours &middot; Self-paced</div>
-          <ul class="course-features">
-            <li>Covers both state exams</li>
-            <li>Unlimited practice exams</li>
-            <li>Instructor email support</li>
-          </ul>
-          <a href="courses.html" class="btn btn-primary">Learn More</a>
-        </div>
-        <div class="course-card reveal" style="transition-delay: 0.24s;">
+        <div class="course-card home-course-card home-course-card--health reveal" style="transition-delay: 0.08s;">
           <span class="course-tag">Health</span>
           <h3>Health Insurance License</h3>
           <p class="course-desc">Everything you need to pass your state's Health Insurance licensing exam.</p>
           <div class="course-price">$149 <span>one-time</span></div>
           <div class="course-meta">20 course hours &middot; Self-paced</div>
           <ul class="course-features">
-            <li>State-approved curriculum</li>
             <li>Unlimited practice exams</li>
             <li>Printable study guide</li>
           </ul>
           <a href="courses.html" class="btn btn-secondary">Learn More</a>
         </div>
+        <div class="course-card home-course-card home-course-card--featured home-paths-combo reveal" style="transition-delay: 0.16s;">
+          <div class="home-combo-intro">
+            <span class="course-badge">Best value</span>
+            <h3>Life &amp; Health Combo</h3>
+            <p class="course-desc">Get licensed in both lines with one course, at one price.</p>
+          </div>
+          <div class="home-combo-price">
+            <div class="course-price">$249 <span>one-time</span></div>
+            <div class="course-savings">Save $49 vs. buying separately</div>
+            <div class="course-meta">40 course hours &middot; Self-paced</div>
+          </div>
+          <div class="home-combo-detail">
+            <ul class="course-features">
+              <li>Covers both state exams</li>
+              <li>Unlimited practice exams</li>
+              <li>Printable study guides</li>
+            </ul>
+            <a href="courses.html" class="btn btn-primary">Learn More</a>
+          </div>
+        </div>
       </div>
+      <script>window.satinArt && window.satinArt({ query: "(max-width: 1023px)", desktop: "svg.home-paths-svg--desktop", mobile: "svg.home-paths-svg--mobile", lazy: document.querySelector(".home-paths") });</script>
     </div>
   </section>
 
-  <section class="stats-band">
-    <div class="container stats-grid">
-      <div class="stat reveal"><span class="stat-num">12,000+</span><span class="stat-label">Licensed Graduates</span></div>
-      <div class="stat reveal" style="transition-delay: 0.08s;"><span class="stat-num">50</span><span class="stat-label">States Approved</span></div>
-      <div class="stat reveal" style="transition-delay: 0.16s;"><span class="stat-num">95%</span><span class="stat-label">Exam Pass Rate</span></div>
-      <div class="stat reveal" style="transition-delay: 0.24s;"><span class="stat-num">24/7</span><span class="stat-label">Online Access</span></div>
+  <section class="section home-features">
+    <div class="home-grid" aria-hidden="true"><span></span><i></i></div>
+    <div class="container home-features-spread">
+      <div class="home-features-intro">
+        <div class="home-section-head reveal">
+          <h2>Inside every course</h2>
+          <p class="section-sub">The same toolkit for every student, from your first lesson to exam day.</p>
+        </div>
+        <div class="home-feature home-feature--lead reveal">
+          <h3>Guided lessons</h3>
+          <p>Work through every module at your own pace, with lessons you can also listen to read aloud in supported browsers.</p>
+        </div>
+      </div>
+      <div class="home-study home-study--path reveal" aria-hidden="true">
+        <svg class="home-study-art" viewBox="0 0 1280 840" focusable="false"><image class="art-light" data-href="assets/features/study-path-light.webp" width="1280" height="840"/><image class="art-dark" data-href="assets/features/study-path-dark.webp" width="1280" height="840"/></svg>
+      </div>
+      <div class="home-study home-study--ring reveal" aria-hidden="true">
+        <svg class="home-study-art" viewBox="0 0 1088 720" focusable="false"><image class="art-light" data-href="assets/features/study-ring-light.webp" width="1088" height="720"/><image class="art-dark" data-href="assets/features/study-ring-dark.webp" width="1088" height="720"/></svg>
+      </div>
+      <div class="home-feature home-feature--exam reveal">
+        <h3>Full practice exam</h3>
+        <p>Timed, shuffled questions with a jump-to navigator and a full answer review when you finish.</p>
+      </div>
+      <div class="home-feature-list">
+        <div class="home-feature reveal">
+          <h3>Module quizzes</h3>
+          <p>Check your understanding after every module, with explanations for each answer.</p>
+        </div>
+        <div class="home-feature reveal" style="transition-delay: 0.06s;">
+          <h3>Printable study guide</h3>
+          <p>A condensed summary of every lesson, ready to print or save as a PDF before exam day.</p>
+        </div>
+        <div class="home-feature reveal" style="transition-delay: 0.12s;">
+          <h3>Progress you can see</h3>
+          <p>Your dashboard tracks completion for every course you're enrolled in.</p>
+        </div>
+      </div>
+      <script>if (window.satinArt) ["path", "ring"].forEach(function (s) { var sel = ".home-study--" + s + " svg"; window.satinArt({ query: "not all", desktop: sel, mobile: sel, lazy: document.querySelector(".home-study--" + s) }); });</script>
     </div>
   </section>
 
-  <section class="section section-alt" id="how-it-works">
+  <section class="section home-process" id="how-it-works">
+    <div class="home-grid" aria-hidden="true"><span></span><i></i></div>
     <div class="container">
-      <div class="section-head reveal">
-        <span class="eyebrow eyebrow-dark">How It Works</span>
+      <div class="home-section-head reveal">
         <h2>From sign-up to licensed agent</h2>
       </div>
-      <div class="process-grid">
-        <div class="process-step reveal">
-          <span class="process-num">01</span>
-          <h3>Enroll</h3>
-          <p>Create an account and pick the course that matches the license you need.</p>
+      <div class="home-stairs">
+        <div class="home-stairs-art" aria-hidden="true">
+          <svg class="home-stairs-floor home-stairs-floor--desktop" viewBox="0 0 1440 420" preserveAspectRatio="none" focusable="false">
+            <defs>
+              <linearGradient id="floorND" gradientUnits="userSpaceOnUse" x1="721.8" y1="216.4" x2="866.4" y2="651.0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="0.16" stop-color="#fff" stop-opacity="1"/><stop offset="0.72" stop-color="#fff" stop-opacity="0.9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+              <linearGradient id="floorXD" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1440" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="0.1" stop-color="#fff" stop-opacity="1"/><stop offset="0.9" stop-color="#fff" stop-opacity="1"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+              <linearGradient id="floorYD" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="510"><stop offset="0.8" stop-color="#fff" stop-opacity="1"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+              <radialGradient id="floorGD" gradientUnits="userSpaceOnUse" cx="760" cy="262" r="680" gradientTransform="rotate(-18.4 760 262) translate(760 262) scale(1 0.162) translate(-760 -262)"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+              <mask id="floorMND" maskUnits="userSpaceOnUse" x="-400" y="-400" width="2240" height="1310"><rect x="-400" y="-400" width="2240" height="1310" fill="url(#floorND)"/></mask>
+              <mask id="floorMXD" maskUnits="userSpaceOnUse" x="-400" y="-400" width="2240" height="1310"><rect x="-400" y="-400" width="2240" height="1310" fill="url(#floorXD)"/></mask>
+              <mask id="floorMYD" maskUnits="userSpaceOnUse" x="-400" y="-400" width="2240" height="1310"><rect x="-400" y="-400" width="2240" height="1310" fill="url(#floorYD)"/></mask>
+              <mask id="floorMGD" maskUnits="userSpaceOnUse" x="-400" y="-400" width="2240" height="1310"><rect x="-400" y="-400" width="2240" height="1310" fill="url(#floorGD)"/></mask>
+            </defs>
+            <g mask="url(#floorMYD)"><g mask="url(#floorMXD)">
+              <g mask="url(#floorMND)"><path class="floor-fine" d="M-5413.9 195.2L-4815.1 1770.5M-5129.9 161.5L-4531.1 1736.7M-4845.9 127.7L-4247.1 1703M-4561.9 93.9L-3963.1 1669.2M-4277.9 60.2L-3679.1 1635.5M-3993.9 26.4L-3395.1 1601.7M-3709.9 -7.3L-3111.1 1568M-3425.9 -41.1L-2827.1 1534.2M-3141.9 -74.8L-2543.1 1500.4M-2857.9 -108.6L-2259.1 1466.7M-2573.9 -142.3L-1975.1 1432.9M-2289.9 -176.1L-1691.1 1399.2M-2005.9 -209.9L-1407.1 1365.4M-1721.9 -243.6L-1123.1 1331.7M-1437.9 -277.4L-839.1 1297.9M-1153.9 -311.1L-555.1 1264.2M-869.9 -344.9L-271.1 1230.4M-585.9 -378.6L12.9 1196.6M-301.9 -412.4L296.9 1162.9M-17.9 -446.2L580.9 1129.1M266.1 -479.9L864.9 1095.4M550.1 -513.7L1148.9 1061.6M834.1 -547.4L1432.9 1027.9M1118.1 -581.2L1716.9 994.1M1402.1 -614.9L2000.9 960.3M1686.1 -648.7L2284.9 926.6M1970.1 -682.4L2568.9 892.8M2254.1 -716.2L2852.9 859.1M2538.1 -750L3136.9 825.3M2822.1 -783.7L3420.9 791.6M3106.1 -817.5L3704.9 757.8M3390.1 -851.2L3988.9 724.1M3674.1 -885L4272.9 690.3M3958.1 -918.7L4556.9 656.5M4242.1 -952.5L4840.9 622.8M4526.1 -986.3L5124.9 589M4810.1 -1020L5408.9 555.3M5094.1 -1053.8L5692.9 521.5M5378.1 -1087.5L5976.9 487.8M5662.1 -1121.3L6260.9 454M-2778.8 -1169.3L2855.3 -1839M-2718.4 -1010.5L2915.7 -1680.2M-2658.1 -851.7L2976.1 -1521.4M-2597.7 -692.9L3036.4 -1362.5M-2537.3 -534.1L3096.8 -1203.7M-2477 -375.2L3157.2 -1044.9M-2416.6 -216.4L3217.5 -886.1M-2356.2 -57.6L3277.9 -727.3M-2295.9 101.2L3338.3 -568.5M-2235.5 260L3398.6 -409.7M-2175.1 418.8L3459 -250.9M-2114.8 577.6L3519.4 -92.1M-2054.4 736.4L3579.7 66.8M-1994 895.2L3640.1 225.6M-1933.7 1054.1L3700.5 384.4M-1873.3 1212.9L3760.8 543.2M-1812.9 1371.7L3821.2 702M-1752.6 1530.5L3881.6 860.8M-1692.2 1689.3L3941.9 1019.6M-1631.8 1848.1L4002.3 1178.4M-1571.5 2006.9L4062.7 1337.2M-1511.1 2165.7L4123 1496.1M-1450.7 2324.5L4183.4 1654.9M-1390.4 2483.3L4243.7 1813.7"/><path class="floor-primary" d="M-5555.9 212.1L-4957.1 1787.4M-5271.9 178.3L-4673.1 1753.6M-4987.9 144.6L-4389.1 1719.9M-4703.9 110.8L-4105.1 1686.1M-4419.9 77.1L-3821.1 1652.4M-4135.9 43.3L-3537.1 1618.6M-3851.9 9.6L-3253.1 1584.8M-3567.9 -24.2L-2969.1 1551.1M-3283.9 -58L-2685.1 1517.3M-2999.9 -91.7L-2401.1 1483.6M-2715.9 -125.5L-2117.1 1449.8M-2431.9 -159.2L-1833.1 1416.1M-2147.9 -193L-1549.1 1382.3M-1863.9 -226.7L-1265.1 1348.5M-1579.9 -260.5L-981.1 1314.8M-1295.9 -294.3L-697.1 1281M-1011.9 -328L-413.1 1247.3M-727.9 -361.8L-129.1 1213.5M-443.9 -395.5L154.9 1179.8M-159.9 -429.3L438.9 1146M124.1 -463L722.9 1112.2M408.1 -496.8L1006.9 1078.5M692.1 -530.5L1290.9 1044.7M976.1 -564.3L1574.9 1011M1260.1 -598.1L1858.9 977.2M1544.1 -631.8L2142.9 943.5M1828.1 -665.6L2426.9 909.7M2112.1 -699.3L2710.9 876M2396.1 -733.1L2994.9 842.2M2680.1 -766.8L3278.9 808.4M2964.1 -800.6L3562.9 774.7M3248.1 -834.4L3846.9 740.9M3532.1 -868.1L4130.9 707.2M3816.1 -901.9L4414.9 673.4M4100.1 -935.6L4698.9 639.7M4384.1 -969.4L4982.9 605.9M4668.1 -1003.1L5266.9 572.1M4952.1 -1036.9L5550.9 538.4M5236.1 -1070.6L5834.9 504.6M5520.1 -1104.4L6118.9 470.9M5804.1 -1138.2L6402.9 437.1M-2809 -1248.7L2825.1 -1918.4M-2748.6 -1089.9L2885.5 -1759.6M-2688.3 -931.1L2945.9 -1600.8M-2627.9 -772.3L3006.2 -1441.9M-2567.5 -613.5L3066.6 -1283.1M-2507.2 -454.7L3127 -1124.3M-2446.8 -295.8L3187.3 -965.5M-2386.4 -137L3247.7 -806.7M-2326.1 21.8L3308.1 -647.9M-2265.7 180.6L3368.4 -489.1M-2205.3 339.4L3428.8 -330.3M-2145 498.2L3489.2 -171.5M-2084.6 657L3549.5 -12.6M-2024.2 815.8L3609.9 146.2M-1963.9 974.6L3670.3 305M-1903.5 1133.5L3730.6 463.8M-1843.1 1292.3L3791 622.6M-1782.8 1451.1L3851.4 781.4M-1722.4 1609.9L3911.7 940.2M-1662 1768.7L3972.1 1099M-1601.7 1927.5L4032.5 1257.8M-1541.3 2086.3L4092.8 1416.6M-1480.9 2245.1L4153.2 1575.5M-1420.6 2403.9L4213.6 1734.3M-1360.2 2562.8L4273.9 1893.1"/></g>
+              <g mask="url(#floorMGD)"><path class="floor-glow" d="M-5555.9 212.1L-4957.1 1787.4M-5271.9 178.3L-4673.1 1753.6M-4987.9 144.6L-4389.1 1719.9M-4703.9 110.8L-4105.1 1686.1M-4419.9 77.1L-3821.1 1652.4M-4135.9 43.3L-3537.1 1618.6M-3851.9 9.6L-3253.1 1584.8M-3567.9 -24.2L-2969.1 1551.1M-3283.9 -58L-2685.1 1517.3M-2999.9 -91.7L-2401.1 1483.6M-2715.9 -125.5L-2117.1 1449.8M-2431.9 -159.2L-1833.1 1416.1M-2147.9 -193L-1549.1 1382.3M-1863.9 -226.7L-1265.1 1348.5M-1579.9 -260.5L-981.1 1314.8M-1295.9 -294.3L-697.1 1281M-1011.9 -328L-413.1 1247.3M-727.9 -361.8L-129.1 1213.5M-443.9 -395.5L154.9 1179.8M-159.9 -429.3L438.9 1146M124.1 -463L722.9 1112.2M408.1 -496.8L1006.9 1078.5M692.1 -530.5L1290.9 1044.7M976.1 -564.3L1574.9 1011M1260.1 -598.1L1858.9 977.2M1544.1 -631.8L2142.9 943.5M1828.1 -665.6L2426.9 909.7M2112.1 -699.3L2710.9 876M2396.1 -733.1L2994.9 842.2M2680.1 -766.8L3278.9 808.4M2964.1 -800.6L3562.9 774.7M3248.1 -834.4L3846.9 740.9M3532.1 -868.1L4130.9 707.2M3816.1 -901.9L4414.9 673.4M4100.1 -935.6L4698.9 639.7M4384.1 -969.4L4982.9 605.9M4668.1 -1003.1L5266.9 572.1M4952.1 -1036.9L5550.9 538.4M5236.1 -1070.6L5834.9 504.6M5520.1 -1104.4L6118.9 470.9M5804.1 -1138.2L6402.9 437.1M-2809 -1248.7L2825.1 -1918.4M-2748.6 -1089.9L2885.5 -1759.6M-2688.3 -931.1L2945.9 -1600.8M-2627.9 -772.3L3006.2 -1441.9M-2567.5 -613.5L3066.6 -1283.1M-2507.2 -454.7L3127 -1124.3M-2446.8 -295.8L3187.3 -965.5M-2386.4 -137L3247.7 -806.7M-2326.1 21.8L3308.1 -647.9M-2265.7 180.6L3368.4 -489.1M-2205.3 339.4L3428.8 -330.3M-2145 498.2L3489.2 -171.5M-2084.6 657L3549.5 -12.6M-2024.2 815.8L3609.9 146.2M-1963.9 974.6L3670.3 305M-1903.5 1133.5L3730.6 463.8M-1843.1 1292.3L3791 622.6M-1782.8 1451.1L3851.4 781.4M-1722.4 1609.9L3911.7 940.2M-1662 1768.7L3972.1 1099M-1601.7 1927.5L4032.5 1257.8M-1541.3 2086.3L4092.8 1416.6M-1480.9 2245.1L4153.2 1575.5M-1420.6 2403.9L4213.6 1734.3M-1360.2 2562.8L4273.9 1893.1M-5413.9 195.2L-4815.1 1770.5M-5129.9 161.5L-4531.1 1736.7M-4845.9 127.7L-4247.1 1703M-4561.9 93.9L-3963.1 1669.2M-4277.9 60.2L-3679.1 1635.5M-3993.9 26.4L-3395.1 1601.7M-3709.9 -7.3L-3111.1 1568M-3425.9 -41.1L-2827.1 1534.2M-3141.9 -74.8L-2543.1 1500.4M-2857.9 -108.6L-2259.1 1466.7M-2573.9 -142.3L-1975.1 1432.9M-2289.9 -176.1L-1691.1 1399.2M-2005.9 -209.9L-1407.1 1365.4M-1721.9 -243.6L-1123.1 1331.7M-1437.9 -277.4L-839.1 1297.9M-1153.9 -311.1L-555.1 1264.2M-869.9 -344.9L-271.1 1230.4M-585.9 -378.6L12.9 1196.6M-301.9 -412.4L296.9 1162.9M-17.9 -446.2L580.9 1129.1M266.1 -479.9L864.9 1095.4M550.1 -513.7L1148.9 1061.6M834.1 -547.4L1432.9 1027.9M1118.1 -581.2L1716.9 994.1M1402.1 -614.9L2000.9 960.3M1686.1 -648.7L2284.9 926.6M1970.1 -682.4L2568.9 892.8M2254.1 -716.2L2852.9 859.1M2538.1 -750L3136.9 825.3M2822.1 -783.7L3420.9 791.6M3106.1 -817.5L3704.9 757.8M3390.1 -851.2L3988.9 724.1M3674.1 -885L4272.9 690.3M3958.1 -918.7L4556.9 656.5M4242.1 -952.5L4840.9 622.8M4526.1 -986.3L5124.9 589M4810.1 -1020L5408.9 555.3M5094.1 -1053.8L5692.9 521.5M5378.1 -1087.5L5976.9 487.8M5662.1 -1121.3L6260.9 454M-2778.8 -1169.3L2855.3 -1839M-2718.4 -1010.5L2915.7 -1680.2M-2658.1 -851.7L2976.1 -1521.4M-2597.7 -692.9L3036.4 -1362.5M-2537.3 -534.1L3096.8 -1203.7M-2477 -375.2L3157.2 -1044.9M-2416.6 -216.4L3217.5 -886.1M-2356.2 -57.6L3277.9 -727.3M-2295.9 101.2L3338.3 -568.5M-2235.5 260L3398.6 -409.7M-2175.1 418.8L3459 -250.9M-2114.8 577.6L3519.4 -92.1M-2054.4 736.4L3579.7 66.8M-1994 895.2L3640.1 225.6M-1933.7 1054.1L3700.5 384.4M-1873.3 1212.9L3760.8 543.2M-1812.9 1371.7L3821.2 702M-1752.6 1530.5L3881.6 860.8M-1692.2 1689.3L3941.9 1019.6M-1631.8 1848.1L4002.3 1178.4M-1571.5 2006.9L4062.7 1337.2M-1511.1 2165.7L4123 1496.1M-1450.7 2324.5L4183.4 1654.9M-1390.4 2483.3L4243.7 1813.7"/></g>
+            </g></g>
+          </svg>
+          <svg class="home-stairs-floor home-stairs-floor--mobile" viewBox="0 0 390 196" preserveAspectRatio="none" focusable="false">
+            <defs>
+              <linearGradient id="floorNM" gradientUnits="userSpaceOnUse" x1="187.7" y1="96.6" x2="250.6" y2="228.4"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="0.16" stop-color="#fff" stop-opacity="1"/><stop offset="0.72" stop-color="#fff" stop-opacity="0.9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+              <linearGradient id="floorXM" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="390" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="0.1" stop-color="#fff" stop-opacity="1"/><stop offset="0.9" stop-color="#fff" stop-opacity="1"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+              <linearGradient id="floorYM" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="196"><stop offset="0.8" stop-color="#fff" stop-opacity="1"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+              <radialGradient id="floorGM" gradientUnits="userSpaceOnUse" cx="196" cy="118" r="220" gradientTransform="rotate(-25.5 196 118) translate(196 118) scale(1 0.200) translate(-196 -118)"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+              <mask id="floorMNM" maskUnits="userSpaceOnUse" x="-400" y="-400" width="1190" height="996"><rect x="-400" y="-400" width="1190" height="996" fill="url(#floorNM)"/></mask>
+              <mask id="floorMXM" maskUnits="userSpaceOnUse" x="-400" y="-400" width="1190" height="996"><rect x="-400" y="-400" width="1190" height="996" fill="url(#floorXM)"/></mask>
+              <mask id="floorMYM" maskUnits="userSpaceOnUse" x="-400" y="-400" width="1190" height="996"><rect x="-400" y="-400" width="1190" height="996" fill="url(#floorYM)"/></mask>
+              <mask id="floorMGM" maskUnits="userSpaceOnUse" x="-400" y="-400" width="1190" height="996"><rect x="-400" y="-400" width="1190" height="996" fill="url(#floorGM)"/></mask>
+            </defs>
+            <g mask="url(#floorMYM)"><g mask="url(#floorMXM)">
+              <g mask="url(#floorMNM)"><path class="floor-fine" d="M-1959.2 -11.9L-1659.8 775.7M-1861.7 -23.5L-1562.3 764.1M-1764.2 -35.1L-1464.8 752.5M-1666.7 -46.7L-1367.3 740.9M-1569.2 -58.3L-1269.8 729.4M-1471.7 -69.9L-1172.3 717.8M-1374.2 -81.5L-1074.8 706.2M-1276.7 -93.1L-977.3 694.6M-1179.2 -104.6L-879.8 683M-1081.7 -116.2L-782.3 671.4M-984.2 -127.8L-684.8 659.8M-886.7 -139.4L-587.3 648.2M-789.2 -151L-489.8 636.6M-691.7 -162.6L-392.3 625.1M-594.2 -174.2L-294.8 613.5M-496.7 -185.8L-197.3 601.9M-399.2 -197.4L-99.8 590.3M-301.7 -208.9L-2.3 578.7M-204.2 -220.5L95.2 567.1M-106.7 -232.1L192.7 555.5M-9.2 -243.7L290.2 543.9M88.3 -255.3L387.7 532.3M185.8 -266.9L485.2 520.8M283.3 -278.5L582.7 509.2M380.8 -290.1L680.2 497.6M478.3 -301.7L777.7 486M575.8 -313.2L875.2 474.4M673.3 -324.8L972.7 462.8M770.8 -336.4L1070.2 451.2M868.3 -348L1167.7 439.6M965.8 -359.6L1265.2 428M1063.3 -371.2L1362.7 416.5M1160.8 -382.8L1460.2 404.9M1258.3 -394.4L1557.7 393.3M1355.8 -406L1655.2 381.7M1453.3 -417.5L1752.7 370.1M1550.8 -429.1L1850.2 358.5M1648.3 -440.7L1947.7 346.9M1745.8 -452.3L2045.2 335.3M1843.3 -463.9L2142.7 323.7M-1446.1 -300.8L1370.9 -635.7M-1425.4 -246.3L1391.7 -581.2M-1404.7 -191.8L1412.4 -526.6M-1384 -137.3L1433.1 -472.1M-1363.2 -82.8L1453.8 -417.6M-1342.5 -28.2L1474.6 -363.1M-1321.8 26.3L1495.3 -308.6M-1301.1 80.8L1516 -254M-1280.3 135.3L1536.7 -199.5M-1259.6 189.8L1557.5 -145M-1238.9 244.4L1578.2 -90.5M-1218.2 298.9L1598.9 -35.9M-1197.4 353.4L1619.6 18.6M-1176.7 407.9L1640.4 73.1M-1156 462.5L1661.1 127.6M-1135.3 517L1681.8 182.1M-1114.5 571.5L1702.5 236.7M-1093.8 626L1723.3 291.2M-1073.1 680.5L1744 345.7M-1052.4 735.1L1764.7 400.2M-1031.6 789.6L1785.4 454.7M-1010.9 844.1L1806.2 509.3M-990.2 898.6L1826.9 563.8M-969.5 953.1L1847.6 618.3"/><path class="floor-primary" d="M-2007.9 -6.1L-1708.5 781.5M-1910.4 -17.7L-1611 769.9M-1812.9 -29.3L-1513.5 758.3M-1715.4 -40.9L-1416 746.7M-1617.9 -52.5L-1318.5 735.1M-1520.4 -64.1L-1221 723.6M-1422.9 -75.7L-1123.5 712M-1325.4 -87.3L-1026 700.4M-1227.9 -98.8L-928.5 688.8M-1130.4 -110.4L-831 677.2M-1032.9 -122L-733.5 665.6M-935.4 -133.6L-636 654M-837.9 -145.2L-538.5 642.4M-740.4 -156.8L-441 630.8M-642.9 -168.4L-343.5 619.3M-545.4 -180L-246 607.7M-447.9 -191.6L-148.5 596.1M-350.4 -203.1L-51 584.5M-252.9 -214.7L46.5 572.9M-155.4 -226.3L144 561.3M-57.9 -237.9L241.5 549.7M39.6 -249.5L339 538.1M137.1 -261.1L436.5 526.5M234.6 -272.7L534 515M332.1 -284.3L631.5 503.4M429.6 -295.9L729 491.8M527.1 -307.4L826.5 480.2M624.6 -319L924 468.6M722.1 -330.6L1021.5 457M819.6 -342.2L1119 445.4M917.1 -353.8L1216.5 433.8M1014.6 -365.4L1314 422.2M1112.1 -377L1411.5 410.7M1209.6 -388.6L1509 399.1M1307.1 -400.2L1606.5 387.5M1404.6 -411.7L1704 375.9M1502.1 -423.3L1801.5 364.3M1599.6 -434.9L1899 352.7M1697.1 -446.5L1996.5 341.1M1794.6 -458.1L2094 329.5M1892.1 -469.7L2191.5 317.9M-1456.5 -328.1L1360.6 -662.9M-1435.8 -273.6L1381.3 -608.4M-1415 -219.1L1402 -553.9M-1394.3 -164.5L1422.8 -499.4M-1373.6 -110L1443.5 -444.9M-1352.9 -55.5L1464.2 -390.3M-1332.1 -1L1484.9 -335.8M-1311.4 53.5L1505.6 -281.3M-1290.7 108.1L1526.4 -226.8M-1270 162.6L1547.1 -172.3M-1249.2 217.1L1567.8 -117.7M-1228.5 271.6L1588.5 -63.2M-1207.8 326.1L1609.3 -8.7M-1187.1 380.7L1630 45.8M-1166.3 435.2L1650.7 100.4M-1145.6 489.7L1671.4 154.9M-1124.9 544.2L1692.2 209.4M-1104.2 598.8L1712.9 263.9M-1083.4 653.3L1733.6 318.4M-1062.7 707.8L1754.3 373M-1042 762.3L1775.1 427.5M-1021.3 816.8L1795.8 482M-1000.6 871.4L1816.5 536.5M-979.8 925.9L1837.2 591M-959.1 980.4L1858 645.6"/></g>
+              <g mask="url(#floorMGM)"><path class="floor-glow" d="M-2007.9 -6.1L-1708.5 781.5M-1910.4 -17.7L-1611 769.9M-1812.9 -29.3L-1513.5 758.3M-1715.4 -40.9L-1416 746.7M-1617.9 -52.5L-1318.5 735.1M-1520.4 -64.1L-1221 723.6M-1422.9 -75.7L-1123.5 712M-1325.4 -87.3L-1026 700.4M-1227.9 -98.8L-928.5 688.8M-1130.4 -110.4L-831 677.2M-1032.9 -122L-733.5 665.6M-935.4 -133.6L-636 654M-837.9 -145.2L-538.5 642.4M-740.4 -156.8L-441 630.8M-642.9 -168.4L-343.5 619.3M-545.4 -180L-246 607.7M-447.9 -191.6L-148.5 596.1M-350.4 -203.1L-51 584.5M-252.9 -214.7L46.5 572.9M-155.4 -226.3L144 561.3M-57.9 -237.9L241.5 549.7M39.6 -249.5L339 538.1M137.1 -261.1L436.5 526.5M234.6 -272.7L534 515M332.1 -284.3L631.5 503.4M429.6 -295.9L729 491.8M527.1 -307.4L826.5 480.2M624.6 -319L924 468.6M722.1 -330.6L1021.5 457M819.6 -342.2L1119 445.4M917.1 -353.8L1216.5 433.8M1014.6 -365.4L1314 422.2M1112.1 -377L1411.5 410.7M1209.6 -388.6L1509 399.1M1307.1 -400.2L1606.5 387.5M1404.6 -411.7L1704 375.9M1502.1 -423.3L1801.5 364.3M1599.6 -434.9L1899 352.7M1697.1 -446.5L1996.5 341.1M1794.6 -458.1L2094 329.5M1892.1 -469.7L2191.5 317.9M-1456.5 -328.1L1360.6 -662.9M-1435.8 -273.6L1381.3 -608.4M-1415 -219.1L1402 -553.9M-1394.3 -164.5L1422.8 -499.4M-1373.6 -110L1443.5 -444.9M-1352.9 -55.5L1464.2 -390.3M-1332.1 -1L1484.9 -335.8M-1311.4 53.5L1505.6 -281.3M-1290.7 108.1L1526.4 -226.8M-1270 162.6L1547.1 -172.3M-1249.2 217.1L1567.8 -117.7M-1228.5 271.6L1588.5 -63.2M-1207.8 326.1L1609.3 -8.7M-1187.1 380.7L1630 45.8M-1166.3 435.2L1650.7 100.4M-1145.6 489.7L1671.4 154.9M-1124.9 544.2L1692.2 209.4M-1104.2 598.8L1712.9 263.9M-1083.4 653.3L1733.6 318.4M-1062.7 707.8L1754.3 373M-1042 762.3L1775.1 427.5M-1021.3 816.8L1795.8 482M-1000.6 871.4L1816.5 536.5M-979.8 925.9L1837.2 591M-959.1 980.4L1858 645.6M-1959.2 -11.9L-1659.8 775.7M-1861.7 -23.5L-1562.3 764.1M-1764.2 -35.1L-1464.8 752.5M-1666.7 -46.7L-1367.3 740.9M-1569.2 -58.3L-1269.8 729.4M-1471.7 -69.9L-1172.3 717.8M-1374.2 -81.5L-1074.8 706.2M-1276.7 -93.1L-977.3 694.6M-1179.2 -104.6L-879.8 683M-1081.7 -116.2L-782.3 671.4M-984.2 -127.8L-684.8 659.8M-886.7 -139.4L-587.3 648.2M-789.2 -151L-489.8 636.6M-691.7 -162.6L-392.3 625.1M-594.2 -174.2L-294.8 613.5M-496.7 -185.8L-197.3 601.9M-399.2 -197.4L-99.8 590.3M-301.7 -208.9L-2.3 578.7M-204.2 -220.5L95.2 567.1M-106.7 -232.1L192.7 555.5M-9.2 -243.7L290.2 543.9M88.3 -255.3L387.7 532.3M185.8 -266.9L485.2 520.8M283.3 -278.5L582.7 509.2M380.8 -290.1L680.2 497.6M478.3 -301.7L777.7 486M575.8 -313.2L875.2 474.4M673.3 -324.8L972.7 462.8M770.8 -336.4L1070.2 451.2M868.3 -348L1167.7 439.6M965.8 -359.6L1265.2 428M1063.3 -371.2L1362.7 416.5M1160.8 -382.8L1460.2 404.9M1258.3 -394.4L1557.7 393.3M1355.8 -406L1655.2 381.7M1453.3 -417.5L1752.7 370.1M1550.8 -429.1L1850.2 358.5M1648.3 -440.7L1947.7 346.9M1745.8 -452.3L2045.2 335.3M1843.3 -463.9L2142.7 323.7M-1446.1 -300.8L1370.9 -635.7M-1425.4 -246.3L1391.7 -581.2M-1404.7 -191.8L1412.4 -526.6M-1384 -137.3L1433.1 -472.1M-1363.2 -82.8L1453.8 -417.6M-1342.5 -28.2L1474.6 -363.1M-1321.8 26.3L1495.3 -308.6M-1301.1 80.8L1516 -254M-1280.3 135.3L1536.7 -199.5M-1259.6 189.8L1557.5 -145M-1238.9 244.4L1578.2 -90.5M-1218.2 298.9L1598.9 -35.9M-1197.4 353.4L1619.6 18.6M-1176.7 407.9L1640.4 73.1M-1156 462.5L1661.1 127.6M-1135.3 517L1681.8 182.1M-1114.5 571.5L1702.5 236.7M-1093.8 626L1723.3 291.2M-1073.1 680.5L1744 345.7M-1052.4 735.1L1764.7 400.2M-1031.6 789.6L1785.4 454.7M-1010.9 844.1L1806.2 509.3M-990.2 898.6L1826.9 563.8M-969.5 953.1L1847.6 618.3"/></g>
+            </g></g>
+          </svg>
+          <svg class="home-stairs-svg home-stairs-svg--desktop" viewBox="0 0 2880 840" focusable="false"><image class="art-light" data-href="assets/process/stairs-desktop-light.webp" width="2880" height="840"/><image class="art-dark" data-href="assets/process/stairs-desktop-dark.webp" width="2880" height="840"/></svg>
+          <svg class="home-stairs-svg home-stairs-svg--mobile" viewBox="0 0 1170 588" focusable="false"><image class="art-light" data-href="assets/process/stairs-mobile-light.webp" width="1170" height="588"/><image class="art-dark" data-href="assets/process/stairs-mobile-dark.webp" width="1170" height="588"/></svg>
+          <span class="home-stairs-chip" style="--x: 22.9%; --y: 79.6%; --mx: 11.5%; --my: 82%; --at: 300ms;">1</span>
+          <span class="home-stairs-chip" style="--x: 39.3%; --y: 59.6%; --mx: 36%; --my: 58.9%; --at: 530ms;">2</span>
+          <span class="home-stairs-chip" style="--x: 59%; --y: 38.3%; --mx: 61%; --my: 35.8%; --at: 760ms;">3</span>
+          <span class="home-stairs-chip home-stairs-chip--final" style="--x: 76.9%; --y: 17.8%; --mx: 84%; --my: 13.1%; --at: 990ms;">4</span>
         </div>
-        <div class="process-step reveal" style="transition-delay: 0.08s;">
-          <span class="process-num">02</span>
-          <h3>Study</h3>
-          <p>Work through video lessons and practice exams at your own pace, on any device.</p>
+        <ol class="home-stairs-steps">
+          <li class="home-stairs-step" style="--lift: 13.9; --at: 300ms;">
+            <span class="home-stairs-index" aria-hidden="true">1</span>
+            <h3>Enroll</h3>
+            <p>Create an account and pick the course that matches the license you need.</p>
+          </li>
+          <li class="home-stairs-step" style="--lift: 21.44; --at: 530ms;">
+            <span class="home-stairs-index" aria-hidden="true">2</span>
+            <h3>Study</h3>
+            <p>Work through lessons, quizzes, and practice exams at your own pace, on any device.</p>
+          </li>
+          <li class="home-stairs-step" style="--lift: 29.49; --at: 760ms;">
+            <span class="home-stairs-index" aria-hidden="true">3</span>
+            <h3>Take the State Exam</h3>
+            <p>Schedule your exam through your state's testing provider once you're ready.</p>
+          </li>
+          <li class="home-stairs-step home-stairs-step--final" style="--lift: 37.25; --at: 990ms;">
+            <span class="home-stairs-index" aria-hidden="true">4</span>
+            <h3>Get Licensed</h3>
+            <p>Pass your exam, submit your application, and start selling as a licensed agent.</p>
+          </li>
+        </ol>
+      </div>
+      <script>window.satinArt && window.satinArt({ query: "(max-width: 599px)", desktop: ".home-stairs-svg--desktop", mobile: ".home-stairs-svg--mobile", lazy: document.querySelector(".home-stairs") });</script>
+    </div>
+  </section>
+
+  <section class="home-cta">
+    <div class="home-grid" aria-hidden="true"><span></span><i></i></div>
+    <div class="container">
+      <div class="home-cta-panel reveal">
+        <div class="home-cta-art" aria-hidden="true">
+          <svg class="home-cta-svg" viewBox="0 0 1440 800" preserveAspectRatio="xMidYMid slice" focusable="false"><image class="art-light" data-href="assets/cta/cta-together-light.webp" width="1440" height="800"/><image class="art-dark" data-href="assets/cta/cta-together-dark.webp" width="1440" height="800"/></svg>
         </div>
-        <div class="process-step reveal" style="transition-delay: 0.16s;">
-          <span class="process-num">03</span>
-          <h3>Take the State Exam</h3>
-          <p>Schedule your exam through your state's testing provider once you're ready.</p>
-        </div>
-        <div class="process-step reveal" style="transition-delay: 0.24s;">
-          <span class="process-num">04</span>
-          <h3>Get Licensed</h3>
-          <p>Pass your exam, submit your application, and start selling as a licensed agent.</p>
+        <div class="home-cta-copy">
+          <h2>Ready to get licensed?</h2>
+          <p>Create your free account and start your first lesson today.</p>
+          <div class="home-cta-actions">
+            <a href="signup.html" class="btn btn-primary btn-lg">Sign Up</a>
+            <a href="courses.html" class="home-cta-link">View Courses &rarr;</a>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
-
-  <section class="section testimonial-section">
-    <div class="container">
-      <blockquote class="testimonial reveal">
-        <p>&ldquo;I passed my Life &amp; Health exam on the first try. The practice exams matched the real thing almost question for question.&rdquo;</p>
-        <footer>
-          <span class="testimonial-name">Marcus Diallo</span>
-          <span class="testimonial-role">Licensed Life &amp; Health Agent</span>
-        </footer>
-      </blockquote>
-    </div>
-  </section>
-
-  <section class="cta-band">
-    <div class="container cta-inner reveal">
-      <h2>Ready to get licensed?</h2>
-      <p>Create your free account and start your first lesson today.</p>
-      <a href="signup.html" class="btn btn-primary btn-lg">Enroll Now</a>
+      <script>window.satinArt && window.satinArt({ query: "not all", desktop: ".home-cta-svg", mobile: ".home-cta-svg", lazy: document.querySelector(".home-cta-panel") });</script>
     </div>
   </section>
 
@@ -254,26 +447,25 @@
 <footer class="site-footer">
   <div class="container footer-grid">
     <div class="footer-brand">
-      <a href="index.html" class="logo">Linh<span>Hua</span></a>
-      <p>State-approved online courses to help you get licensed in life and health insurance.</p>
+      <a href="index.html" class="logo"><img class="logo-mark" src="brand/logo-mark.svg" alt="" width="30" height="30"><span class="logo-word">Linh Hua</span></a>
+      <p>Online courses to help you get licensed in life and health insurance.</p>
     </div>
     <div class="footer-col">
-      <h4>Company</h4>
+      <h2>Company</h2>
       <a href="about.html">About</a>
       <a href="courses.html">Courses</a>
       <a href="contact.html">Contact</a>
     </div>
     <div class="footer-col">
-      <h4>Courses</h4>
+      <h2>Courses</h2>
       <a href="courses.html">Life Insurance License</a>
       <a href="courses.html">Health Insurance License</a>
       <a href="courses.html">Life &amp; Health Combo</a>
     </div>
     <div class="footer-col">
-      <h4>Account</h4>
+      <h2>Account</h2>
       <a href="login.html">Log In</a>
       <a href="signup.html">Sign Up</a>
-      <a href="mailto:hello@linhhua.com">hello@linhhua.com</a>
     </div>
   </div>
   <div class="footer-bottom">
@@ -287,5 +479,6 @@
 <script src="supabase-config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="auth.js"></script>
+<script src="home.js?v=20261011a" defer></script>
 </body>
 </html>

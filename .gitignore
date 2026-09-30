@@ -3,3 +3,13 @@ Thumbs.db
 .vscode/
 *.log
 needs_missing_choices.md
+
+# Private course-source documents (never publish)
+/Michael *.docx
+
+# Claude Code: machine-local skill symlinks and per-session lock
+/.claude/skills/
+/.claude/scheduled_tasks.lock
+
+# Claude Code: personal settings (hooks, local permissions)
+/.claude/settings.local.json

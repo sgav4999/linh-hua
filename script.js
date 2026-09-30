@@ -28,14 +28,32 @@ const navToggle = document.getElementById("navToggle");
 const navWrap = document.getElementById("navWrap");
 
 if (navToggle && navWrap) {
+  navToggle.setAttribute("aria-controls", "navWrap");
+  navToggle.setAttribute("aria-expanded", "false");
+
+  const setMenuOpen = (open) => {
+    navWrap.classList.toggle("open", open);
+    navToggle.setAttribute("aria-expanded", String(open));
+  };
+
   navToggle.addEventListener("click", () => {
-    navWrap.classList.toggle("open");
+    setMenuOpen(!navWrap.classList.contains("open"));
   });
 
   navWrap.querySelectorAll("a").forEach((link) => {
-    link.addEventListener("click", () => {
-      navWrap.classList.remove("open");
-    });
+    link.addEventListener("click", () => setMenuOpen(false));
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && navWrap.classList.contains("open")) {
+      setMenuOpen(false);
+      navToggle.focus();
+    }
+  });
+
+  // Matches the 900px compact-header breakpoint in styles.css.
+  window.matchMedia("(min-width: 900px)").addEventListener("change", (e) => {
+    if (e.matches) setMenuOpen(false);
   });
 }
 

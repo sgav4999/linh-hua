@@ -1,0 +1,1996 @@
+/* ============================================================
+   Linh Hua homepage: "Satin Sculpture"
+   Scoped entirely under body.home so it only affects index.html.
+   Life (violet) and Health (indigo) are two satin strands; they cross
+   in the hero, converge at the Life & Health Combo, climb the
+   staircase in "How it works" and travel on together in the closing
+   CTA, all over one drafting grid. The art is pre-rendered WebP.
+
+   Progressive enhancement, throughout: every animated element is
+   fully visible and complete by default (no JS, reduced motion, or
+   styles.css alone). html.motion-ok — set by a synchronous inline
+   script in <head>, only when JS runs AND the visitor has not asked
+   for reduced motion — is the single switch that unlocks a hidden
+   starting state plus its transition. Nothing ever depends on JS to
+   be readable.
+   ============================================================ */
+
+.home {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+
+  --paper: #f6f7fb;
+  --paper-2: #eef0f8;
+  --ink-panel-2: #0e1324;
+  --ink-rim: rgba(255, 255, 255, 0.06);
+  --home-shadow: 0 16px 36px rgba(28, 26, 70, 0.1), 0 2px 8px rgba(28, 26, 70, 0.05);
+  --home-shadow-ink: 0 22px 50px rgba(18, 12, 70, 0.32);
+  --home-node-bg: #eeecff;
+  --home-ink-text: rgba(255, 255, 255, 0.72);
+
+  /* The two strands */
+  --strand-life-core: var(--accent-dark);
+  --strand-health-core: #232f8f;
+  --strand-hairline-a: rgba(91, 77, 251, 0.42);
+  --strand-hairline-b: rgba(47, 69, 196, 0.38);
+
+  /* Hero: light, airy field in light mode */
+  --home-hero-field-1: #f8f8fd;
+  --home-hero-shaft: rgba(124, 111, 255, 0.16);
+  --home-hero-text: #14161f;
+  --home-hero-text-muted: #565c70;
+  --home-hero-eyebrow: rgba(20, 22, 31, 0.78);
+  --home-hero-accent-text: var(--accent-dark);
+  --home-hero-rule: rgba(20, 22, 31, 0.1);
+  --home-credentials-bg: rgba(255, 255, 255, 0.4);
+}
+
+/* Dark mode: designed separately, not inverted. Raised ink surfaces
+   are lifted indigo rather than near-black; the hero stays a deep,
+   atmospheric field with its own light. */
+:root[data-theme="dark"] .home {
+  --paper: var(--page-bg);
+  --paper-2: #111729;
+  --ink-panel-2: #171c3d;
+  --ink-rim: rgba(160, 148, 255, 0.22);
+  --home-shadow: 0 16px 36px rgba(0, 0, 0, 0.42), 0 2px 8px rgba(0, 0, 0, 0.28);
+  --home-shadow-ink: 0 22px 50px rgba(0, 0, 0, 0.5);
+  --home-node-bg: #1f2248;
+
+  --strand-life-core: #7c6fff;
+  --strand-health-core: #4b63e6;
+  --strand-hairline-a: rgba(150, 138, 255, 0.5);
+  --strand-hairline-b: rgba(123, 140, 255, 0.42);
+
+  --home-hero-field-1: #131833;
+  --home-hero-shaft: rgba(124, 111, 255, 0.24);
+  --home-hero-text: #ffffff;
+  --home-hero-text-muted: rgba(255, 255, 255, 0.72);
+  --home-hero-eyebrow: rgba(255, 255, 255, 0.82);
+  --home-hero-accent-text: var(--gold);
+  --home-hero-rule: rgba(255, 255, 255, 0.1);
+  --home-credentials-bg: rgba(7, 9, 20, 0.35);
+}
+
+.home main { overflow-x: clip; }
+
+/* ============================================================
+   Progressive-enhancement gate for every scroll reveal on this page
+   (including the site-wide .reveal fade from styles.css, which
+   otherwise stays opacity:0 forever without JS). Default: fully
+   visible. Only html.motion-ok introduces a hidden starting state,
+   and only script.js's existing IntersectionObserver clears it.
+   ============================================================ */
+.home .reveal { opacity: 1; transform: none; transition: none; }
+
+html.motion-ok .home .reveal {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 420ms var(--ease-out), transform 420ms var(--ease-out);
+}
+
+html.motion-ok .home .reveal.visible { opacity: 1; transform: none; }
+
+/* Content sits above each section's decorative layers */
+.home-courses > .container,
+.home-features > .container,
+.home-process > .container { position: relative; z-index: 1; }
+
+/* ============================================================
+   Hero
+   ============================================================ */
+/* A lit studio for the satin sculpture: the wall brightens where the key
+   light lands behind the sculpture, a faint violet bounce sits under it,
+   and the floor falls off gently. The top edge stays the header's colour. */
+.home {
+  --satin-wall: #f2f1fb;
+  --satin-floor: #e7e4f6;
+  --satin-key: rgba(255, 255, 255, 0.95);
+  --satin-bounce: rgba(104, 78, 238, 0.12);
+  --satin-cool: rgba(150, 170, 255, 0.10);
+  --satin-vignette: rgba(120, 104, 214, 0.08);
+}
+
+:root[data-theme="dark"] .home {
+  --satin-wall: #0c1022;
+  --satin-floor: #06080f;
+  --satin-key: rgba(94, 76, 236, 0.22);
+  --satin-bounce: rgba(92, 84, 240, 0.18);
+  --satin-cool: rgba(150, 140, 255, 0.07);
+  --satin-vignette: rgba(2, 3, 10, 0.55);
+}
+
+.home-hero {
+  position: relative;
+  overflow: hidden;
+  color: var(--home-hero-text);
+  background:
+    radial-gradient(24% 30% at 71% 58%, var(--satin-bounce), transparent 72%),
+    radial-gradient(52% 70% at 76% 34%, var(--satin-key), transparent 70%),
+    radial-gradient(40% 30% at 70% 102%, var(--satin-bounce), transparent 72%),
+    radial-gradient(30% 40% at 100% 0%, var(--satin-cool), transparent 70%),
+    radial-gradient(120% 90% at 60% 40%, transparent 55%, var(--satin-vignette) 100%),
+    linear-gradient(180deg, var(--home-hero-field-1) 0%, var(--satin-wall) 60%, var(--satin-floor) 100%);
+}
+
+/* Fine grain so the large soft gradients never band. */
+.home-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .2 0 0 0 0 .16 0 0 0 0 .45 0 0 0 .05 0'/></filter><rect width='180' height='180' filter='url(%23n)'/></svg>");
+}
+
+/* One soft key light, upper left, in both themes */
+.home-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(900px 620px at 6% -8%, var(--home-hero-shaft), transparent 62%);
+}
+
+.home-hero-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 120px 24px 132px;
+  display: flex;
+  align-items: center;
+  min-height: 640px;
+}
+
+.home-hero-copy {
+  position: relative;
+  z-index: 2;
+  flex: 0 1 560px;
+  max-width: 560px;
+}
+
+.home-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--home-hero-eyebrow);
+  margin-bottom: 22px;
+}
+
+.home-eyebrow-rule {
+  display: inline-block;
+  width: 26px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--gold);
+  margin-right: 10px;
+}
+
+.home-hero-copy h1 {
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 1.02;
+  font-size: clamp(2.6rem, 5vw, 4.3rem);
+  color: var(--home-hero-text);
+  margin-bottom: 22px;
+  text-wrap: balance;
+}
+
+.home-hero-copy h1 .accent-text { color: var(--home-hero-accent-text); }
+
+.home-hero-sub {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--home-hero-text-muted);
+  max-width: 540px;
+  margin-bottom: 36px;
+  text-wrap: pretty;
+}
+
+.home-hero .hero-actions { justify-content: flex-start; }
+
+:root[data-theme="dark"] .home-hero .btn-coming-soon {
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.72);
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+
+/* The satin sculpture: pre-rendered layers (shadow, Health, Life) that
+   stack back into one image. It sits in the right of the hero and bleeds
+   off the viewport edge; soft fades on its left and bottom edges keep it
+   clear of the copy and the credentials strip. */
+.home-hero-visual {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.home-satin { display: block; overflow: visible; }
+
+.home-satin--desktop {
+  position: absolute;
+  right: -7vw;
+  top: calc(50% - 12px);
+  width: min(1300px, 80vw);
+  height: auto;
+  /* The art carries 380 units of headroom above its composed 2200x1420
+     frame, so Health keeps running up behind the header at every width;
+     the shift keeps the composed frame centred where it was designed. */
+  aspect-ratio: 2200 / 1800;
+  transform: translateY(-60.556%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 26%), linear-gradient(180deg, #000 81%, transparent 98.4%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(90deg, transparent 0%, #000 26%), linear-gradient(180deg, #000 81%, transparent 98.4%);
+  mask-composite: intersect;
+}
+
+.home-satin--mobile { display: none; }
+
+/* Without JS the image hrefs are never filled in, so the static boxes show
+   the same layers as stacked backgrounds (top layer first). A theme needs
+   JS, so this is always the light art. Hidden backgrounds are not fetched. */
+.home-satin.home-satin--static { display: none; }
+html:not(.js) svg.home-satin { display: none; }
+html:not(.js) .home-satin.home-satin--static.home-satin--desktop {
+  display: block;
+  background:
+    url("assets/hero/satin-desktop-life-a-light.webp"),
+    url("assets/hero/satin-desktop-life-b-light.webp"),
+    url("assets/hero/satin-desktop-health-a-light.webp"),
+    url("assets/hero/satin-desktop-health-b-light.webp"),
+    url("assets/hero/satin-desktop-shadow-light.webp");
+  background-size: 100% 100%;
+}
+
+/* Which theme's art shows is set on each SVG (data-art) by the loader in
+   index.html rather than by the page theme, so on a theme change the
+   current art stays up until the new layers have loaded. "both" is the
+   short cross-fade after a slow load: the dark set, on top, fades in or out. */
+.home-satin .art-dark { display: none; }
+.home-satin[data-art="dark"] .art-light { display: none; }
+.home-satin[data-art="dark"] .art-dark,
+.home-satin[data-art="both"] .art-dark { display: inline; }
+
+/* Entrance (motion on only; the hidden start exists from the first paint
+   and the layers are simply complete without JS or with reduced motion).
+   Life draws itself in along its own length and curls through the loop;
+   Health follows and falls through it; both settle slightly forward onto
+   their shadow, which arrives last. Runs once per load: a theme change
+   only swaps images, which never restarts it.
+   Each strand is cut in two along its length so a reveal can never uncover
+   the part of its own ribbon that loops back past it; the two pieces play
+   consecutive slices of one ease-in-out curve (--rs delay, --rd duration,
+   --re easing, set per piece in the markup), so the head moves as one. */
+html.motion-ok .satin-reveal {
+  stroke-dasharray: 1 2;
+  animation: satin-draw var(--rd, 1500ms) var(--re, var(--ease-in-out)) var(--rs, 0ms) both;
+}
+
+html.motion-ok .satin-strand { animation: satin-settle 1800ms var(--ease-out) both; }
+html.motion-ok .satin-strand--health { animation-delay: 140ms; }
+html.motion-ok .satin-shadow { animation: satin-shadow-in 900ms var(--ease-out) 900ms both; }
+
+@keyframes satin-draw {
+  from { stroke-dashoffset: 1.01; }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes satin-settle {
+  from { transform: translate(-14px, 10px); }
+  to { transform: none; }
+}
+
+@keyframes satin-shadow-in {
+  from { opacity: 0; transform: translate(18px, 14px); }
+  to { opacity: 1; transform: none; }
+}
+
+.home-credentials {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--home-hero-rule);
+  padding: 24px 0;
+  background: var(--home-credentials-bg);
+}
+
+.home-credentials-inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 32px;
+  justify-content: center;
+}
+
+.home-credential {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--home-hero-text-muted);
+}
+
+.home-credential svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: var(--gold);
+}
+
+/* ============================================================
+   Section heads (left-aligned)
+   ============================================================ */
+.home-section-head {
+  max-width: 620px;
+  margin: 0 0 44px;
+}
+
+.home-section-head h2 {
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  font-size: clamp(1.9rem, 3.2vw, 2.5rem);
+  margin-bottom: 12px;
+  text-wrap: balance;
+}
+
+.home-section-head .section-sub { max-width: 56ch; text-wrap: pretty; }
+
+/* Muted text on the tinted paper sections: a slightly deeper grey so
+   it clears 5:1 (light theme only; dark is unaffected) */
+:root:not([data-theme="dark"]) .home-section-head .section-sub { color: #5a6072; }
+
+/* ============================================================
+   Courses: the convergence. Life and Health are two equal courses,
+   each keyed to its strand. Their satin strands leave from behind the
+   two cards, meet between them and twist down as one two-sided band
+   into the Combo, the course where both lines come together. The
+   section continues the hero's studio: its floor at the top, a light
+   pool behind the join, grain, and a fall-off into the next section.
+   ============================================================ */
+.home-courses {
+  --paths-wall: #f4f3fb;
+  --paths-pool: rgba(255, 255, 255, 0.95);
+  --paths-glow: rgba(104, 78, 238, 0.09);
+  --paths-life: #5b3fe8;
+  --paths-life-soft: #efebff;
+  --paths-health: #2141d0;
+  --paths-health-soft: #e7ebff;
+  --paths-shadow-o: 0.85;
+  position: relative;
+  background:
+    radial-gradient(22% 30% at 50% 50%, var(--paths-glow), transparent 72%),
+    radial-gradient(36% 44% at 50% 46%, var(--paths-pool), transparent 70%),
+    linear-gradient(180deg, var(--satin-floor) 0%, var(--paths-wall) 30%, var(--paths-wall) 62%, var(--paper-2) 100%);
+}
+
+:root[data-theme="dark"] .home-courses {
+  --paths-wall: #0b0f20;
+  --paths-pool: rgba(86, 76, 214, 0.15);
+  --paths-glow: rgba(124, 104, 255, 0.10);
+  --paths-life: #b7a8ff;
+  --paths-life-soft: rgba(124, 93, 255, 0.16);
+  --paths-health: #a6b8ff;
+  --paths-health-soft: rgba(58, 92, 255, 0.18);
+  --paths-shadow-o: 0.62;
+}
+
+.home-courses::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.45;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .2 0 0 0 0 .16 0 0 0 0 .45 0 0 0 .05 0'/></filter><rect width='180' height='180' filter='url(%23n)'/></svg>");
+}
+
+/* Two courses on the top row with the stage between them; the Combo spans
+   the row below, where the band arrives. */
+.home-paths {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1.04fr 1fr;
+  grid-template-areas:
+    "life . health"
+    "combo combo combo";
+  gap: 28px;
+}
+
+.home-paths > .course-card { position: relative; z-index: 1; }
+.home-course-card--life { grid-area: life; }
+.home-course-card--health { grid-area: health; }
+.home-paths-combo { grid-area: combo; }
+
+.home-course-card { background: var(--surface); box-shadow: var(--home-shadow); }
+.home-course-card .course-price { font-variant-numeric: tabular-nums; }
+
+/* Course names stay on one line at every width, so neither course drops a
+   row against the other. */
+.home-course-card--life h3,
+.home-course-card--health h3 { font-size: clamp(1.1rem, 0.9rem + 0.55vw, 1.3rem); }
+
+/* At 600 to 619px the two-column cards are at their narrowest and "Health
+   Insurance License" would wrap by a fraction of a pixel, dropping its
+   price and features below Life's; a hair smaller keeps the rows level. */
+@media (min-width: 600px) and (max-width: 619px) {
+  .home-course-card--life h3,
+  .home-course-card--health h3 { font-size: 1.07rem; }
+}
+
+/* Side by side, both descriptions hold three lines, so the prices and
+   feature lists of the two courses start level for comparison. */
+.home-course-card--life .course-desc,
+.home-course-card--health .course-desc { min-height: 4.8em; min-height: 3lh; }
+
+/* Each course carries its strand's colour. */
+.home-course-card--life .course-tag { color: var(--paths-life); background: var(--paths-life-soft); }
+.home-course-card--health .course-tag { color: var(--paths-health); background: var(--paths-health-soft); }
+.home-course-card--health .course-features li::before {
+  background-color: var(--paths-health-soft);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.3l2.6 2.6L12 5.3' fill='none' stroke='%232141d0' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+:root[data-theme="dark"] .home-course-card--health .course-features li::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.3l2.6 2.6L12 5.3' fill='none' stroke='%23a6b8ff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+/* The Combo: one wide ink panel, lit from the top centre where the band
+   comes in, with its offer read left to right. */
+.home-course-card--featured {
+  position: relative;
+  overflow: hidden;
+  border-color: transparent;
+  color: #fff;
+  background:
+    radial-gradient(340px 200px at 52% 0%, rgba(124, 93, 255, 0.34), transparent 70%),
+    radial-gradient(640px 280px at 52% 0%, rgba(58, 92, 255, 0.16), transparent 72%),
+    var(--ink-panel-2);
+  box-shadow: var(--home-shadow-ink), inset 0 1px 0 var(--ink-rim);
+}
+
+:root[data-theme="dark"] .home-course-card--featured { border-color: rgba(160, 148, 255, 0.2); }
+
+.home-paths-combo {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr 1.1fr;
+  column-gap: 44px;
+  align-items: start;
+  padding: 44px 48px;
+}
+
+.home-combo-price {
+  padding: 4px 0 4px 44px;
+  border-left: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.home-combo-detail {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+  padding-left: 44px;
+  border-left: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.home-combo-detail .course-features { margin: 0; flex-grow: 0; }
+
+.home-course-card--featured .course-badge {
+  position: static;
+  display: inline-block;
+  width: auto;
+  transform: none;
+  background: var(--gold);
+  color: #14161f;
+  font-size: 0.75rem;
+  line-height: 17.4px;
+  border-radius: 6px;
+  padding: 5px 10px;
+  box-shadow: none;
+  margin-bottom: 18px;
+}
+
+.home-course-card--featured h3 { font-size: 1.5rem; letter-spacing: -0.02em; }
+.home-course-card--featured .course-desc { color: var(--home-ink-text); margin-bottom: 0; max-width: 32ch; }
+.home-course-card--featured .course-price { color: #fff; font-size: 2.4rem; letter-spacing: -0.02em; line-height: 1.1; }
+.home-course-card--featured .course-price span { color: rgba(255, 255, 255, 0.62); letter-spacing: 0; }
+.home-course-card--featured .course-savings { color: #cdc6ff; margin: 8px 0 6px; }
+.home-course-card--featured .course-meta { color: rgba(255, 255, 255, 0.58); margin-bottom: 0; }
+.home-course-card--featured .course-features li { color: rgba(255, 255, 255, 0.88); }
+
+/* The art box matches its render's CSS frame: 770 x 700 at a 1112px-wide
+   grid (the arms start 176px inside it, behind the cards), 40px above the
+   top row. It sits behind every card; only the stage and gaps show it. */
+.home-paths-art {
+  position: absolute;
+  z-index: 0;
+  left: 50%;
+  top: 0;
+  width: 69.24%;
+  aspect-ratio: 770 / 700;
+  translate: -50% -5.714%;
+  pointer-events: none;
+}
+
+.home-paths-svg,
+.home-paths-static {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+.home-paths-svg--mobile,
+.home-paths-static { display: none; }
+
+.home-paths-svg .art-dark { display: none; }
+.home-paths-svg[data-art="dark"] .art-light { display: none; }
+.home-paths-svg[data-art="dark"] .art-dark,
+.home-paths-svg[data-art="both"] .art-dark { display: inline; }
+.paths-shadow { opacity: var(--paths-shadow-o); }
+
+/* Without JS: the same layers as backgrounds (light art; theming needs JS). */
+html:not(.js) .home-paths-svg { display: none; }
+html:not(.js) .home-paths-static--desktop {
+  display: block;
+  background:
+    url("assets/courses/paths-desktop-life-light.webp"),
+    url("assets/courses/paths-desktop-health-light.webp"),
+    url("assets/courses/paths-desktop-shadow-light.webp");
+  background-size: 100% 100%;
+}
+
+/* The convergence, once, as the stage scrolls in: both strands draw from
+   their courses to the join together, then the band draws down into the
+   Combo; the shadow settles last. home.js arms the hidden start (only
+   with motion allowed), so without it the art is simply complete. */
+html.motion-ok .home-paths.is-armed .paths-reveal { stroke-dasharray: 1 2; stroke-dashoffset: 1.01; }
+html.motion-ok .home-paths.is-armed .paths-shadow { opacity: 0; }
+html.motion-ok .home-paths.is-drawn .paths-reveal { animation: paths-draw var(--rd, 800ms) var(--re, var(--ease-in-out)) var(--rs, 0ms) both; }
+html.motion-ok .home-paths.is-drawn .paths-shadow { animation: paths-shadow-in 800ms var(--ease-out) 700ms both; }
+
+/* An arm's run behind its card (--r0) counts as drawn from the start, so
+   the visible head leaves the card edge at 0ms. */
+@keyframes paths-draw {
+  from { stroke-dashoffset: var(--r0, 1.01); }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes paths-shadow-in {
+  from { opacity: 0; }
+  to { opacity: var(--paths-shadow-o); }
+}
+
+/* Narrower desktops: the Combo's offer reads on top, then its price beside
+   the details, so no column gets too narrow for its lines. */
+@media (max-width: 1199px) {
+  .home-paths-combo {
+    grid-template-columns: 1fr 1fr;
+    column-gap: 32px;
+    row-gap: 28px;
+    padding: 40px;
+  }
+
+  .home-combo-intro { grid-column: 1 / -1; }
+  .home-combo-price { padding-left: 0; border-left: 0; }
+  .home-combo-detail { padding-left: 32px; }
+}
+
+/* Tablet: the two courses side by side, the join in a band beneath them
+   (its strands rise from under both cards) and the Combo below it. */
+@media (max-width: 1023px) {
+  .home-paths {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "life health"
+      "art art"
+      "combo combo";
+    column-gap: 20px;
+    row-gap: 0;
+  }
+
+  .home-paths-art {
+    grid-area: art;
+    position: relative;
+    left: auto;
+    top: auto;
+    width: auto;
+    aspect-ratio: auto;
+    translate: none;
+    height: clamp(230px, 34vw, 300px);
+    margin: -44px -24px -40px;
+  }
+
+  .home-paths-svg--desktop { display: none; }
+  .home-paths-svg--mobile { display: block; }
+  html:not(.js) .home-paths-svg--mobile { display: none; }
+  html:not(.js) .home-paths-static--desktop { display: none; }
+  html:not(.js) .home-paths-static--mobile {
+    display: block;
+    background:
+      url("assets/courses/paths-mobile-life-light.webp"),
+      url("assets/courses/paths-mobile-health-light.webp"),
+      url("assets/courses/paths-mobile-shadow-light.webp");
+    background-size: cover;
+    background-position: center;
+  }
+
+  html.motion-ok .home-paths.is-drawn .paths-shadow { animation-delay: 500ms; }
+
+  .home-paths-combo { padding: 36px; }
+}
+
+/* Phones: the courses stacked, each still complete for comparison, the
+   join between Health and the Combo. */
+@media (max-width: 599px) {
+  .home-paths {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "life"
+      "health"
+      "art"
+      "combo";
+    row-gap: 16px;
+  }
+
+  .home-paths-art {
+    height: clamp(210px, 60vw, 250px);
+    margin: -56px -24px -52px;
+  }
+
+  .home-paths-combo {
+    grid-template-columns: 1fr;
+    row-gap: 22px;
+    padding: 32px 24px;
+  }
+
+  .home-combo-detail { padding-left: 0; border-left: 0; }
+  .home-combo-detail .btn { align-self: stretch; }
+
+  /* Stacked, the courses no longer need level rows. */
+  .home-course-card--life .course-desc,
+  .home-course-card--health .course-desc { min-height: 0; }
+  .home-course-card--featured .course-price { font-size: 2.1rem; }
+}
+
+/* ============================================================
+   Inside every course: an editorial spread in the satin material,
+   quieter than the sculptures around it. Two close studies carry the
+   two features that shape a course (the guided path of the lessons,
+   the full timed circuit of the practice exam); the other three are
+   set in type. No cards: grouping is by space and hairlines.
+   ============================================================ */
+.home-features {
+  /* Each study sits on a seamless studio backdrop: a lit wall falling off
+     into a soft floor, like the hero's studio seen close. */
+  --study-plate:
+    radial-gradient(70% 60% at 28% 18%, rgba(255, 255, 255, 0.95), transparent 70%),
+    linear-gradient(180deg, #f7f6fd 0%, #eeecf8 60%, #e3e0f3 100%);
+  --study-plate-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset, 0 24px 44px -28px rgba(40, 30, 110, 0.32);
+  --study-line: rgba(42, 31, 120, 0.12);
+  --feature-text: #5a6072;
+  position: relative;
+  background:
+    radial-gradient(38% 46% at 76% 30%, rgba(255, 255, 255, 0.8), transparent 70%),
+    var(--paper-2);
+}
+
+:root[data-theme="dark"] .home-features {
+  --study-plate:
+    radial-gradient(70% 60% at 28% 18%, rgba(98, 84, 230, 0.16), transparent 70%),
+    linear-gradient(180deg, #151a38 0%, #0f1329 60%, #0a0c1a 100%);
+  --study-plate-shadow: 0 1px 0 rgba(160, 148, 255, 0.12) inset, 0 24px 44px -28px rgba(0, 0, 0, 0.6);
+  --study-line: rgba(160, 148, 255, 0.14);
+  --feature-text: var(--muted);
+  background:
+    radial-gradient(38% 46% at 76% 30%, rgba(86, 76, 214, 0.11), transparent 70%),
+    var(--paper-2);
+}
+
+.home-features::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.4;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .2 0 0 0 0 .16 0 0 0 0 .45 0 0 0 .05 0'/></filter><rect width='180' height='180' filter='url(%23n)'/></svg>");
+}
+
+.home-features-spread {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-areas:
+    "intro intro intro intro intro path path path path path path path"
+    "ring  ring  ring  ring  ring  ring  .    list list list list list"
+    "exam  exam  exam  exam  exam  exam  .    list list list list list";
+  column-gap: 24px;
+}
+
+.home-features-intro {
+  grid-area: intro;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-right: 24px;
+  margin-bottom: 104px;
+}
+
+.home-features-intro .home-section-head { margin-bottom: 32px; }
+
+.home-study--path { grid-area: path; margin-bottom: 104px; }
+.home-study--ring { grid-area: ring; }
+.home-feature--exam { grid-area: exam; margin-top: 28px; }
+.home-feature-list { grid-area: list; align-self: start; padding-top: 8px; }
+
+/* The studies: close crops framed like plates, lit like the studio. */
+.home-study {
+  position: relative;
+  border-radius: 22px;
+  overflow: hidden;
+  background: var(--study-plate);
+  box-shadow: var(--study-plate-shadow);
+}
+
+.home-study-art { display: block; width: 100%; height: auto; }
+.home-study-art .art-dark { display: none; }
+.home-study-art[data-art="dark"] .art-light { display: none; }
+.home-study-art[data-art="dark"] .art-dark,
+.home-study-art[data-art="both"] .art-dark { display: inline; }
+
+/* Without JS: the same studies as backgrounds (light art). */
+html:not(.js) .home-study--path { background: url("assets/features/study-path-light.webp") center / 100% 100% no-repeat, var(--study-plate); }
+html:not(.js) .home-study--ring { background: url("assets/features/study-ring-light.webp") center / 100% 100% no-repeat, var(--study-plate); }
+
+.home-feature h3 {
+  font-size: 1.12rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 8px;
+  text-wrap: balance;
+}
+
+.home-feature p {
+  color: var(--feature-text);
+  font-size: 0.96rem;
+  line-height: 1.6;
+  max-width: 46ch;
+  text-wrap: pretty;
+}
+
+.home-feature--lead h3 {
+  font-size: clamp(1.45rem, 1.1rem + 0.9vw, 1.85rem);
+  letter-spacing: -0.025em;
+  margin-bottom: 12px;
+}
+
+.home-feature--lead p { font-size: 1.05rem; max-width: 40ch; }
+
+.home-feature--exam h3 { font-size: 1.3rem; letter-spacing: -0.015em; }
+
+.home-feature-list .home-feature { padding: 28px 0; }
+.home-feature-list .home-feature + .home-feature { border-top: 1px solid var(--study-line); }
+.home-feature-list .home-feature:first-child { padding-top: 0; }
+
+/* The practice exam's band is revealed by one clockwise sweep from 12
+   o'clock (both edges feathered), a timer hand, once, as it scrolls in (home.js arms the hidden
+   start with motion allowed; otherwise it is simply complete). The sweep
+   is centred on the ring's centre in the render (63.4% 68.5%). */
+@property --study-sweep {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 360deg;
+}
+
+html.motion-ok .home-study--ring.is-armed .home-study-art {
+  --study-sweep: 0deg;
+  -webkit-mask-image: conic-gradient(from -10deg at 63.4% 68.5%, transparent 0deg, #000 min(10deg, calc(var(--study-sweep) / 2)), #000 max(calc(var(--study-sweep) - 10deg), calc(var(--study-sweep) / 2)), transparent var(--study-sweep));
+  mask-image: conic-gradient(from -10deg at 63.4% 68.5%, transparent 0deg, #000 min(10deg, calc(var(--study-sweep) / 2)), #000 max(calc(var(--study-sweep) - 10deg), calc(var(--study-sweep) / 2)), transparent var(--study-sweep));
+}
+
+html.motion-ok .home-study--ring.is-drawn .home-study-art { animation: study-sweep 1200ms var(--ease-in-out) both; }
+
+@keyframes study-sweep {
+  from { --study-sweep: 0deg; }
+  to { --study-sweep: 390deg; }
+}
+
+/* Tablet: the spread reflows around the studies; each study is followed by
+   its text, and the three set-in-type features sit beside the exam. */
+@media (max-width: 1023px) {
+  .home-features-spread {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "head head"
+      "path path"
+      "lead lead"
+      "ring list"
+      "exam list";
+    column-gap: 32px;
+  }
+
+  .home-features-intro { display: contents; }
+  .home-features-intro .home-section-head { grid-area: head; margin-bottom: 36px; }
+  .home-feature--lead { grid-area: lead; margin: 24px 0 72px; }
+  .home-study--path { margin-bottom: 0; }
+}
+
+/* Phones: one column, each study straight into its text, then the list. */
+@media (max-width: 699px) {
+  .home-features-spread {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "head" "path" "lead" "ring" "exam" "list";
+  }
+
+  .home-study { border-radius: 18px; }
+  .home-feature--lead { margin: 20px 0 56px; }
+  .home-feature--exam { margin: 20px 0 40px; }
+  .home-feature-list { padding-top: 0; }
+  .home-feature-list .home-feature { padding: 22px 0; }
+  .home-feature-list .home-feature:first-child { border-top: 1px solid var(--study-line); padding-top: 22px; }
+}
+
+/* ============================================================
+   How it works: one Life ribbon folded into four ascending treads.
+   On desktop each step sits in its column right above its own tread
+   (the lift is the tread's height in the render, in container-width
+   units, so it holds at any width); the last step closes in gold. On
+   tablet and phone the staircase becomes a band with numbered treads
+   and the steps follow as a list.
+   ============================================================ */
+.home-process {
+  --stairs-floor: #ebe9f6;
+  --stairs-text: #5a6072;
+  position: relative;
+  background:
+    radial-gradient(60% 55% at 70% 78%, rgba(255, 255, 255, 0.7), transparent 72%),
+    linear-gradient(180deg, var(--paper) 0%, var(--paper) 45%, var(--stairs-floor) 100%);
+}
+
+:root[data-theme="dark"] .home-process {
+  --stairs-floor: #0a0d1b;
+  --stairs-text: var(--muted);
+  background:
+    radial-gradient(60% 55% at 70% 78%, rgba(86, 76, 214, 0.1), transparent 72%),
+    linear-gradient(180deg, var(--paper) 0%, var(--paper) 45%, var(--stairs-floor) 100%);
+}
+
+.home-stairs { position: relative; container-type: inline-size; }
+
+/* The render bleeds 164px beyond the 1112px grid on each side (scaled with
+   it), so at 1440 the ribbon enters from the screen's edge. */
+.home-stairs-art {
+  position: absolute;
+  left: -14.748%;
+  width: 129.496%;
+  bottom: 0;
+  aspect-ratio: 2880 / 840;
+  pointer-events: none;
+}
+
+.home-stairs-svg { display: block; width: 100%; height: 100%; }
+.home-stairs-svg--mobile { display: none; }
+.home-stairs-svg .art-dark { display: none; }
+.home-stairs-svg[data-art="dark"] .art-light { display: none; }
+.home-stairs-svg[data-art="dark"] .art-dark,
+.home-stairs-svg[data-art="both"] .art-dark { display: inline; }
+
+/* Without JS: the staircase as a background (light art). */
+html:not(.js) .home-stairs-art { background: url("assets/process/stairs-desktop-light.webp") center / 100% 100% no-repeat; }
+
+.home-stairs-steps {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: 24px;
+  align-items: end;
+}
+
+/* Each step stands on its tread: the lift is a share of the staircase's
+   width (container units; the px fallback is the 1112px layout). */
+.home-stairs-step {
+  max-width: 90%;
+  padding-bottom: calc(var(--lift) * 11.12px);
+  padding-bottom: calc(var(--lift) * 1cqw);
+}
+
+.home-stairs-index {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin-bottom: 14px;
+  border-radius: 50%;
+  font-size: 0.8rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent-dark);
+  background: var(--home-node-bg);
+}
+
+.home-stairs-step--final .home-stairs-index { box-shadow: 0 0 0 2px var(--gold); }
+
+.home-stairs-step h3 {
+  font-size: 1.12rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 8px;
+}
+
+.home-stairs-step p {
+  color: var(--stairs-text);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+/* The treads' numbers, shown where the steps become a list. */
+.home-stairs-chip {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  translate: -50% -50%;
+  display: none;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  font-size: 0.78rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent-dark);
+  background: var(--surface);
+  box-shadow: 0 4px 12px -4px rgba(40, 30, 110, 0.35);
+}
+
+.home-stairs-chip--final { box-shadow: 0 0 0 2px var(--gold), 0 4px 12px -4px rgba(40, 30, 110, 0.35); }
+
+/* The climb, once, as the staircase scrolls in: the ribbon fills in from
+   the first tread to the last at a steady (linear) pace, like progress,
+   and each step arrives as it reaches its tread. home.js arms the hidden
+   start with motion allowed; otherwise everything is simply there. */
+@property --stairs-wipe {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 112%;
+}
+
+html.motion-ok .home-stairs.is-armed .home-stairs-svg {
+  --stairs-wipe: 0%;
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(var(--stairs-wipe) - 10%), transparent var(--stairs-wipe));
+  mask-image: linear-gradient(90deg, #000 calc(var(--stairs-wipe) - 10%), transparent var(--stairs-wipe));
+}
+
+html.motion-ok .home-stairs.is-armed .home-stairs-step,
+html.motion-ok .home-stairs.is-armed .home-stairs-chip { opacity: 0; transform: translateY(8px); }
+
+html.motion-ok .home-stairs.is-drawn .home-stairs-svg { animation: stairs-wipe 1300ms linear both; }
+html.motion-ok .home-stairs.is-drawn .home-stairs-step,
+html.motion-ok .home-stairs.is-drawn .home-stairs-chip { animation: stairs-step 420ms var(--ease-out) var(--at) both; }
+
+@keyframes stairs-wipe {
+  from { --stairs-wipe: 0%; }
+  to { --stairs-wipe: 112%; }
+}
+
+@keyframes stairs-step {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Tablet: the staircase becomes a band across the top with its treads
+   numbered, and the steps follow two to a row. */
+@media (max-width: 1023px) {
+  .home-stairs-art {
+    position: relative;
+    left: auto;
+    width: auto;
+    margin: 0 -24px 36px;
+  }
+
+  .home-stairs-chip { display: grid; }
+
+  .home-stairs-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 32px;
+    row-gap: 32px;
+    align-items: start;
+  }
+
+  .home-stairs-step { max-width: none; padding-bottom: 0; }
+}
+
+/* Phones: the band runs edge to edge, then the steps as one numbered list,
+   each number beside its step. */
+@media (max-width: 599px) {
+  .home-stairs-art { aspect-ratio: 1170 / 588; margin-bottom: 28px; }
+  .home-stairs-svg--desktop { display: none; }
+  .home-stairs-svg--mobile { display: block; }
+  html:not(.js) .home-stairs-art { background-image: url("assets/process/stairs-mobile-light.webp"); }
+  .home-stairs-chip { left: var(--mx); top: var(--my); }
+
+  .home-stairs-steps { grid-template-columns: minmax(0, 1fr); row-gap: 24px; }
+
+  .home-stairs-step {
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr);
+    column-gap: 16px;
+  }
+
+  .home-stairs-index { grid-row: span 2; margin: 0; }
+  .home-stairs-step h3 { margin-top: 4px; }
+}
+
+/* The top edge continues "How it works" exactly: the same floor colour,
+   and the same glow (60% wide at 70%, met 0.4 of its radius from its
+   centre, as it is at that section's bottom edge), fading out below. */
+.home-cta {
+  position: relative;
+  padding: 24px 0 112px;
+  background:
+    radial-gradient(60% 300px at 70% -120px, rgba(255, 255, 255, 0.7), transparent 72%),
+    linear-gradient(180deg, #ebe9f6 0%, var(--paper) 42%);
+}
+
+:root[data-theme="dark"] .home-cta {
+  background:
+    radial-gradient(60% 300px at 70% -120px, rgba(86, 76, 214, 0.1), transparent 72%),
+    linear-gradient(180deg, #0a0d1b 0%, var(--paper) 42%);
+}
+
+/* The close bookends the hero: the same studio (lit wall in light, deep
+   navy in dark), and the two strands, having crossed, travelling on
+   together, rising off the panel's right edge. One action, one link. */
+.home-cta-panel {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  padding: 64px 56px;
+  border-radius: 28px;
+  border: 1px solid rgba(42, 31, 120, 0.08);
+  background:
+    radial-gradient(52% 90% at 74% 28%, rgba(255, 255, 255, 0.95), transparent 70%),
+    radial-gradient(40% 70% at 8% 100%, rgba(104, 78, 238, 0.07), transparent 72%),
+    linear-gradient(180deg, #f7f6fd 0%, #eeecf8 70%, #e6e3f4 100%);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset, 0 30px 60px -36px rgba(40, 30, 110, 0.4);
+}
+
+:root[data-theme="dark"] .home-cta-panel {
+  border-color: rgba(160, 148, 255, 0.16);
+  background:
+    radial-gradient(50% 85% at 72% 32%, rgba(98, 84, 230, 0.2), transparent 70%),
+    radial-gradient(40% 70% at 8% 100%, rgba(98, 84, 230, 0.08), transparent 72%),
+    linear-gradient(180deg, #131735 0%, #0d1026 70%, #090b19 100%);
+  box-shadow: 0 1px 0 rgba(160, 148, 255, 0.1) inset, 0 30px 60px -36px rgba(0, 0, 0, 0.7);
+}
+
+/* The art fills the right of the panel; its left fades under the copy. */
+.home-cta-art {
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 66%;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent 20%, #000 58%);
+  mask-image: linear-gradient(90deg, transparent 20%, #000 58%);
+}
+
+.home-cta-svg { display: block; width: 100%; height: 100%; }
+.home-cta-svg .art-dark { display: none; }
+.home-cta-svg[data-art="dark"] .art-light { display: none; }
+.home-cta-svg[data-art="dark"] .art-dark,
+.home-cta-svg[data-art="both"] .art-dark { display: inline; }
+
+/* Without JS: the same study as a background (light art). */
+html:not(.js) .home-cta-art { background: url("assets/cta/cta-together-light.webp") right center / cover no-repeat; }
+
+.home-cta-copy { position: relative; max-width: 440px; }
+
+.home-cta-copy h2 {
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.04;
+  font-size: clamp(2.1rem, 1.3rem + 2.4vw, 3.2rem);
+  margin-bottom: 16px;
+  text-wrap: balance;
+}
+
+.home-cta-copy p {
+  color: var(--home-hero-text-muted);
+  font-size: 1.08rem;
+  line-height: 1.6;
+  max-width: 34ch;
+  text-wrap: pretty;
+}
+
+:root[data-theme="dark"] .home-cta-copy p { color: var(--muted); }
+
+.home-cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 28px;
+  margin-top: 32px;
+}
+
+.home-cta-link {
+  font-weight: 600;
+  color: var(--accent-dark);
+  text-decoration: none;
+  padding: 10px 2px;
+  border-radius: 6px;
+  transition: color 150ms var(--ease-out);
+}
+
+:root[data-theme="dark"] .home-cta-link { color: #b7a8ff; }
+
+@media (hover: hover) and (pointer: fine) {
+  .home-cta-link:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 4px; }
+  :root[data-theme="dark"] .home-cta-link:hover { color: #d4caff; }
+}
+
+.home-cta-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* The strands draw in once from the copy toward the edge, left to right,
+   as the panel scrolls in (home.js arms the start, motion allowed only;
+   otherwise the art is simply there). */
+@property --cta-wipe {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 115%;
+}
+
+html.motion-ok .home-cta-panel.is-armed .home-cta-svg {
+  --cta-wipe: 0%;
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(var(--cta-wipe) - 15%), transparent var(--cta-wipe));
+  mask-image: linear-gradient(90deg, #000 calc(var(--cta-wipe) - 15%), transparent var(--cta-wipe));
+}
+
+html.motion-ok .home-cta-panel.is-drawn .home-cta-svg { animation: cta-wipe 1100ms var(--ease-out) both; }
+
+@keyframes cta-wipe {
+  from { --cta-wipe: 0%; }
+  to { --cta-wipe: 115%; }
+}
+
+/* Tablet and phones: the strands become a band across the top of the
+   panel and the copy sits beneath, still the panel's first read after it. */
+@media (max-width: 1023px) {
+  .home-cta-panel {
+    flex-direction: column;
+    align-items: stretch;
+    min-height: 0;
+    padding: 0 48px 52px;
+  }
+
+  .home-cta-art {
+    position: relative;
+    z-index: 0;
+    width: auto;
+    height: clamp(210px, 34vw, 300px);
+    margin: 0 -48px 12px;
+    -webkit-mask-image: linear-gradient(180deg, #000 88%, transparent 100%);
+    mask-image: linear-gradient(180deg, #000 88%, transparent 100%);
+  }
+
+  /* The band shows the whole rise: entering low at the left, leaving the
+     top right, so it reads as a crop of the travel, not a clipped end. */
+  .home-cta-svg { overflow: hidden; }
+
+  .home-cta-copy { max-width: 560px; }
+}
+
+@media (max-width: 599px) {
+  .home-cta-panel { padding: 0 24px 36px; border-radius: 22px; }
+  .home-cta-art { height: 190px; margin: 0 -24px 4px; }
+  .home-cta-actions { flex-direction: column; align-items: stretch; gap: 8px; }
+  .home-cta-actions .btn { justify-content: center; }
+  .home-cta-link { text-align: center; }
+}
+
+/* ============================================================
+   The studio surface: one drafting grid under the whole page, drawn on
+   the surfaces the satin casts its shadows onto (the wall behind the
+   hero, the course stage, the CTA; the floor under the staircase).
+   Three weights: major guides (a centre axis and two rails on a 568px
+   pitch that run unbroken down the page, plus each section's own
+   registration lines at its key edges), primaries on the staircase's
+   284px riser pitch, and soft quarter-step subdivisions where things are
+   measured. Each section is covered by default and the grid is cut away
+   in soft holes around every block of copy. Static; nothing animates.
+   ============================================================ */
+.home {
+  --grid-step: 284px;
+  --grid-major-step: 568px;
+  --grid-ink: rgba(74, 56, 176, 0.16);
+  --grid-fine: rgba(74, 56, 176, 0.065);
+  --grid-major: rgba(74, 56, 176, 0.24);
+  --grid-glow: rgba(104, 78, 238, 0.3);
+  --floor-major: rgba(74, 56, 176, 0.3);
+  --floor-ink: rgba(74, 56, 176, 0.16);
+}
+
+:root[data-theme="dark"] .home {
+  --grid-ink: rgba(160, 148, 255, 0.13);
+  --grid-fine: rgba(160, 148, 255, 0.055);
+  --grid-major: rgba(176, 164, 255, 0.23);
+  --grid-glow: rgba(156, 132, 255, 0.42);
+  --floor-major: rgba(176, 164, 255, 0.25);
+  --floor-ink: rgba(160, 148, 255, 0.14);
+}
+
+/* The grid sits over each section's own light and under its content. */
+.home-hero,
+.home-courses,
+.home-features,
+.home-process,
+.home-cta { isolation: isolate; }
+
+.home-grid {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.home-grid::before,
+.home-grid::after,
+.home-grid > span,
+.home-grid > i,
+.home-paths-art::before,
+.home-paths-art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  --gc: var(--grid-ink);
+  --gs: var(--grid-step);
+  background-image:
+    linear-gradient(90deg, transparent calc(50% - 0.5px), var(--gc) calc(50% - 0.5px) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+    linear-gradient(180deg, transparent calc(50% - 0.5px), var(--gc) calc(50% - 0.5px) calc(50% + 0.5px), transparent calc(50% + 0.5px));
+  background-size: var(--gs) var(--gs);
+  background-position: 50% var(--gy, 0px);
+}
+
+.home-grid::after,
+.home-paths-art::before { --gc: var(--grid-fine); --gs: calc(var(--grid-step) / 4); }
+.home-grid > span,
+.home-paths-art::after { --gc: var(--grid-glow); }
+.home-grid::after, .home-grid > span { display: none; }
+
+/* Major guides: the axis and rails (vertical, 568px pitch, centred) plus
+   the section's registration lines, set per section. */
+.home-grid > i {
+  background-image:
+    linear-gradient(90deg, transparent calc(50% - 0.5px), var(--grid-major) calc(50% - 0.5px) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+    var(--guides, linear-gradient(transparent, transparent));
+  background-size: var(--grid-major-step) 100%, 100% 100%;
+  background-position: 50% 0, 0 0;
+  background-repeat: repeat-x, no-repeat;
+}
+
+/* The course stage: primaries and quarter-steps, the most measured part
+   of the page, with the strands' light in its lines. Its box is centred
+   on the page at every width, so its lines stay on the page grid. */
+.home-paths-art::before {
+  background-image:
+    linear-gradient(90deg, transparent calc(50% - 0.5px), var(--grid-ink) calc(50% - 0.5px) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+    linear-gradient(180deg, transparent calc(50% - 0.5px), var(--grid-ink) calc(50% - 0.5px) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+    linear-gradient(90deg, transparent calc(50% - 0.5px), var(--grid-fine) calc(50% - 0.5px) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+    linear-gradient(180deg, transparent calc(50% - 0.5px), var(--grid-fine) calc(50% - 0.5px) calc(50% + 0.5px), transparent calc(50% + 0.5px));
+  background-size: var(--grid-step) var(--grid-step), var(--grid-step) var(--grid-step), calc(var(--grid-step) / 4) calc(var(--grid-step) / 4), calc(var(--grid-step) / 4) calc(var(--grid-step) / 4);
+  background-position: 50% calc(40px - var(--grid-step) / 2), 50% calc(40px - var(--grid-step) / 2), 50% calc(40px - var(--grid-step) / 8), 50% calc(40px - var(--grid-step) / 8);
+  -webkit-mask-image: radial-gradient(ellipse 58% 54% at 50% 48%, #000 45%, transparent 82%);
+  mask-image: radial-gradient(ellipse 58% 54% at 50% 48%, #000 45%, transparent 82%);
+}
+
+.home-paths-art::after {
+  --gy: calc(40px - var(--grid-step) / 2);
+  -webkit-mask-image: radial-gradient(ellipse 32% 28% at 50% 72%, #000, transparent 72%);
+  mask-image: radial-gradient(ellipse 32% 28% at 50% 72%, #000, transparent 72%);
+}
+
+/* The staircase stands on the grid: the same drafting surface seen from
+   above, in the render's own projection, so the risers land on its
+   lines and the ribbon's shadow falls across it. In front of and below
+   the ribbon; it never reaches the steps' text above. */
+.home-stairs-floor {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.home-stairs-floor path { fill: none; stroke-width: 1; vector-effect: non-scaling-stroke; }
+.home-stairs-floor .floor-primary { stroke: var(--floor-major); }
+.home-stairs-floor .floor-fine { stroke: var(--floor-ink); }
+.home-stairs-floor .floor-glow { stroke: var(--grid-glow); }
+.home-stairs-floor--mobile { display: none; }
+
+/* ---------- Desktop ---------- */
+@media (min-width: 1024px) {
+
+  .home-hero .home-grid { --gy: calc(120px - var(--grid-step) / 2); --guides: linear-gradient(180deg, transparent 688px, var(--grid-major) 688px 689px, transparent 689px); }
+  .home-hero .home-grid::before {
+    -webkit-mask-image: radial-gradient(120% 110% at 78% 40%, rgba(0,0,0,0.95), rgba(0,0,0,0.55)),
+      radial-gradient(ellipse 484px 399px at calc(50% + -276px) 351px, #000 70%, transparent 100%),
+      radial-gradient(ellipse 708px 94px at calc(50% + 0px) 745px, #000 70%, transparent 100%);
+    -webkit-mask-composite: source-out, source-over, source-over;
+    mask-image: radial-gradient(120% 110% at 78% 40%, rgba(0,0,0,0.95), rgba(0,0,0,0.55)),
+      radial-gradient(ellipse 484px 399px at calc(50% + -276px) 351px, #000 70%, transparent 100%),
+      radial-gradient(ellipse 708px 94px at calc(50% + 0px) 745px, #000 70%, transparent 100%);
+    mask-composite: subtract, add, add;
+  }
+  .home-hero .home-grid > i {
+    -webkit-mask-image: linear-gradient(#000, #000),
+      radial-gradient(ellipse 484px 399px at calc(50% + -276px) 351px, #000 70%, transparent 100%),
+      radial-gradient(ellipse 708px 94px at calc(50% + 0px) 745px, #000 70%, transparent 100%);
+    -webkit-mask-composite: source-out, source-over, source-over;
+    mask-image: linear-gradient(#000, #000),
+      radial-gradient(ellipse 484px 399px at calc(50% + -276px) 351px, #000 70%, transparent 100%),
+      radial-gradient(ellipse 708px 94px at calc(50% + 0px) 745px, #000 70%, transparent 100%);
+    mask-composite: subtract, add, add;
+  }
+  .home-hero .home-grid > i { background-size: var(--grid-major-step) 100%, 100% 100%; }
+  .home-hero .home-grid::after {
+    display: block;
+    --gy: calc(120px - var(--grid-step) / 8);
+    -webkit-mask-image: radial-gradient(ellipse 440px 330px at calc(50% + 340px) 330px, rgba(0,0,0,0.9), transparent 75%);
+    mask-image: radial-gradient(ellipse 440px 330px at calc(50% + 340px) 330px, rgba(0,0,0,0.9), transparent 75%);
+  }
+  .home-hero .home-grid > span {
+    display: block;
+    -webkit-mask-image: radial-gradient(ellipse 420px 300px at calc(50% + 300px) 400px, #000, transparent 72%);
+    mask-image: radial-gradient(ellipse 420px 300px at calc(50% + 300px) 400px, #000, transparent 72%);
+  }
+
+  .home-courses .home-grid { --gy: calc(250px - var(--grid-step) / 2); --guides: linear-gradient(180deg, transparent 250px, var(--grid-major) 250px 251px, transparent 251px), linear-gradient(180deg, transparent 739px, var(--grid-major) 739px 740px, transparent 740px); }
+  .home-courses .home-grid::before {
+    -webkit-mask-image: radial-gradient(120% 100% at 50% 40%, rgba(0,0,0,0.9), rgba(0,0,0,0.6)),
+      radial-gradient(ellipse 532px 118px at calc(50% + -246px) 151px, #000 70%, transparent 100%);
+    -webkit-mask-composite: source-out, source-over;
+    mask-image: radial-gradient(120% 100% at 50% 40%, rgba(0,0,0,0.9), rgba(0,0,0,0.6)),
+      radial-gradient(ellipse 532px 118px at calc(50% + -246px) 151px, #000 70%, transparent 100%);
+    mask-composite: subtract, add;
+  }
+  .home-courses .home-grid > i {
+    -webkit-mask-image: linear-gradient(#000, #000),
+      radial-gradient(ellipse 532px 118px at calc(50% + -246px) 151px, #000 70%, transparent 100%);
+    -webkit-mask-composite: source-out, source-over;
+    mask-image: linear-gradient(#000, #000),
+      radial-gradient(ellipse 532px 118px at calc(50% + -246px) 151px, #000 70%, transparent 100%);
+    mask-composite: subtract, add;
+  }
+  .home-courses .home-grid > i { background-size: var(--grid-major-step) 100%, 100% 100%; }
+
+  .home-features .home-grid { --gy: calc(96px - var(--grid-step) / 2); --guides: linear-gradient(180deg, transparent 619px, var(--grid-major) 619px 620px, transparent 620px), linear-gradient(180deg, transparent 979px, var(--grid-major) 979px 980px, transparent 980px); }
+  .home-features .home-grid::before {
+    -webkit-mask-image: radial-gradient(110% 90% at 30% 40%, rgba(0,0,0,0.85), rgba(0,0,0,0.5)),
+      radial-gradient(ellipse 376px 118px at calc(50% + -343px) 151px, #000 70%, transparent 100%),
+      radial-gradient(ellipse 376px 130px at calc(50% + -343px) 453px, #000 70%, transparent 100%),
+      radial-gradient(ellipse 471px 94px at calc(50% + -284px) 1047px, #000 70%, transparent 100%),
+      radial-gradient(ellipse 395px 335px at calc(50% + 332px) 810px, #000 70%, transparent 100%);
+    -webkit-mask-composite: source-out, source-over, source-over, source-over, source-over;
+    mask-image: radial-gradient(110% 90% at 30% 40%, rgba(0,0,0,0.85), rgba(0,0,0,0.5)),
+      radial-gradient(ellipse 376px 118px at calc(50% + -343px) 151px, #000 70%, transparent 100%),
+      radial-gradient(ellipse 376px 130px at calc(50% + -343px) 453px, #000 70%, transparent 100%),
+      radial-gradient(ellipse 471px 94px at calc(50% + -284px) 1047px, #000 70%, transparent 100%),
+      radial-gradient(ellipse 395px 335px at calc(50% + 332px) 810px, #000 70%, transparent 100%);
+    mask-composite: subtract, add, add, add, add;
+  }
+  .home-features .home-grid > i {
+    -webkit-mask-image: linear-gradient(#000, #000),
+      radial-gradient(ellipse 376px 118px at calc(50% + -343px) 151px, #000 70%, transparent 100%),
+      radial-gradient(ellipse 376px 130px at calc(50% + -343px) 453px, #000 70%, transparent 100%),
+      radial-gradient(ellipse 471px 94px at calc(50% + -284px) 1047px, #000 70%, transparent 100%),
+      radial-gradient(ellipse 395px 335px at calc(50% + 332px) 810px, #000 70%, transparent 100%);
+    -webkit-mask-composite: source-out, source-over, source-over, source-over, source-over;
+    mask-image: linear-gradient(#000, #000),
+      radial-gradient(ellipse 376px 118px at calc(50% + -343px) 151px, #000 70%, transparent 100%),
+      radial-gradient(ellipse 376px 130px at calc(50% + -343px) 453px, #000 70%, transparent 100%),
+      radial-gradient(ellipse 471px 94px at calc(50% + -284px) 1047px, #000 70%, transparent 100%),
+      radial-gradient(ellipse 395px 335px at calc(50% + 332px) 810px, #000 70%, transparent 100%);
+    mask-composite: subtract, add, add, add, add;
+  }
+  .home-features .home-grid > i { background-size: var(--grid-major-step) 100%, 100% 100%; }
+  .home-features .home-grid::after {
+    display: block;
+    --gy: calc(96px - var(--grid-step) / 8);
+    -webkit-mask-image: linear-gradient(180deg, transparent 520px, rgba(0,0,0,0.9) 560px, rgba(0,0,0,0.9) 580px, transparent 616px);
+    mask-image: linear-gradient(180deg, transparent 520px, rgba(0,0,0,0.9) 560px, rgba(0,0,0,0.9) 580px, transparent 616px);
+  }
+
+  .home-process .home-grid { --gy: calc(96px - var(--grid-step) / 2); --guides: linear-gradient(transparent, transparent); }
+  .home-process .home-grid::before {
+    -webkit-mask-image: linear-gradient(161.6deg, rgba(0,0,0,0.95) 0px, rgba(0,0,0,0.85) 560px, transparent 680px),
+      radial-gradient(ellipse 532px 65px at calc(50% + -246px) 118px, #000 70%, transparent 100%),
+      radial-gradient(ellipse 244px 149px at calc(50% + -426px) 511px, #000 70%, transparent 100%),
+      radial-gradient(ellipse 244px 150px at calc(50% + -142px) 425px, #000 70%, transparent 100%),
+      radial-gradient(ellipse 244px 148px at calc(50% + 142px) 338px, #000 70%, transparent 100%),
+      radial-gradient(ellipse 244px 147px at calc(50% + 426px) 257px, #000 70%, transparent 100%);
+    -webkit-mask-composite: source-out, source-over, source-over, source-over, source-over, source-over;
+    mask-image: linear-gradient(161.6deg, rgba(0,0,0,0.95) 0px, rgba(0,0,0,0.85) 560px, transparent 680px),
+      radial-gradient(ellipse 532px 65px at calc(50% + -246px) 118px, #000 70%, transparent 100%),
+      radial-gradient(ellipse 244px 149px at calc(50% + -426px) 511px, #000 70%, transparent 100%),
+      radial-gradient(ellipse 244px 150px at calc(50% + -142px) 425px, #000 70%, transparent 100%),
+      radial-gradient(ellipse 244px 148px at calc(50% + 142px) 338px, #000 70%, transparent 100%),
+      radial-gradient(ellipse 244px 147px at calc(50% + 426px) 257px, #000 70%, transparent 100%);
+    mask-composite: subtract, add, add, add, add, add;
+  }
+  .home-process .home-grid > i {
+    -webkit-mask-image: linear-gradient(#000, #000),
+      radial-gradient(ellipse 532px 65px at calc(50% + -246px) 118px, #000 70%, transparent 100%),
+      radial-gradient(ellipse 244px 149px at calc(50% + -426px) 511px, #000 70%, transparent 100%),
+      radial-gradient(ellipse 244px 150px at calc(50% + -142px) 425px, #000 70%, transparent 100%),
+      radial-gradient(ellipse 244px 148px at calc(50% + 142px) 338px, #000 70%, transparent 100%),
+      radial-gradient(ellipse 244px 147px at calc(50% + 426px) 257px, #000 70%, transparent 100%);
+    -webkit-mask-composite: source-out, source-over, source-over, source-over, source-over, source-over;
+    mask-image: linear-gradient(#000, #000),
+      radial-gradient(ellipse 532px 65px at calc(50% + -246px) 118px, #000 70%, transparent 100%),
+      radial-gradient(ellipse 244px 149px at calc(50% + -426px) 511px, #000 70%, transparent 100%),
+      radial-gradient(ellipse 244px 150px at calc(50% + -142px) 425px, #000 70%, transparent 100%),
+      radial-gradient(ellipse 244px 148px at calc(50% + 142px) 338px, #000 70%, transparent 100%),
+      radial-gradient(ellipse 244px 147px at calc(50% + 426px) 257px, #000 70%, transparent 100%);
+    mask-composite: subtract, add, add, add, add, add;
+  }
+  .home-process .home-grid > i { background-size: var(--grid-major-step) 100%, 100% 100%; }
+  .home-process .home-grid::after {
+    display: block;
+    --gy: calc(96px - var(--grid-step) / 8);
+    -webkit-mask-image: radial-gradient(ellipse 330px 170px at calc(50% - 400px) 290px, rgba(0,0,0,0.9), transparent 78%);
+    mask-image: radial-gradient(ellipse 330px 170px at calc(50% - 400px) 290px, rgba(0,0,0,0.9), transparent 78%);
+  }
+
+  .home-cta .home-grid { --gy: calc(24px - var(--grid-step) / 2); --guides: linear-gradient(180deg, transparent 24px, var(--grid-major) 24px 25px, transparent 25px), linear-gradient(180deg, transparent 424px, var(--grid-major) 424px 425px, transparent 425px); }
+  .home-cta .home-grid::before {
+    -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,0.9), rgba(0,0,0,0.6));
+    -webkit-mask-composite: source-out;
+    mask-image: linear-gradient(180deg, rgba(0,0,0,0.9), rgba(0,0,0,0.6));
+    mask-composite: subtract;
+  }
+  .home-cta .home-grid > i {
+    -webkit-mask-image: linear-gradient(#000, #000);
+    -webkit-mask-composite: source-out;
+    mask-image: linear-gradient(#000, #000);
+    mask-composite: subtract;
+  }
+  .home-cta .home-grid > i { background-size: var(--grid-major-step) 100%, 100% 100%; }
+  .home-cta .home-grid > span {
+    display: block;
+    -webkit-mask-image: radial-gradient(ellipse 170px 190px at calc(50% + 600px) 90px, #000, transparent 72%);
+    mask-image: radial-gradient(ellipse 170px 190px at calc(50% + 600px) 90px, #000, transparent 72%);
+  }
+}
+
+/* ---------- Tablet and phones ---------- */
+@media (max-width: 1023px) {
+  .home { --grid-step: 194px; }
+
+  /* The hero has no registration line (its crown runs to the header). */
+  .home-hero .home-grid > i {
+    background-image:
+      linear-gradient(90deg, transparent 11.5px, var(--grid-major) 11.5px 12.5px, transparent 12.5px),
+      linear-gradient(270deg, transparent 11.5px, var(--grid-major) 11.5px 12.5px, transparent 12.5px);
+  }
+
+  /* Two rails run down the whole page just inside its edges (unbroken
+     across sections), and the grid fills the art: the hero's crown, the
+     course band and the staircase floor. */
+  .home-grid::before { display: none; }
+  .home-grid > i {
+    background-image:
+      linear-gradient(90deg, transparent 11.5px, var(--grid-major) 11.5px 12.5px, transparent 12.5px),
+      linear-gradient(270deg, transparent 11.5px, var(--grid-major) 11.5px 12.5px, transparent 12.5px),
+      linear-gradient(180deg, transparent 55.5px, var(--grid-major) 55.5px 56.5px, transparent 56.5px);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+  }
+}
+
+@media (max-width: 599px) {
+  .home { --grid-step: 97.5px; }
+  .home-stairs-floor--desktop { display: none; }
+  .home-stairs-floor--mobile { display: block; }
+}
+
+@media (max-width: 960px) {
+  .home-hero .home-grid { --gy: calc(0px - var(--grid-step) / 2); }
+  .home-hero .home-grid::before {
+    display: block;
+    -webkit-mask-image: linear-gradient(180deg, #000 0, rgba(0, 0, 0, 0.9) calc(clamp(250px, 64vw, 420px) * 0.55), transparent calc(clamp(250px, 64vw, 420px) - 10px));
+    mask-image: linear-gradient(180deg, #000 0, rgba(0, 0, 0, 0.9) calc(clamp(250px, 64vw, 420px) * 0.55), transparent calc(clamp(250px, 64vw, 420px) - 10px));
+  }
+  .home-hero .home-grid::after {
+    display: block;
+    --gy: calc(0px - var(--grid-step) / 8);
+    -webkit-mask-image: radial-gradient(ellipse 70% clamp(120px, 32vw, 210px) at 50% calc(clamp(250px, 64vw, 420px) * 0.45), rgba(0, 0, 0, 0.9), transparent 78%);
+    mask-image: radial-gradient(ellipse 70% clamp(120px, 32vw, 210px) at 50% calc(clamp(250px, 64vw, 420px) * 0.45), rgba(0, 0, 0, 0.9), transparent 78%);
+  }
+  .home-hero .home-grid > span {
+    display: block;
+    -webkit-mask-image: radial-gradient(ellipse 60% clamp(110px, 28vw, 180px) at 50% calc(clamp(250px, 64vw, 420px) * 0.5), #000, transparent 72%);
+    mask-image: radial-gradient(ellipse 60% clamp(110px, 28vw, 180px) at 50% calc(clamp(250px, 64vw, 420px) * 0.5), #000, transparent 72%);
+  }
+}
+
+/* ---------- Intensity: each section's weight in the page's rhythm ---------- */
+/* Hero: an architectural studio, not graph paper; the guides stay. */
+.home-hero .home-grid::before { opacity: 0.82; }
+/* Inside every course: the quiet editorial pause between sculptures. */
+.home-features .home-grid::before,
+.home-features .home-grid::after { opacity: 0.68; }
+.home-features .home-grid > i { opacity: 0.78; }
+/* The close: the panel dominates; the margins keep only a trace. */
+.home-cta .home-grid::before { opacity: 0.45; }
+.home-cta .home-grid > i { opacity: 0.7; }
+
+/* Phones: rails and registration lines stay; the hero's crown keeps its
+   wall grid but drops the fine subdivisions, so nothing feels boxed in. */
+@media (max-width: 960px) {
+  .home-hero .home-grid::after { display: none; }
+  .home-hero .home-grid::before { opacity: 0.75; }
+}
+
+/* ============================================================
+   Footer: a single violet-to-indigo hairline replaces the old
+   seam; no watermark. Footer markup and links are untouched.
+   ============================================================ */
+.home .site-footer { position: relative; }
+
+.home .site-footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent 4%, var(--strand-hairline-a) 35%, var(--strand-hairline-b) 65%, transparent 96%);
+  opacity: 0.8;
+}
+
+/* ============================================================
+   Hover and press feedback (Emil Kowalski: gated to real pointers,
+   transform + box-shadow only, under 300ms)
+   ============================================================ */
+@media (hover: hover) and (pointer: fine) {
+  /* The lift uses the independent `translate` property so it composes
+     with the reveal's `transform` instead of being overridden by it. */
+  html.motion-ok .home .home-course-card.reveal {
+    transition: opacity 420ms var(--ease-out), transform 420ms var(--ease-out), translate 200ms var(--ease-out), box-shadow 200ms var(--ease-out);
+  }
+  html.motion-ok .home .home-course-card:hover { translate: 0 -3px; }
+  .home-course-card:hover {
+    box-shadow: var(--home-shadow), 0 18px 30px rgba(40, 30, 110, 0.12);
+  }
+  :root[data-theme="dark"] .home-course-card:hover {
+    box-shadow: var(--home-shadow), 0 18px 30px rgba(0, 0, 0, 0.35);
+  }
+}
+
+.home .btn { -webkit-tap-highlight-color: transparent; }
+
+/* Buttons settle back with the same restrained ease-out as the press
+   (the shared overshoot curve would spring past full size on release). */
+.home .btn {
+  transition: transform 160ms var(--ease-out), box-shadow 0.25s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+html.motion-ok .home .btn:not(:disabled):active {
+  transform: scale(0.97);
+  transition: transform 160ms var(--ease-out), box-shadow 0.25s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 960px) {
+  /* The sculpture crowns the copy as its own portrait-leaning composition,
+     full-bleed so every ribbon end leaves through the screen edges; its
+     height is capped so the headline and buttons stay near the top. */
+  /* Light and bounce move up behind the sculpture crown, away from the copy. */
+  .home-hero {
+    background:
+      radial-gradient(60% 22% at 58% 20%, var(--satin-bounce), transparent 72%),
+      radial-gradient(90% 34% at 70% 12%, var(--satin-key), transparent 72%),
+      radial-gradient(130% 70% at 50% 20%, transparent 60%, var(--satin-vignette) 100%),
+      linear-gradient(180deg, var(--home-hero-field-1) 0%, var(--satin-wall) 45%, var(--satin-floor) 100%);
+  }
+
+  .home-hero-inner { flex-direction: column; align-items: stretch; min-height: 0; padding: 0 24px 56px; }
+  .home-hero-copy { max-width: 640px; flex: none; }
+
+  .home-hero-visual {
+    position: relative;
+    inset: auto;
+    order: -1;
+    margin: 0 -24px 8px;
+    height: clamp(250px, 64vw, 420px);
+  }
+
+  .home-satin--desktop { display: none; }
+
+  .home-satin--mobile {
+    display: block;
+    width: 100%;
+    height: 100%;
+    -webkit-mask-image: linear-gradient(180deg, #000 88%, transparent 100%);
+    mask-image: linear-gradient(180deg, #000 88%, transparent 100%);
+  }
+
+  html:not(.js) .home-satin.home-satin--static.home-satin--desktop { display: none; }
+  html:not(.js) .home-satin.home-satin--static.home-satin--mobile {
+    display: block;
+    background:
+      url("assets/hero/satin-mobile-life-a-light.webp"),
+      url("assets/hero/satin-mobile-life-b-light.webp"),
+      url("assets/hero/satin-mobile-health-a-light.webp"),
+      url("assets/hero/satin-mobile-health-b-light.webp"),
+      url("assets/hero/satin-mobile-shadow-light.webp");
+    background-size: cover;
+    background-position: center;
+  }
+
+  html.motion-ok .satin-strand { animation-duration: 1350ms; }
+  html.motion-ok .satin-strand--health { animation-delay: 100ms; }
+  html.motion-ok .satin-shadow { animation-delay: 650ms; }
+
+}
+
+@media (max-width: 720px) {
+
+  .home-credentials-inner { flex-direction: column; align-items: flex-start; gap: 14px; }
+
+  .home-section-head { margin-bottom: 32px; }
+
+  .home-cta { padding-bottom: 80px; }
+
+}
+
+@media (max-width: 480px) {
+  .home-hero-copy h1 { font-size: clamp(2.2rem, 10.4vw, 2.7rem); }
+
+  .home-hero .hero-actions { gap: 12px; }
+  .home-hero .hero-actions .btn { flex: 1 1 100%; }
+
+}
+
+/* ============================================================
+   Homepage header. Light mode is the hero's own top edge (same
+   color, same violet light continuing from the hero's corner) so the
+   bar belongs to the hero; a hairline and soft shadow only arrive
+   once the page scrolls. Dark mode is a deep navy bar with one
+   restrained indigo light behind the logo and a quiet hairline.
+   Inner pages keep the shared dark header from styles.css.
+   ============================================================ */
+.home {
+  --hh-surface: rgba(248, 248, 253, 0.86);
+  --hh-surface-solid: #f8f8fd;
+  --hh-light: radial-gradient(900px 620px at 6% 14px, var(--home-hero-shaft), transparent 62%);
+  --hh-line-rest: rgba(42, 31, 120, 0.07);
+  --hh-line: rgba(42, 31, 120, 0.12);
+  --hh-shadow: 0 10px 28px -18px rgba(40, 30, 110, 0.35);
+  --hh-text: #14161f;
+  --hh-link: #4a4f63;
+  --hh-ghost-border: rgba(20, 22, 31, 0.16);
+  --hh-ghost-border-hover: rgba(20, 22, 31, 0.34);
+  --hh-ghost-fill: rgba(255, 255, 255, 0.7);
+  --hh-primary: #5b4dfb;
+  --hh-primary-hover: #4636e0;
+  --hh-focus: #5b4dfb;
+  --hh-focus-ring: rgba(91, 77, 251, 0.45);
+  --hh-panel: #fbfbfe;
+  --hh-pill: rgba(91, 77, 251, 0.09);
+  --hh-panel-shadow: 0 24px 40px -24px rgba(40, 30, 110, 0.35);
+  --hh-drop-border: rgba(20, 22, 31, 0.08);
+  --hh-drop-shadow: 0 18px 40px -12px rgba(20, 22, 31, 0.24);
+}
+
+:root[data-theme="dark"] .home {
+  --hh-surface: rgba(12, 16, 32, 0.84);
+  --hh-surface-solid: #0d1120;
+  --hh-light: radial-gradient(420px 90px at 8% 0%, rgba(110, 95, 255, 0.2), transparent 70%);
+  --hh-line-rest: rgba(160, 148, 255, 0.16);
+  --hh-line: rgba(160, 148, 255, 0.22);
+  --hh-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 12px 30px -18px rgba(0, 0, 0, 0.8);
+  --hh-text: #ffffff;
+  --hh-link: rgba(255, 255, 255, 0.68);
+  --hh-ghost-border: rgba(255, 255, 255, 0.22);
+  --hh-ghost-border-hover: rgba(255, 255, 255, 0.5);
+  --hh-ghost-fill: rgba(255, 255, 255, 0.06);
+  --hh-primary: #7c6fff;
+  --hh-primary-hover: #6c5ef5;
+  --hh-focus: rgba(255, 255, 255, 0.85);
+  --hh-focus-ring: rgba(199, 192, 255, 0.55);
+  --hh-panel: #10152a;
+  --hh-pill: rgba(124, 111, 255, 0.16);
+  --hh-panel-shadow: 0 24px 40px -24px rgba(0, 0, 0, 0.7);
+  --hh-drop-border: rgba(160, 148, 255, 0.18);
+  --hh-drop-shadow: 0 18px 40px -12px rgba(0, 0, 0, 0.6);
+}
+
+.home .site-header {
+  background-color: var(--hh-surface);
+  background-image: var(--hh-light);
+  border-bottom: 1px solid var(--hh-line-rest);
+}
+
+:root[data-theme="dark"] .home .site-header {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* Scroll-linked separation where supported, motion on only. In light mode
+   the bar starts seamless (no line) and gains its hairline and shadow over
+   the first 96px of scroll; the static fallback keeps a faint hairline. */
+@supports (animation-timeline: scroll()) {
+  html.motion-ok .home .site-header {
+    animation: home-header-lift linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 96px;
+  }
+
+  html.motion-ok:not([data-theme="dark"]) .home .site-header { border-bottom-color: transparent; }
+}
+
+@keyframes home-header-lift {
+  to {
+    border-bottom-color: var(--hh-line);
+    box-shadow: var(--hh-shadow);
+  }
+}
+
+.home .header-inner { height: 68px; }
+
+.home .site-header .logo { color: var(--hh-text); }
+
+/* Links: color change only on hover (a high-frequency interaction gets no
+   movement); the active page carries a short static two-strand underline. */
+.home .site-header .nav { gap: 30px; }
+
+.home .site-header .nav a {
+  color: var(--hh-link);
+  font-size: 0.94rem;
+  padding: 6px 0;
+  transition: color 150ms var(--ease-out);
+}
+
+.home .site-header .nav a:hover,
+.home .site-header .nav a.active { color: var(--hh-text); }
+
+.home .site-header .nav a.active { font-weight: 600; }
+
+.home .site-header .nav a::after,
+.home .site-header .nav a:hover::after {
+  left: 50%;
+  right: auto;
+  bottom: -2px;
+  width: 16px;
+  background: linear-gradient(90deg, var(--strand-life-core), var(--strand-health-core));
+  transform: translateX(-50%) scaleX(0);
+  transition: none;
+}
+
+.home .site-header .nav a.active::after { transform: translateX(-50%) scaleX(1); }
+
+.home .header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.home .site-header .btn-header-secondary {
+  padding: 9px 18px;
+  color: var(--hh-text);
+  border-color: var(--hh-ghost-border);
+  transition: border-color 150ms var(--ease-out), background-color 150ms var(--ease-out);
+}
+
+.home .site-header .btn-header-secondary:hover {
+  color: var(--hh-text);
+  border-color: var(--hh-ghost-border-hover);
+  background-color: var(--hh-ghost-fill);
+  transform: none;
+}
+
+.home .site-header .btn-header {
+  padding: 9px 18px;
+  background: var(--hh-primary);
+  box-shadow: 0 6px 16px -6px rgba(91, 77, 251, 0.55);
+}
+
+.home .site-header .btn-header:hover {
+  background: var(--hh-primary-hover);
+  box-shadow: 0 6px 16px -6px rgba(91, 77, 251, 0.55);
+  transform: none;
+}
+
+html.motion-ok .home .site-header .btn-header-secondary:active {
+  transform: scale(0.97);
+  transition: transform 160ms var(--ease-out);
+}
+
+.home .site-header .theme-toggle {
+  width: 36px;
+  height: 36px;
+  color: var(--hh-text);
+  border-color: var(--hh-ghost-border);
+  transition: border-color 150ms var(--ease-out), background-color 150ms var(--ease-out);
+}
+
+.home .site-header .theme-toggle:hover {
+  border-color: var(--hh-ghost-border-hover);
+  background: var(--hh-ghost-fill);
+}
+
+.home .site-header .user-avatar {
+  width: 34px;
+  height: 34px;
+  border: 0;
+  box-shadow: 0 0 0 2px var(--hh-surface-solid), 0 0 0 3px var(--hh-ghost-border);
+  transition: box-shadow 150ms var(--ease-out);
+}
+
+.home .site-header .user-menu-trigger:hover .user-avatar {
+  box-shadow: 0 0 0 2px var(--hh-surface-solid), 0 0 0 3px var(--hh-ghost-border-hover);
+}
+
+.home .site-header .user-menu-dropdown {
+  border: 1px solid var(--hh-drop-border);
+  border-radius: 14px;
+  box-shadow: var(--hh-drop-shadow);
+}
+
+/* The account menu scales in from its trigger (top right); it closes
+   instantly. Motion on only. */
+html.motion-ok .home .site-header .user-menu-dropdown {
+  transform-origin: top right;
+  transition: opacity 160ms var(--ease-out), transform 160ms var(--ease-out);
+}
+
+@starting-style {
+  html.motion-ok .home .site-header .user-menu-dropdown {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
+
+/* Focus: accent rings on the light bar, white rings on the dark bar. */
+.home .site-header .nav a:focus-visible,
+.home .site-header .logo:focus-visible {
+  outline: 2px solid var(--hh-focus);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.home .site-header .theme-toggle:focus-visible,
+.home .site-header .user-menu-trigger:focus-visible,
+.home .site-header .btn-header:focus-visible,
+.home .site-header .btn-header-secondary:focus-visible,
+.home .site-header .nav-toggle:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--hh-focus-ring);
+}
+
+.home .site-header .nav-toggle span { background: var(--hh-text); }
+
+/* Wide: logo, links truly centered, actions. The nav wrapper steps out of
+   the layout so its two children sit in the grid's middle and end cells. */
+@media (min-width: 1024px) {
+  .home .header-inner {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+  }
+
+  .home .site-header .nav-wrap { display: contents; }
+  .home .header-actions { justify-self: end; }
+}
+
+@media (min-width: 900px) and (max-width: 1023px) {
+  .home .site-header .nav-wrap { flex: 1; justify-content: space-between; }
+  .home .site-header .nav { gap: 24px; }
+}
+
+/* Compact: the menu panel. */
+@media (max-width: 899px) {
+  .home .site-header .nav-toggle {
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    margin-right: -10px;
+  }
+
+  .home .site-header .nav-toggle span { transform-origin: center; }
+
+  html.motion-ok .home .site-header .nav-toggle span {
+    transition: transform 200ms var(--ease-out), opacity 150ms var(--ease-out);
+  }
+
+  .home .site-header .nav-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .home .site-header .nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .home .site-header .nav-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .home .site-header .nav-wrap {
+    background: var(--hh-panel);
+    border-bottom: 1px solid var(--hh-line);
+    box-shadow: var(--hh-panel-shadow);
+    padding: 10px 20px 20px;
+    gap: 14px;
+  }
+
+  html.motion-ok .home .site-header .nav-wrap.open {
+    transition: opacity 180ms var(--ease-out), transform 180ms var(--ease-out);
+  }
+
+  @starting-style {
+    html.motion-ok .home .site-header .nav-wrap.open {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+  }
+
+  .home .site-header .nav { gap: 2px; }
+
+  .home .site-header .nav a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 1rem;
+  }
+
+  .home .site-header .nav a.active { background: var(--hh-pill); }
+  .home .site-header .nav a::after { display: none; }
+
+  .home .header-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 10px;
+    max-width: 460px;
+  }
+
+  .home .site-header .btn-header,
+  .home .site-header .btn-header-secondary { padding: 12px 18px; }
+
+  .home .site-header .theme-toggle { width: 44px; height: 44px; }
+
+  .home .site-header .user-menu { grid-column: 1 / -1; }
+
+  .home .site-header .user-menu-dropdown {
+    left: 0;
+    right: auto;
+    transform-origin: top left;
+  }
+}

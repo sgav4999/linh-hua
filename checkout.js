@@ -5,10 +5,8 @@ const CHECKOUT_COURSES = {
     desc: "Covers everything on your state's Life Insurance exam content outline, from policy types to underwriting basics.",
     price: 149,
     features: [
-      "State-approved pre-licensing curriculum",
       "Unlimited timed practice exams",
-      "Printable study guide & flashcards",
-      "Certificate of completion",
+      "Printable study guide",
     ],
   },
   health: {
@@ -17,23 +15,19 @@ const CHECKOUT_COURSES = {
     desc: "Covers everything on your state's Health Insurance exam content outline, including major medical, HMOs, and long-term care.",
     price: 149,
     features: [
-      "State-approved pre-licensing curriculum",
       "Unlimited timed practice exams",
-      "Printable study guide & flashcards",
-      "Certificate of completion",
+      "Printable study guide",
     ],
   },
   combo: {
     tag: "Life + Health",
     title: "Life & Health Combo",
-    desc: "Our most popular course — prepare for both the Life and Health exams together and save compared to buying separately.",
+    desc: "Prepare for both the Life and Health exams together and save compared to buying separately.",
     price: 249,
     features: [
       "Covers both state exam outlines",
       "Unlimited timed practice exams",
-      "Printable study guides & flashcards",
-      "Priority instructor email support",
-      "Certificate of completion",
+      "Printable study guides",
     ],
   },
 };

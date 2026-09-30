@@ -140,16 +140,30 @@ a { color: inherit; }
   gap: 32px;
 }
 
+/* Brand lockup: the LH mark (a self-contained ink tile, so one file works
+   on light and dark surfaces) plus the wordmark as live text. The mark's
+   stroke weight matches the wordmark's stems at this size. */
 .logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   font-weight: 800;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
+  line-height: 1;
   color: #fff;
   text-decoration: none;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.035em;
+  white-space: nowrap;
+  flex-shrink: 0;
   margin-right: auto;
 }
 
-.logo span { color: var(--accent); }
+.logo-mark {
+  display: block;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+}
 
 .nav-wrap {
   display: flex;
@@ -295,6 +309,26 @@ a { color: inherit; }
 .btn-secondary:hover {
   border-color: var(--accent);
   color: var(--accent);
+}
+
+/* Purchase buttons while checkout isn't live: visibly unavailable, not a link */
+.btn-coming-soon,
+.btn-coming-soon:hover {
+  gap: 8px;
+  background: var(--surface-alt);
+  color: var(--muted);
+  border-color: var(--line);
+  box-shadow: none;
+  transform: none;
+  cursor: not-allowed;
+  font-family: inherit;
+}
+
+.btn-coming-soon svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+@media (max-width: 400px) {
+  .btn-coming-soon { white-space: normal; text-wrap: balance; text-align: center; }
+  .btn-coming-soon.btn-lg { padding-left: 18px; padding-right: 18px; }
 }
 
 .btn-logout {
@@ -844,7 +878,8 @@ a { color: inherit; }
   display: grid;
   grid-template-columns: 1.6fr 1fr 1fr 1fr;
   gap: 40px;
-  padding: 72px 0 48px;
+  padding-top: 72px;
+  padding-bottom: 48px;
 }
 
 .footer-brand p {
@@ -860,7 +895,7 @@ a { color: inherit; }
   gap: 12px;
 }
 
-.footer-col h4 {
+.footer-col h2 {
   color: #fff;
   font-size: 0.85rem;
   text-transform: uppercase;
@@ -1004,7 +1039,7 @@ a { color: inherit; }
   gap: var(--space-4);
 }
 
-.contact-info-item h4 {
+.contact-info-item h2 {
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -1174,6 +1209,7 @@ a { color: inherit; }
   margin-bottom: 16px;
 }
 
+.course-card h2,
 .course-card h3 {
   font-size: 1.3rem;
   margin-bottom: 8px;
@@ -3047,20 +3083,14 @@ body:has(#studyGuideRoot)::after {
   .study-guide-body { padding: 28px; }
 }
 
-/* Just above the hamburger breakpoint the full desktop row (~780px) doesn't
-   fit, so tighten its spacing. Sits before the 720px block so mobile wins. */
-@media (max-width: 900px) {
-  .nav { gap: 20px; }
-  .nav-wrap { gap: 16px; }
-
-  .btn-header,
-  .btn-header-secondary { padding-left: 16px; padding-right: 16px; }
-}
-
-@media (max-width: 720px) {
+/* Compact header. The full desktop row (logo, four links, Log In, Sign Up,
+   theme toggle) needs about 820px plus the container padding, so it only
+   appears from 900px up; below that everything moves into the menu panel
+   instead of being squeezed until it overflows. */
+@media (max-width: 899px) {
   .nav-wrap {
     position: absolute;
-    top: 76px;
+    top: 100%;
     left: 0;
     right: 0;
     background: var(--ink);
@@ -3087,7 +3117,25 @@ body:has(#studyGuideRoot)::after {
   }
 
   .nav-toggle { display: flex; }
+}
 
+/* App pages whose header holds only the avatar menu (no nav links) fit at
+   any width, so they keep the avatar in the bar down to 721px as before. */
+@media (min-width: 721px) and (max-width: 899px) {
+  .header-inner:not(:has(.nav)) .nav-wrap {
+    position: static;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0;
+    background: none;
+    border-bottom: 0;
+  }
+
+  .header-inner:not(:has(.nav)) .nav-toggle { display: none; }
+}
+
+@media (max-width: 720px) {
   .services-grid,
   .course-grid,
   .process-grid,

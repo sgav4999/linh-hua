@@ -8,13 +8,18 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=20260928f">
+<link rel="stylesheet" href="styles.css?v=20260929a">
+<link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="brand/apple-touch-icon.png">
 </head>
 <body>
 
 <header class="site-header">
   <div class="container header-inner">
-    <a href="index.html" class="logo">Linh<span>Hua</span></a>
+    <a href="index.html" class="logo"><img class="logo-mark" src="brand/logo-mark.svg" alt="" width="30" height="30"><span class="logo-word">Linh Hua</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
     <div class="nav-wrap" id="navWrap">
       <nav class="nav">
         <a href="index.html">Home</a>
@@ -48,9 +53,6 @@
         </div>
       </div>
     </div>
-    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
-      <span></span><span></span><span></span>
-    </button>
   </div>
 </header>
 
@@ -58,8 +60,8 @@
   <div class="hero-glow"></div>
   <div class="container reveal visible">
     <span class="eyebrow">Checkout</span>
-    <h1>Complete your enrollment</h1>
-    <p>Review your order, then continue to payment.</p>
+    <h1>Enrollment coming soon</h1>
+    <p>Online payment isn&#39;t available yet. Here&#39;s a summary of the course you selected.</p>
   </div>
 </section>
 
@@ -85,14 +87,14 @@
         <form class="contact-form" id="checkoutForm">
           <div>
             <label for="name">Full name</label>
-            <input type="text" id="name" name="name" required>
+            <input type="text" id="name" name="name" required disabled>
           </div>
           <div>
             <label for="email">Email</label>
-            <input type="email" id="email" name="email" required>
+            <input type="email" id="email" name="email" required disabled>
           </div>
-          <button type="submit" class="btn btn-primary btn-lg">Continue to Payment</button>
-          <p class="checkout-note">You won't be charged yet — payment happens on the next step.</p>
+          <button type="submit" class="btn btn-lg btn-coming-soon" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Enrollment Coming Soon</button>
+          <p class="checkout-note">Payment isn't connected yet, so no order can be placed and nothing will be charged.</p>
         </form>
       </div>
     </div>
