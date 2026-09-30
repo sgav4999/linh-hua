@@ -13,6 +13,7 @@
      tabs): kept separate from --accent, which is also a text colour. */
   --accent-fill: #5b4dfb;
   --accent-fill-hover: #4636e0;
+  --focus-ring: var(--accent-dark);
   --gold: #f2b544;
   --max-width: 1160px;
   --radius: 14px;
@@ -53,7 +54,7 @@
   --text: #eef0f6;
   --muted: #9096ab;
   --line: #272c40;
-  --accent: #7c6fff;
+  --accent: #8376ff; /* text & outline accent: >= 4.6:1 on every dark surface */
   --accent-dark: #c7c0ff;
   --accent-soft: rgba(91, 77, 251, 0.18);
   /* Deeper than --accent so white text passes AA (4.61:1; hover 5.75:1). */
@@ -585,6 +586,10 @@ a { color: inherit; }
   background: var(--accent-soft);
 }
 
+/* The page hero is dark in both themes: the violet accent can't reach AA on
+   it, so its eyebrow takes the light lilac (>= 7:1 on the pill). */
+.page-hero .eyebrow { color: #c7c0ff; }
+
 .hero h1 {
   font-size: clamp(2.6rem, 5.5vw, 4.2rem);
   margin-bottom: 24px;
@@ -788,6 +793,9 @@ a { color: inherit; }
   margin-bottom: 16px;
   transition: background 0.25s ease, color 0.25s ease;
 }
+
+/* On the tinted disc the dark accent is under AA; the lilac passes. */
+[data-theme="dark"] .process-num { color: var(--accent-dark); }
 
 .process-step h3 {
   font-size: 1.05rem;
@@ -1098,7 +1106,7 @@ a { color: inherit; }
 .contact-form textarea:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-soft);
+  box-shadow: 0 0 0 1px var(--accent), 0 0 0 4px var(--accent-soft);
 }
 
 .contact-form textarea {
@@ -1993,7 +2001,7 @@ a { color: inherit; }
 .account-voice-row select:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-soft);
+  box-shadow: 0 0 0 1px var(--accent), 0 0 0 4px var(--accent-soft);
 }
 
 .account-current-email {
@@ -2226,7 +2234,7 @@ a { color: inherit; }
 .manage-form textarea:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-soft);
+  box-shadow: 0 0 0 1px var(--accent), 0 0 0 4px var(--accent-soft);
 }
 
 .manage-form textarea { resize: vertical; }
@@ -2258,7 +2266,7 @@ a { color: inherit; }
 .students-search:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-soft);
+  box-shadow: 0 0 0 1px var(--accent), 0 0 0 4px var(--accent-soft);
 }
 
 .students-stats {
@@ -2995,13 +3003,33 @@ body:has(#studyGuideRoot)::after {
   z-index: 1;
 }
 
-/* Keyboard focus states. Most interactive elements previously had hover
-   styling but no visible focus ring, relying on the browser default — easy
-   to lose against this site's dark header/hero backgrounds. Split into two
-   groups since the header/hero/footer are permanently dark regardless of
-   the site's light/dark theme toggle, so they need a theme-invariant ring;
-   everything else follows the existing accent-soft ring already used by
-   .contact-form inputs. */
+/* Keyboard focus states. Split into two groups since the header/hero/footer
+   are permanently dark regardless of the site's light/dark theme toggle, so
+   they need a theme-invariant ring. Everything else gets a 2px ring in the
+   deeper (light) / lighter (dark) accent, --accent-dark,
+   set 2px off the control, so the ring always sits on the page background
+   (>= 3:1 against it in both themes, whatever the control's own fill);
+   on the permanently dark bands the ring turns white. */
+.site-header,
+.page-hero,
+.site-footer {
+  --focus-ring: rgba(255, 255, 255, 0.85);
+}
+
+/* Solid white: the light-mode band is a violet gradient (>= 3.2:1). */
+.cta-band { --focus-ring: #fff; }
+
+/* The account dropdown is a light panel inside the dark header. */
+.user-menu-dropdown { --focus-ring: var(--accent-dark); }
+
+/* Fallback for everything without its own treatment (plain links, the
+   menu button, scrollable regions), instead of the browser default ring,
+   which thins out against the dark bands. */
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
 .btn:focus-visible,
 .lesson-quiz-option:focus-visible,
 .quiz-option:focus-visible,
@@ -3014,8 +3042,16 @@ body:has(#studyGuideRoot)::after {
 .dashboard-card-link:focus-visible,
 .btn-listen:focus-visible,
 .btn-manage:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px var(--accent-soft);
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* Keep the ring above neighbouring pills in tight rows. */
+.study-guide-tab:focus-visible,
+.inbox-filter-btn:focus-visible,
+.exam-nav-item:focus-visible {
+  position: relative;
+  z-index: 1;
 }
 
 .nav a:focus-visible,
@@ -3027,7 +3063,7 @@ body:has(#studyGuideRoot)::after {
 }
 
 /* Placed after the rules above so these dark-chrome variants win over the
-   general .btn accent-soft ring at equal specificity. */
+   general .btn accent ring at equal specificity. */
 .theme-toggle:focus-visible,
 .user-menu-trigger:focus-visible,
 .btn-ghost:focus-visible,

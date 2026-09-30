@@ -457,6 +457,7 @@ html.motion-ok .satin-shadow { animation: satin-shadow-in 900ms var(--ease-out) 
 /* The Combo: one wide ink panel, lit from the top centre where the band
    comes in, with its offer read left to right. */
 .home-course-card--featured {
+  --focus-ring: rgba(255, 255, 255, 0.85); /* dark panel in both themes */
   position: relative;
   overflow: hidden;
   border-color: transparent;
@@ -1709,7 +1710,6 @@ html.motion-ok .home .btn:not(:disabled):active {
   --hh-primary: #5b4dfb;
   --hh-primary-hover: #4636e0;
   --hh-focus: #5b4dfb;
-  --hh-focus-ring: rgba(91, 77, 251, 0.45);
   --hh-panel: #fbfbfe;
   --hh-pill: rgba(91, 77, 251, 0.09);
   --hh-panel-shadow: 0 24px 40px -24px rgba(40, 30, 110, 0.35);
@@ -1732,7 +1732,6 @@ html.motion-ok .home .btn:not(:disabled):active {
   --hh-primary: #6c5ef5;
   --hh-primary-hover: #5b4de6;
   --hh-focus: rgba(255, 255, 255, 0.85);
-  --hh-focus-ring: rgba(199, 192, 255, 0.55);
   --hh-panel: #10152a;
   --hh-pill: rgba(124, 111, 255, 0.16);
   --hh-panel-shadow: 0 24px 40px -24px rgba(0, 0, 0, 0.7);
@@ -1741,6 +1740,7 @@ html.motion-ok .home .btn:not(:disabled):active {
 }
 
 .home .site-header {
+  --focus-ring: var(--hh-focus);
   background-color: var(--hh-surface);
   background-image: var(--hh-light);
   border-bottom: 1px solid var(--hh-line-rest);
@@ -1898,8 +1898,8 @@ html.motion-ok .home .site-header .user-menu-dropdown {
 .home .site-header .btn-header:focus-visible,
 .home .site-header .btn-header-secondary:focus-visible,
 .home .site-header .nav-toggle:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px var(--hh-focus-ring);
+  outline: 2px solid var(--hh-focus);
+  outline-offset: 2px;
 }
 
 .home .site-header .nav-toggle span { background: var(--hh-text); }
