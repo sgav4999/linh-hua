@@ -224,13 +224,27 @@ if (userMenuEl) {
   const trigger = document.getElementById("userMenuTrigger");
   const dropdown = document.getElementById("userMenuDropdown");
   if (trigger && dropdown) {
+    // Expose the open state to assistive tech and close on Escape (returning
+    // focus to the avatar), matching the mobile menu's behavior.
+    trigger.setAttribute("aria-haspopup", "true");
+    trigger.setAttribute("aria-expanded", "false");
+    const setOpen = (open) => {
+      dropdown.hidden = !open;
+      trigger.setAttribute("aria-expanded", String(open));
+    };
     trigger.addEventListener("click", (e) => {
       e.stopPropagation();
-      dropdown.hidden = !dropdown.hidden;
+      setOpen(dropdown.hidden);
     });
     dropdown.addEventListener("click", (e) => e.stopPropagation());
     document.addEventListener("click", () => {
-      dropdown.hidden = true;
+      setOpen(false);
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !dropdown.hidden) {
+        setOpen(false);
+        trigger.focus();
+      }
     });
   }
 }
