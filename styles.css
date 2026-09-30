@@ -279,11 +279,15 @@ a { color: inherit; }
   font-weight: 600;
   font-size: 0.95rem;
   border: 1px solid transparent;
-  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.25s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
   white-space: nowrap;
 }
 
-.btn:hover { transform: translateY(-2px); }
+/* The lift is for mouse/trackpad only (touch would leave it stuck after a
+   tap) and is dropped under reduced motion. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .btn:hover { transform: translateY(-2px); }
+}
 .btn:active { transform: translateY(0); }
 .btn[hidden] { display: none; }
 
@@ -609,56 +613,6 @@ a { color: inherit; }
   display: flex;
   gap: 16px;
   flex-wrap: wrap;
-}
-
-.logo-strip {
-  position: relative;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 28px 0;
-}
-
-.logo-strip-inner {
-  display: flex;
-  align-items: center;
-  gap: 28px;
-}
-
-.logo-strip-label {
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.45);
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.logo-strip-track {
-  overflow: hidden;
-  flex: 1;
-  mask-image: linear-gradient(90deg, transparent, #000 48px, #000 calc(100% - 48px), transparent);
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 48px, #000 calc(100% - 48px), transparent);
-}
-
-.logo-strip-marks {
-  display: flex;
-  gap: 48px;
-  width: max-content;
-  animation: marquee 22s linear infinite;
-}
-
-.logo-strip-marks span {
-  font-weight: 700;
-  font-size: 0.85rem;
-  letter-spacing: 0.04em;
-  color: rgba(255, 255, 255, 0.4);
-  white-space: nowrap;
-}
-
-@keyframes marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .logo-strip-marks { animation: none; }
 }
 
 /* Sections */
@@ -1017,22 +971,12 @@ a { color: inherit; }
   gap: var(--space-4);
   padding: 20px 0;
   border-top: 1px solid var(--line);
-  transition: border-color 0.25s ease, padding-left 0.25s ease;
 }
 
-.value-item:hover {
-  border-color: var(--accent);
-  padding-left: 8px;
-}
-
+/* Static rows: they aren't interactive, so no hover response. */
 .value-item h3 {
   font-size: 1.05rem;
   margin-bottom: 6px;
-  transition: color 0.25s ease;
-}
-
-.value-item:hover h3 {
-  color: var(--accent);
 }
 
 .value-item p {
@@ -1146,14 +1090,17 @@ a { color: inherit; }
   font-size: 0.9rem;
   text-decoration: none;
   white-space: nowrap;
-  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.2s ease, color 0.2s ease;
+  transition: border-color 0.2s ease, color 0.2s ease;
 }
 
+/* No lift on either header action (Log In here, Sign Up below): the header
+   stays still, as on the homepage header. */
 .btn-header-secondary:hover {
   color: #fff;
   border-color: #fff;
-  transform: translateY(-2px);
 }
+
+.site-header .btn-header:hover { transform: none; }
 
 /* Course cards */
 .course-grid {
@@ -1615,7 +1562,14 @@ a { color: inherit; }
   height: 100%;
   background: var(--accent);
   border-radius: 999px;
+  /* Intentional: the width is the data (set from JS). Only this bar relays
+     out (the track is fixed-size), and scaleX would squash the round ends.
+     impeccable-disable-next-line layout-transition */
   transition: width 0.3s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progress-bar-fill { transition: none; }
 }
 
 .module-heading {
@@ -2613,6 +2567,10 @@ a { color: inherit; }
   border-radius: var(--radius);
   padding: 18px 20px;
   border: 1px solid var(--line);
+  /* Intentional: the stripe is the correct/incorrect status marker (green
+     or red, below) that makes the exam review scannable; incorrect items
+     also print the correct answer, so colour isn't the only cue.
+     impeccable-disable-next-line side-tab */
   border-left: 4px solid var(--line);
 }
 
