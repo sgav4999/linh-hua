@@ -851,7 +851,7 @@ a { color: inherit; }
 
 /* CTA band */
 .cta-band {
-  background: linear-gradient(135deg, var(--accent), #8f7dff);
+  background: linear-gradient(135deg, var(--accent), #6354ee);
   color: #fff;
   padding: 80px 0;
 }
@@ -874,6 +874,10 @@ a { color: inherit; }
   font-size: 1.05rem;
   margin-bottom: 12px;
 }
+
+/* On the light-mode violet band the translucent white is under AA; solid
+   white on the deepened band is >= 4.68:1 (the dark band is unchanged). */
+:root:not([data-theme="dark"]) .cta-inner p { color: #fff; }
 
 .cta-band .btn-primary {
   background: #fff;
@@ -1235,6 +1239,10 @@ a { color: inherit; }
   font-size: 0.95rem;
   margin-bottom: 20px;
 }
+
+/* The featured card's tinted fill is darker than white: the muted grey
+   needs a step deeper there to keep AA (>= 5.2:1). */
+:root:not([data-theme="dark"]) .course-card.featured .course-desc { color: #5a6072; }
 
 .course-price {
   font-size: 1.8rem;
@@ -2832,7 +2840,7 @@ body:has(#studyGuideRoot)::after {
 .cta-band {
   background:
     radial-gradient(700px 320px at 15% 0%, rgba(255, 255, 255, 0.16), transparent 60%),
-    linear-gradient(135deg, var(--accent), #8f7dff);
+    linear-gradient(135deg, var(--accent), #6354ee);
 }
 
 [data-theme="dark"] .cta-band {
@@ -2906,7 +2914,7 @@ body:has(#studyGuideRoot)::after {
 .hero::before { right: -240px; top: -300px; }
 .page-hero::before { right: -260px; top: -380px; width: min(620px, 130vw); }
 .stats-band::before { left: -300px; bottom: -430px; width: min(620px, 130vw); }
-.cta-band::before { right: -240px; top: -360px; width: min(600px, 130vw); background: rgba(255, 255, 255, 0.28); }
+.cta-band::before { right: -240px; top: -360px; width: min(600px, 130vw); background: rgba(255, 255, 255, 0.12); }
 .section-alt::before { left: -300px; bottom: -400px; width: min(620px, 130vw); background: var(--motif); }
 .auth-section::before { right: -300px; top: -260px; width: min(640px, 130vw); background: var(--motif); }
 
