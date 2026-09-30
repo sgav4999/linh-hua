@@ -9,6 +9,11 @@
   --accent: #5b4dfb;
   --accent-dark: #4636e0;
   --accent-soft: #eeecff;
+  /* Filled accent surfaces that carry white text (buttons, badges, active
+     tabs): kept separate from --accent, which is also a text colour. */
+  --accent-fill: #5b4dfb;
+  --accent-fill-hover: #4636e0;
+  --focus-ring: var(--accent-dark);
   --gold: #f2b544;
   --max-width: 1160px;
   --radius: 14px;
@@ -49,9 +54,12 @@
   --text: #eef0f6;
   --muted: #9096ab;
   --line: #272c40;
-  --accent: #7c6fff;
+  --accent: #8376ff; /* text & outline accent: >= 4.6:1 on every dark surface */
   --accent-dark: #c7c0ff;
   --accent-soft: rgba(91, 77, 251, 0.18);
+  /* Deeper than --accent so white text passes AA (4.61:1; hover 5.75:1). */
+  --accent-fill: #6c5ef5;
+  --accent-fill-hover: #5b4de6;
   --success: #6fe3a8;
   --success-soft: rgba(20, 108, 67, 0.22);
   --danger: #ff8a80;
@@ -140,16 +148,30 @@ a { color: inherit; }
   gap: 32px;
 }
 
+/* Brand lockup: the LH mark (a self-contained ink tile, so one file works
+   on light and dark surfaces) plus the wordmark as live text. The mark's
+   stroke weight matches the wordmark's stems at this size. */
 .logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   font-weight: 800;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
+  line-height: 1;
   color: #fff;
   text-decoration: none;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.035em;
+  white-space: nowrap;
+  flex-shrink: 0;
   margin-right: auto;
 }
 
-.logo span { color: var(--accent); }
+.logo-mark {
+  display: block;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+}
 
 .nav-wrap {
   display: flex;
@@ -268,13 +290,13 @@ a { color: inherit; }
 .btn-lg { padding: 15px 32px; font-size: 1rem; }
 
 .btn-primary {
-  background: var(--accent);
+  background: var(--accent-fill);
   color: #fff;
   box-shadow: 0 8px 24px rgba(91, 77, 251, 0.35);
 }
 
 .btn-primary:hover {
-  background: var(--accent-dark);
+  background: var(--accent-fill-hover);
   box-shadow: 0 14px 32px rgba(91, 77, 251, 0.45);
 }
 
@@ -295,6 +317,26 @@ a { color: inherit; }
 .btn-secondary:hover {
   border-color: var(--accent);
   color: var(--accent);
+}
+
+/* Purchase buttons while checkout isn't live: visibly unavailable, not a link */
+.btn-coming-soon,
+.btn-coming-soon:hover {
+  gap: 8px;
+  background: var(--surface-alt);
+  color: var(--muted);
+  border-color: var(--line);
+  box-shadow: none;
+  transform: none;
+  cursor: not-allowed;
+  font-family: inherit;
+}
+
+.btn-coming-soon svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+@media (max-width: 400px) {
+  .btn-coming-soon { white-space: normal; text-wrap: balance; text-align: center; }
+  .btn-coming-soon.btn-lg { padding-left: 18px; padding-right: 18px; }
 }
 
 .btn-logout {
@@ -328,7 +370,7 @@ a { color: inherit; }
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  background: var(--accent);
+  background: var(--accent-fill);
   color: #fff;
   display: flex;
   align-items: center;
@@ -544,6 +586,10 @@ a { color: inherit; }
   background: var(--accent-soft);
 }
 
+/* The page hero is dark in both themes: the violet accent can't reach AA on
+   it, so its eyebrow takes the light lilac (>= 7:1 on the pill). */
+.page-hero .eyebrow { color: #c7c0ff; }
+
 .hero h1 {
   font-size: clamp(2.6rem, 5.5vw, 4.2rem);
   margin-bottom: 24px;
@@ -729,7 +775,7 @@ a { color: inherit; }
 }
 
 .process-step:hover .process-num {
-  background: var(--accent);
+  background: var(--accent-fill);
   color: #fff;
 }
 
@@ -747,6 +793,9 @@ a { color: inherit; }
   margin-bottom: 16px;
   transition: background 0.25s ease, color 0.25s ease;
 }
+
+/* On the tinted disc the dark accent is under AA; the lilac passes. */
+[data-theme="dark"] .process-num { color: var(--accent-dark); }
 
 .process-step h3 {
   font-size: 1.05rem;
@@ -802,7 +851,7 @@ a { color: inherit; }
 
 /* CTA band */
 .cta-band {
-  background: linear-gradient(135deg, var(--accent), #8f7dff);
+  background: linear-gradient(135deg, var(--accent), #6354ee);
   color: #fff;
   padding: 80px 0;
 }
@@ -826,6 +875,10 @@ a { color: inherit; }
   margin-bottom: 12px;
 }
 
+/* On the light-mode violet band the translucent white is under AA; solid
+   white on the deepened band is >= 4.68:1 (the dark band is unchanged). */
+:root:not([data-theme="dark"]) .cta-inner p { color: #fff; }
+
 .cta-band .btn-primary {
   background: #fff;
   color: var(--ink);
@@ -844,7 +897,8 @@ a { color: inherit; }
   display: grid;
   grid-template-columns: 1.6fr 1fr 1fr 1fr;
   gap: 40px;
-  padding: 72px 0 48px;
+  padding-top: 72px;
+  padding-bottom: 48px;
 }
 
 .footer-brand p {
@@ -860,7 +914,7 @@ a { color: inherit; }
   gap: 12px;
 }
 
-.footer-col h4 {
+.footer-col h2 {
   color: #fff;
   font-size: 0.85rem;
   text-transform: uppercase;
@@ -1004,7 +1058,7 @@ a { color: inherit; }
   gap: var(--space-4);
 }
 
-.contact-info-item h4 {
+.contact-info-item h2 {
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -1056,7 +1110,7 @@ a { color: inherit; }
 .contact-form textarea:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-soft);
+  box-shadow: 0 0 0 1px var(--accent), 0 0 0 4px var(--accent-soft);
 }
 
 .contact-form textarea {
@@ -1140,7 +1194,7 @@ a { color: inherit; }
   right: -18px;
   width: 200px;
   transform: rotate(45deg);
-  background: var(--accent);
+  background: var(--accent-fill);
   color: #fff;
   font-size: 0.7rem;
   font-weight: 700;
@@ -1174,6 +1228,7 @@ a { color: inherit; }
   margin-bottom: 16px;
 }
 
+.course-card h2,
 .course-card h3 {
   font-size: 1.3rem;
   margin-bottom: 8px;
@@ -1184,6 +1239,10 @@ a { color: inherit; }
   font-size: 0.95rem;
   margin-bottom: 20px;
 }
+
+/* The featured card's tinted fill is darker than white: the muted grey
+   needs a step deeper there to keep AA (>= 5.2:1). */
+:root:not([data-theme="dark"]) .course-card.featured .course-desc { color: #5a6072; }
 
 .course-price {
   font-size: 1.8rem;
@@ -1951,7 +2010,7 @@ a { color: inherit; }
 .account-voice-row select:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-soft);
+  box-shadow: 0 0 0 1px var(--accent), 0 0 0 4px var(--accent-soft);
 }
 
 .account-current-email {
@@ -2184,7 +2243,7 @@ a { color: inherit; }
 .manage-form textarea:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-soft);
+  box-shadow: 0 0 0 1px var(--accent), 0 0 0 4px var(--accent-soft);
 }
 
 .manage-form textarea { resize: vertical; }
@@ -2216,7 +2275,7 @@ a { color: inherit; }
 .students-search:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-soft);
+  box-shadow: 0 0 0 1px var(--accent), 0 0 0 4px var(--accent-soft);
 }
 
 .students-stats {
@@ -2290,8 +2349,8 @@ a { color: inherit; }
 .inbox-filter-btn:hover { border-color: var(--accent); color: var(--accent); }
 
 .inbox-filter-btn.active {
-  background: var(--accent);
-  border-color: var(--accent);
+  background: var(--accent-fill);
+  border-color: var(--accent-fill);
   color: #fff;
 }
 
@@ -2454,7 +2513,7 @@ a { color: inherit; }
 [data-theme="dark"] .exam-nav-item.correct { background: rgba(20, 108, 67, 0.22); color: #6fe3a8; }
 [data-theme="dark"] .exam-nav-item.incorrect { background: rgba(179, 38, 30, 0.18); color: #ff8a80; }
 
-.exam-nav-item.current { background: var(--accent); border-color: var(--accent); color: #fff; }
+.exam-nav-item.current { background: var(--accent-fill); border-color: var(--accent-fill); color: #fff; }
 
 .exam-question {
   font-size: 1.4rem;
@@ -2627,8 +2686,8 @@ a { color: inherit; }
 .study-guide-tab:hover { border-color: var(--accent); }
 
 .study-guide-tab.active {
-  background: var(--accent);
-  border-color: var(--accent);
+  background: var(--accent-fill);
+  border-color: var(--accent-fill);
   color: #fff;
 }
 
@@ -2782,7 +2841,7 @@ body:has(#studyGuideRoot)::after {
 .cta-band {
   background:
     radial-gradient(700px 320px at 15% 0%, rgba(255, 255, 255, 0.16), transparent 60%),
-    linear-gradient(135deg, var(--accent), #8f7dff);
+    linear-gradient(135deg, var(--accent), #6354ee);
 }
 
 [data-theme="dark"] .cta-band {
@@ -2856,7 +2915,7 @@ body:has(#studyGuideRoot)::after {
 .hero::before { right: -240px; top: -300px; }
 .page-hero::before { right: -260px; top: -380px; width: min(620px, 130vw); }
 .stats-band::before { left: -300px; bottom: -430px; width: min(620px, 130vw); }
-.cta-band::before { right: -240px; top: -360px; width: min(600px, 130vw); background: rgba(255, 255, 255, 0.28); }
+.cta-band::before { right: -240px; top: -360px; width: min(600px, 130vw); background: rgba(255, 255, 255, 0.12); }
 .section-alt::before { left: -300px; bottom: -400px; width: min(620px, 130vw); background: var(--motif); }
 .auth-section::before { right: -300px; top: -260px; width: min(640px, 130vw); background: var(--motif); }
 
@@ -2953,13 +3012,33 @@ body:has(#studyGuideRoot)::after {
   z-index: 1;
 }
 
-/* Keyboard focus states. Most interactive elements previously had hover
-   styling but no visible focus ring, relying on the browser default — easy
-   to lose against this site's dark header/hero backgrounds. Split into two
-   groups since the header/hero/footer are permanently dark regardless of
-   the site's light/dark theme toggle, so they need a theme-invariant ring;
-   everything else follows the existing accent-soft ring already used by
-   .contact-form inputs. */
+/* Keyboard focus states. Split into two groups since the header/hero/footer
+   are permanently dark regardless of the site's light/dark theme toggle, so
+   they need a theme-invariant ring. Everything else gets a 2px ring in the
+   deeper (light) / lighter (dark) accent, --accent-dark,
+   set 2px off the control, so the ring always sits on the page background
+   (>= 3:1 against it in both themes, whatever the control's own fill);
+   on the permanently dark bands the ring turns white. */
+.site-header,
+.page-hero,
+.site-footer {
+  --focus-ring: rgba(255, 255, 255, 0.85);
+}
+
+/* Solid white: the light-mode band is a violet gradient (>= 3.2:1). */
+.cta-band { --focus-ring: #fff; }
+
+/* The account dropdown is a light panel inside the dark header. */
+.user-menu-dropdown { --focus-ring: var(--accent-dark); }
+
+/* Fallback for everything without its own treatment (plain links, the
+   menu button, scrollable regions), instead of the browser default ring,
+   which thins out against the dark bands. */
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
 .btn:focus-visible,
 .lesson-quiz-option:focus-visible,
 .quiz-option:focus-visible,
@@ -2972,8 +3051,16 @@ body:has(#studyGuideRoot)::after {
 .dashboard-card-link:focus-visible,
 .btn-listen:focus-visible,
 .btn-manage:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px var(--accent-soft);
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* Keep the ring above neighbouring pills in tight rows. */
+.study-guide-tab:focus-visible,
+.inbox-filter-btn:focus-visible,
+.exam-nav-item:focus-visible {
+  position: relative;
+  z-index: 1;
 }
 
 .nav a:focus-visible,
@@ -2985,7 +3072,7 @@ body:has(#studyGuideRoot)::after {
 }
 
 /* Placed after the rules above so these dark-chrome variants win over the
-   general .btn accent-soft ring at equal specificity. */
+   general .btn accent ring at equal specificity. */
 .theme-toggle:focus-visible,
 .user-menu-trigger:focus-visible,
 .btn-ghost:focus-visible,
@@ -3007,6 +3094,8 @@ body:has(#studyGuideRoot)::after {
     --accent: #5b4dfb !important;
     --accent-dark: #4636e0 !important;
     --accent-soft: #eeecff !important;
+    --accent-fill: #5b4dfb !important;
+    --accent-fill-hover: #4636e0 !important;
     --page-bg: #ffffff !important;
     --surface: #ffffff !important;
     --surface-alt: #f6f7fb !important;
@@ -3048,20 +3137,14 @@ body:has(#studyGuideRoot)::after {
   .study-guide-body { padding: 28px; }
 }
 
-/* Just above the hamburger breakpoint the full desktop row (~780px) doesn't
-   fit, so tighten its spacing. Sits before the 720px block so mobile wins. */
-@media (max-width: 900px) {
-  .nav { gap: 20px; }
-  .nav-wrap { gap: 16px; }
-
-  .btn-header,
-  .btn-header-secondary { padding-left: 16px; padding-right: 16px; }
-}
-
-@media (max-width: 720px) {
+/* Compact header. The full desktop row (logo, four links, Log In, Sign Up,
+   theme toggle) needs about 820px plus the container padding, so it only
+   appears from 900px up; below that everything moves into the menu panel
+   instead of being squeezed until it overflows. */
+@media (max-width: 899px) {
   .nav-wrap {
     position: absolute;
-    top: 76px;
+    top: 100%;
     left: 0;
     right: 0;
     background: var(--ink);
@@ -3088,7 +3171,25 @@ body:has(#studyGuideRoot)::after {
   }
 
   .nav-toggle { display: flex; }
+}
 
+/* App pages whose header holds only the avatar menu (no nav links) fit at
+   any width, so they keep the avatar in the bar down to 721px as before. */
+@media (min-width: 721px) and (max-width: 899px) {
+  .header-inner:not(:has(.nav)) .nav-wrap {
+    position: static;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0;
+    background: none;
+    border-bottom: 0;
+  }
+
+  .header-inner:not(:has(.nav)) .nav-toggle { display: none; }
+}
+
+@media (max-width: 720px) {
   .services-grid,
   .course-grid,
   .process-grid,

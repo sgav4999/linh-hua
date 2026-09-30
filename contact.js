@@ -22,12 +22,12 @@ if (contactForm) {
     submitBtn.textContent = "Send Message";
 
     if (error) {
-      messageEl.textContent = "Something went wrong sending your message. Please try emailing us directly.";
+      messageEl.textContent = "Something went wrong sending your message. Please try again.";
       messageEl.className = "form-message error";
       return;
     }
 
-    messageEl.textContent = "Message sent! We'll get back to you within one business day.";
+    messageEl.textContent = "Thanks, your message has been sent to the Linh Hua team.";
     messageEl.className = "form-message success";
     contactForm.reset();
   });
