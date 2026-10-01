@@ -276,6 +276,9 @@ a { color: inherit; }
   padding: 12px 26px;
   border-radius: 999px;
   text-decoration: none;
+  /* <button class="btn"> does not inherit the page font on its own (form
+     controls use the system face), so take the site's Plus Jakarta Sans. */
+  font-family: inherit;
   font-weight: 600;
   font-size: 0.95rem;
   border: 1px solid transparent;
