@@ -3,16 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script>(function(){try{if(localStorage.getItem("linhhoa_theme")==="dark"){document.documentElement.setAttribute("data-theme","dark");}}catch(e){}})();</script>
+<script>(function(){document.documentElement.classList.add("js");try{if(localStorage.getItem("linhhoa_theme")==="dark"){document.documentElement.setAttribute("data-theme","dark");}}catch(e){}try{if(!window.matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("motion-ok");}}catch(e){}})();</script>
 <title>About — Linh Hua</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css?v=20261015b">
+<link rel="stylesheet" href="about.css?v=20261017a">
 <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="brand/apple-touch-icon.png">
 </head>
-<body>
+<body class="about">
 
 <header class="site-header">
   <div class="container header-inner">
@@ -56,47 +57,61 @@
   </div>
 </header>
 
-<section class="page-hero">
-  <div class="hero-glow"></div>
-  <div class="container reveal visible">
-    <span class="eyebrow">About Us</span>
-    <h1>Making insurance licensing simple.</h1>
-    <p>Linh Hua is an online school built to help the next generation of insurance professionals get licensed quickly and confidently.</p>
-  </div>
-</section>
-
 <main>
-  <section class="page-section">
-    <div class="container about-grid">
-      <div class="reveal">
-        <h2>Our story</h2>
-        <p>We started Linh Hua because too many people trying to break into insurance were stuck with outdated textbooks, confusing state requirements, and exam prep that didn't match the real test.</p>
-        <p>So we built self-paced online courses: written lessons you can also listen to read aloud, module quizzes with explanations, a full practice exam with answer review, and a printable study guide.</p>
-      </div>
-      <div class="value-list reveal" style="transition-delay: 0.1s;">
-        <div class="value-item">
-          <span class="icon-bullet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 9 10-5 10 5-10 5-10-5Z"/><path d="M6 11v5c0 1.5 2.5 3 6 3s6-1.5 6-3v-5"/><path d="M22 9v6"/></svg></span>
-          <div>
-            <h3>Everything in one place</h3>
-            <p>Lessons, module quizzes, a full practice exam, and a printable study guide, all in one account.</p>
-          </div>
-        </div>
-        <div class="value-item">
-          <span class="icon-bullet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span>
-          <div>
-            <h3>Built for real life</h3>
-            <p>Self-paced, mobile-friendly courses that fit around a full-time job or a busy schedule.</p>
+  <section class="about-hero" aria-labelledby="aboutTitle">
+    <div class="container">
+      <div class="about-sheet">
+        <span class="about-trim" aria-hidden="true"></span>
+        <p class="about-runhead">About Us</p>
+        <h1 id="aboutTitle" class="about-title"><span class="about-title-line">Making insurance</span> <span class="about-title-line">licensing simple.</span></h1>
+        <p class="about-lede">Linh Hua is an online school built to help the next generation of insurance professionals get licensed quickly and confidently.</p>
+        <div class="about-bookmark" aria-hidden="true">
+          <div class="about-art" data-art="light">
+            <img class="art-light" data-src="assets/about/bookmark-light.webp" alt="" width="640" height="2400" decoding="async">
+            <img class="art-dark" data-src="assets/about/bookmark-dark.webp" alt="" width="640" height="2400" decoding="async">
+            <noscript><img class="art-light" src="assets/about/bookmark-light.webp" alt="" width="640" height="2400"></noscript>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="cta-band">
-    <div class="container cta-inner reveal">
-      <h2>Ready to start your course?</h2>
-      <p>Create your free account and pick your license path today.</p>
-      <a href="signup.html" class="btn btn-primary btn-lg">Sign Up</a>
+  <section class="about-preface" aria-labelledby="storyTitle">
+    <div class="container">
+      <div class="about-preface-inner reveal">
+        <h2 id="storyTitle" class="about-preface-title">Our story</h2>
+        <div class="about-preface-text">
+          <p class="about-preface-lead">We started Linh Hua because too many people trying to break into insurance were stuck with outdated textbooks, confusing state requirements, and exam prep that didn't match the real test.</p>
+          <p>So we built self-paced online courses: written lessons you can also listen to read aloud, module quizzes with explanations, a full practice exam with answer review, and a printable study guide.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="about-chapters">
+    <div class="container">
+      <div class="about-chapters-inner reveal">
+        <section class="about-chapter" aria-labelledby="chapterOne">
+          <h2 id="chapterOne" class="about-chapter-title">Everything in one place</h2>
+          <p>Lessons, module quizzes, a full practice exam, and a printable study guide, all in one account.</p>
+        </section>
+        <section class="about-chapter" aria-labelledby="chapterTwo">
+          <h2 id="chapterTwo" class="about-chapter-title">Built for real life</h2>
+          <p>Self-paced, mobile-friendly courses that fit around a full-time job or a busy schedule.</p>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <section class="about-close" aria-labelledby="closeTitle">
+    <div class="container">
+      <div class="about-close-inner reveal">
+        <h2 id="closeTitle" class="about-close-title">Ready to choose your path?</h2>
+        <div class="about-close-body">
+          <p>Create an account now and you’ll be ready when enrollment opens.</p>
+          <a href="signup.html" class="btn btn-primary btn-lg">Sign Up</a>
+        </div>
+      </div>
     </div>
   </section>
 </main>
@@ -132,6 +147,60 @@
   </div>
 </footer>
 
+<script>
+// The satin bookmark, theme-aware (the Courses loader, unchanged in kind):
+// only the current theme's file is requested; the other is fetched when a
+// theme toggle is reached for, and a switch cross-fades only once the new
+// file is ready, so the bookmark never goes blank. Without JS the
+// <noscript> light bookmark shows instead.
+(function () {
+  var root = document.documentElement;
+  var arts = [].slice.call(document.querySelectorAll(".about-art"));
+  if (!arts.length) return;
+  var theme = function () { return root.getAttribute("data-theme") === "dark" ? "dark" : "light"; };
+  var ready = {};
+  function load(t) {
+    if (ready[t]) return ready[t];
+    ready[t] = new Promise(function (resolve) {
+      var first = arts[0].querySelector(".art-" + t), done = false;
+      function finish() {
+        if (done) return; done = true;
+        arts.forEach(function (a) { a.classList.add("is-ready"); });
+        resolve();
+      }
+      arts.forEach(function (a) { var im = a.querySelector(".art-" + t); if (!im.getAttribute("src")) im.src = im.getAttribute("data-src"); });
+      if (first.complete && first.naturalWidth) { finish(); return; }
+      first.addEventListener("load", function () { (first.decode ? first.decode() : Promise.resolve()).catch(function () {}).then(finish); }, { once: true });
+      first.addEventListener("error", finish, { once: true });
+    });
+    return ready[t];
+  }
+  function show(t) { arts.forEach(function (a) { a.setAttribute("data-art", t); }); }
+  var current = theme();
+  show(current);
+  load(current);
+  new MutationObserver(function () {
+    var t = theme();
+    if (t === current) return;
+    current = t;
+    load(t).then(function () {
+      if (theme() !== t) return;
+      if (t === "dark") {
+        show("both");
+        setTimeout(function () { if (theme() === "dark") show("dark"); }, 260);
+      } else {
+        show("light");
+      }
+    });
+  }).observe(root, { attributes: true, attributeFilter: ["data-theme"] });
+  var other = function () { load(theme() === "dark" ? "light" : "dark"); };
+  [].forEach.call(document.querySelectorAll(".js-theme-toggle"), function (b) {
+    b.addEventListener("pointerenter", other, { once: true });
+    b.addEventListener("focus", other, { once: true });
+    b.addEventListener("touchstart", other, { once: true, passive: true });
+  });
+})();
+</script>
 <script src="script.js"></script>
 <script src="supabase-config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
