@@ -3,16 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script>(function(){try{if(localStorage.getItem("linhhoa_theme")==="dark"){document.documentElement.setAttribute("data-theme","dark");}}catch(e){}})();</script>
+<script>(function(){document.documentElement.classList.add("js");try{if(localStorage.getItem("linhhoa_theme")==="dark"){document.documentElement.setAttribute("data-theme","dark");}}catch(e){}try{if(!window.matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("motion-ok");}}catch(e){}})();</script>
 <title>Contact — Linh Hua</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css?v=20261015b">
+<link rel="stylesheet" href="contact.css?v=20261018a">
 <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="brand/apple-touch-icon.png">
 </head>
-<body>
+<body class="contact">
 
 <header class="site-header">
   <div class="container header-inner">
@@ -56,54 +57,60 @@
   </div>
 </header>
 
-<section class="page-hero">
-  <div class="hero-glow"></div>
-  <div class="container reveal visible">
-    <span class="eyebrow">Get in Touch</span>
-    <h1>Questions about a course or your license?</h1>
-    <p>Send us a message using the form below.</p>
-  </div>
-</section>
-
 <main>
-  <section class="page-section">
-    <div class="container contact-layout">
-      <div class="contact-info reveal">
-        <div class="contact-info-item">
-          <span class="icon-bullet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg></span>
-          <div>
-            <h2>Send a message</h2>
-            <p>Use the form to reach the Linh Hua team.</p>
-          </div>
-        </div>
-        <!-- Official business contact details (email, phone, address, hours) go here as additional .contact-info-item blocks once finalized. -->
-      </div>
+  <section class="contact-intro" aria-labelledby="contactTitle">
+    <div class="container">
+      <p class="contact-label">Get in Touch</p>
+      <h1 id="contactTitle" class="contact-title"><span class="contact-title-line">Questions about a</span> <span class="contact-title-line">course or your license?</span></h1>
+      <p class="contact-sub">Send us a message using the form below.</p>
+    </div>
+  </section>
 
-      <div class="contact-card reveal" style="transition-delay: 0.1s;">
-        <div id="formMessage" class="form-message"></div>
-        <form class="contact-form" id="contactForm">
-          <div>
+  <section class="contact-desk" aria-labelledby="ledgerTitle">
+    <div class="container">
+      <div class="contact-ledger">
+        <span class="contact-ticks" aria-hidden="true"></span>
+        <div class="contact-ledger-head">
+          <h2 id="ledgerTitle" class="contact-ledger-title">Send a message</h2>
+          <p>Use the form to reach the Linh Hua team.</p>
+        </div>
+        <div class="contact-record" id="contactRecord" role="group" aria-labelledby="contactRecordNote" tabindex="-1" hidden>
+          <p class="contact-record-note" id="contactRecordNote"></p>
+          <dl class="contact-record-rows">
+            <div class="contact-record-row"><dt>Reason for contact</dt><dd id="contactRecordReason"></dd></div>
+            <div class="contact-record-row"><dt>Email</dt><dd id="contactRecordEmail"></dd></div>
+          </dl>
+        </div>
+        <form class="contact-ledger-form" id="contactForm" method="post">
+          <div class="contact-row">
             <label for="name">Name</label>
-            <input type="text" id="name" name="name" required>
+            <div class="contact-field"><input type="text" id="name" name="name" autocomplete="name" required></div>
           </div>
-          <div>
+          <div class="contact-row">
             <label for="email">Email</label>
-            <input type="email" id="email" name="email" required>
+            <div class="contact-field"><input type="email" id="email" name="email" autocomplete="email" required></div>
           </div>
-          <div>
+          <div class="contact-row">
             <label for="reason">Reason for contact</label>
-            <select id="reason" name="reason">
-              <option>General question</option>
-              <option>Course support</option>
-              <option>Enrollment / billing</option>
-              <option>License &amp; exam question</option>
-            </select>
+            <div class="contact-field">
+              <select id="reason" name="reason">
+                <option>General question</option>
+                <option>Course support</option>
+                <option>Enrollment / billing</option>
+                <option>License &amp; exam question</option>
+              </select>
+            </div>
           </div>
-          <div>
+          <div class="contact-row">
             <label for="message">Message</label>
-            <textarea id="message" name="message" required></textarea>
+            <div class="contact-field"><textarea id="message" name="message" required></textarea></div>
           </div>
-          <button type="submit" class="btn btn-primary btn-lg">Send Message</button>
+          <div class="contact-row contact-row--submit">
+            <div class="contact-field contact-submit">
+              <button type="submit" class="btn btn-primary btn-lg">Send Message</button>
+              <div id="formMessage" class="form-message" role="alert" aria-atomic="true"></div>
+            </div>
+          </div>
         </form>
       </div>
     </div>
