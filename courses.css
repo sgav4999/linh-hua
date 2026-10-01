@@ -1,0 +1,788 @@
+/* ==========================================================================
+   Linh Hua: Courses catalog ("Swatch Book" + comparison plate).
+   Courses-only. Everything is scoped under body.catalog so the shared kit
+   (styles.css: header, footer, buttons, tokens, focus rings) stays as is,
+   and the shared .page-hero / .course-card / .cta-band are not used here.
+   Studio surfaces, grid ink and the ease-out mirror the approved homepage
+   (home.css, commit 7744891); each value notes its home.css source.
+   ========================================================================== */
+
+body.catalog {
+  --c-ease: cubic-bezier(0.23, 1, 0.32, 1);           /* home.css :19 --ease-out */
+  --c-field: #f8f8fd;                                 /* :38 --home-hero-field-1 */
+  --c-paper: #f6f7fb;                                 /* --paper */
+  --c-panel: #fbfbfe;                                 /* :1713 --hh-panel */
+  --c-line: rgba(74, 56, 176, 0.12);
+  --c-line-strong: rgba(74, 56, 176, 0.22);
+  --c-grid-ink: rgba(74, 56, 176, 0.11);              /* softer than :1235 --grid-ink */
+  --c-grid-major: rgba(74, 56, 176, 0.17);
+  --c-mark: rgba(74, 56, 176, 0.42);                  /* crop and registration marks */
+  --c-shaft: rgba(124, 111, 255, 0.16);               /* :39 --home-hero-shaft */
+  --c-label: rgba(20, 22, 31, 0.78);                  /* :42 --home-hero-eyebrow */
+  --c-text-muted: #565c70;                            /* :41 --home-hero-text-muted */
+  --c-accent-text: var(--accent-dark);                /* :43 --home-hero-accent-text */
+  --c-life: #5d3ff6;
+  --c-health: #2141d0;
+  --c-shadow: 0 1px 2px rgba(20, 22, 31, 0.04), 0 18px 40px -26px rgba(60, 50, 140, 0.3);
+  --c-step: 97px;
+  background: var(--c-paper);
+}
+
+:root[data-theme="dark"] body.catalog {
+  --c-field: #131833;                                 /* :65 */
+  --c-paper: #0d111d;                                 /* var(--page-bg) */
+  --c-panel: #10152a;                                 /* :1736 --hh-panel */
+  --c-line: rgba(160, 148, 255, 0.14);
+  --c-line-strong: rgba(160, 148, 255, 0.26);
+  --c-grid-ink: rgba(160, 148, 255, 0.09);
+  --c-grid-major: rgba(176, 164, 255, 0.15);
+  --c-mark: rgba(176, 164, 255, 0.5);
+  --c-shaft: rgba(124, 111, 255, 0.24);               /* :66 */
+  --c-label: rgba(255, 255, 255, 0.82);               /* :69 */
+  --c-text-muted: var(--muted);                       /* passes AA on the navy studio */
+  --c-accent-text: var(--gold);                       /* :70 */
+  --c-life: #7c5dff;
+  --c-health: #3a5cff;
+  --c-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 20px 44px -24px rgba(0, 0, 0, 0.6);
+}
+
+body.catalog ::selection { background: rgba(91, 77, 251, 0.22); }
+:root[data-theme="dark"] body.catalog ::selection { background: rgba(160, 148, 255, 0.32); }
+
+.catalog-sr {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* ---------- Drafting grid (static; a quieter cousin of the homepage grid) ---------- */
+.catalog-grid {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(90deg, var(--c-grid-major) 1px, transparent 1px),
+    linear-gradient(var(--c-grid-ink) 1px, transparent 1px),
+    linear-gradient(90deg, var(--c-grid-ink) 1px, transparent 1px);
+  background-size: calc(var(--c-step) * 4) 100%, var(--c-step) var(--c-step), var(--c-step) var(--c-step);
+  background-position: max(24px, calc(50% - 556px)) 0, 0 calc(var(--c-step) / 2), max(24px, calc(50% - 556px)) 0;
+  -webkit-mask-image: radial-gradient(ellipse 80% 85% at 62% 42%, #000 30%, transparent 100%);
+  mask-image: radial-gradient(ellipse 80% 85% at 62% 42%, #000 30%, transparent 100%);
+}
+
+/* ---------- Crop marks: four L-shaped corner ticks around a framed area ---------- */
+.catalog-crop {
+  position: absolute;
+  inset: -10px;
+  pointer-events: none;
+  --m: var(--c-mark);
+  background:
+    linear-gradient(var(--m), var(--m)) left top / 12px 1px no-repeat,
+    linear-gradient(var(--m), var(--m)) left top / 1px 12px no-repeat,
+    linear-gradient(var(--m), var(--m)) right top / 12px 1px no-repeat,
+    linear-gradient(var(--m), var(--m)) right top / 1px 12px no-repeat,
+    linear-gradient(var(--m), var(--m)) left bottom / 12px 1px no-repeat,
+    linear-gradient(var(--m), var(--m)) left bottom / 1px 12px no-repeat,
+    linear-gradient(var(--m), var(--m)) right bottom / 12px 1px no-repeat,
+    linear-gradient(var(--m), var(--m)) right bottom / 1px 12px no-repeat;
+}
+
+/* ---------- Satin art: a light and a dark copy of one still-life, cropped ----------
+   --cx/--cy: crop origin, --cw/--ch: crop size, as fractions of the
+   1800 x 1170 still-life; the box keeps the crop's own proportions. */
+.catalog-art {
+  --cx: 0; --cy: 0; --cw: 1; --ch: 1;
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: calc(1800 * var(--cw)) / calc(1170 * var(--ch));
+}
+
+.catalog-art img {
+  position: absolute;
+  max-width: none;
+  width: calc(100% / var(--cw));
+  height: auto;
+  left: calc(-100% * var(--cx) / var(--cw));
+  top: calc(-100% * var(--cy) / var(--ch));
+  user-select: none;
+}
+
+.catalog-art img:not([src]) { visibility: hidden; }
+.catalog-art .art-dark { opacity: 0; transition: opacity 240ms var(--c-ease); }
+.catalog-art[data-art="dark"] .art-dark,
+.catalog-art[data-art="both"] .art-dark { opacity: 1; }
+.catalog-art[data-art="dark"] .art-light { opacity: 0; }
+
+/* The art fades in once when its file is ready, so it never pops in. */
+html.motion-ok .catalog-art { transition: opacity 300ms var(--c-ease); }
+html.motion-ok .catalog-art:not(.is-ready) { opacity: 0; }
+
+/* Small material chips (comparison plate, closing sum): CSS crops of the
+   same file, switched by the loader's data-catalog-art. */
+.catalog-chip {
+  display: inline-block;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  vertical-align: -3px;
+  margin-right: 8px;
+  background-size: calc(18px / var(--chw)) auto;
+  background-position: calc(-18px * var(--chx) / var(--chw)) calc(-18px * 0.65 * var(--chy) / var(--chw));
+  background-repeat: no-repeat;
+  box-shadow: inset 0 0 0 1px rgba(20, 22, 31, 0.08);
+}
+.catalog-chip--life { --chx: 0.2222; --chy: 0.2564; --chw: 0.1111; }
+.catalog-chip--health { --chx: 0.7222; --chy: 0.2564; --chw: 0.1111; }
+.catalog-chip--combo { --chx: 0.4556; --chy: 0.5897; --chw: 0.1111; }
+html:not(.js) .catalog-chip,
+:root[data-catalog-art="light"] .catalog-chip { background-image: url("assets/catalog/still-life-light.webp"); }
+:root[data-catalog-art="dark"] .catalog-chip { background-image: url("assets/catalog/still-life-dark.webp"); }
+
+/* ---------- Motion: the shared .reveal, visible by default and on the
+   homepage curve (the shared one hides content without JS). ---------- */
+body.catalog .reveal { opacity: 1; transform: none; transition: none; }
+html.motion-ok body.catalog .reveal {
+  transition: opacity 560ms var(--c-ease), transform 560ms var(--c-ease);
+}
+html.motion-ok body.catalog .reveal:not(.visible) { opacity: 0; transform: translateY(16px); }
+/* Stagger only where specimens enter together: all three in one row from
+   1024px, Life and Health side by side from 600px. A specimen that scrolls
+   in on its own starts at once. */
+@media (min-width: 600px) {
+  html.motion-ok body.catalog .catalog-specimen--health { transition-delay: 80ms; }
+}
+@media (min-width: 1024px) {
+  html.motion-ok body.catalog .catalog-specimen--combo { transition-delay: 160ms; }
+}
+/* Content people read (the comparison plate, Included, the close) gets the
+   quieter homepage reveal: 10px over 420ms. */
+html.motion-ok body.catalog .catalog-compare .reveal,
+html.motion-ok body.catalog .catalog-included .reveal,
+html.motion-ok body.catalog .catalog-close .reveal {
+  transition-duration: 420ms;
+}
+html.motion-ok body.catalog .catalog-compare .reveal:not(.visible),
+html.motion-ok body.catalog .catalog-included .reveal:not(.visible),
+html.motion-ok body.catalog .catalog-close .reveal:not(.visible) { transform: translateY(10px); }
+
+/* ==========================================================================
+   Hero
+   ========================================================================== */
+.catalog-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 64px 0 56px;
+  background:
+    radial-gradient(900px 620px at 6% -8%, var(--c-shaft), transparent 62%),
+    linear-gradient(180deg, var(--c-field), var(--c-paper));
+}
+
+.catalog-hero-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: 48px;
+  align-items: center;
+}
+
+.catalog-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 18px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--c-label);
+}
+.catalog-label::before {
+  content: "";
+  width: 22px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--gold);
+}
+
+.catalog-hero-copy h1 {
+  margin: 0 0 20px;
+  font-size: clamp(2.4rem, 4.4vw, 3.6rem);
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+  font-weight: 800;
+  color: var(--text);
+  text-wrap: balance;
+}
+.catalog-accent { color: var(--c-accent-text); }
+
+.catalog-hero-sub {
+  margin: 0;
+  max-width: 34rem;
+  font-size: 1.08rem;
+  line-height: 1.6;
+  color: var(--c-text-muted);
+  text-wrap: pretty;
+}
+
+.catalog-hero-art { position: relative; margin: 6px 4px 28px; }
+/* The still-life file carries a transparent margin; the hero shows it
+   trimmed to the arrangement (never cropping the cloth itself). */
+.catalog-art--hero { --cx: 0.05; --cy: 0.0897; --cw: 0.9; --ch: 0.8547; }
+
+/* One measurement line under the still-life: a dimension rule with end ticks. */
+.catalog-measure {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -24px;
+  height: 9px;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--c-mark), var(--c-mark)) left 50% / 100% 1px no-repeat,
+    linear-gradient(var(--c-mark), var(--c-mark)) left top / 1px 100% no-repeat,
+    linear-gradient(var(--c-mark), var(--c-mark)) right top / 1px 100% no-repeat,
+    linear-gradient(var(--c-mark), var(--c-mark)) 50% top / 1px 100% no-repeat;
+  opacity: 0.8;
+}
+
+/* ==========================================================================
+   Swatch Book
+   ========================================================================== */
+.catalog-book { position: relative; padding: 40px 0 36px; }
+
+.catalog-specimens {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 34px minmax(0, 1fr) 34px minmax(0, 1.3fr);
+  align-items: stretch;
+}
+
+.catalog-specimen {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 16px 16px 22px;
+  border: 1px solid var(--c-line);
+  border-radius: 20px;
+  background: var(--c-panel);
+  box-shadow: var(--c-shadow);
+}
+
+.catalog-specimen--combo {
+  border-color: var(--c-line-strong);
+}
+
+.catalog-swatch { position: relative; margin: 8px 8px 0; }
+.catalog-swatch .catalog-crop { inset: -8px; }
+.catalog-swatch .catalog-art { border-radius: 6px; }
+
+/* Crops of the still-life (fractions of 1800 x 1170). Desktop: Life and
+   Health 4:3, the Combo the same height and 1.3x wider. */
+.catalog-specimen--life .catalog-art { --cx: 0.0611; --cy: 0.1709; --cw: 0.2889; --ch: 0.3333; }
+.catalog-specimen--health .catalog-art { --cx: 0.6611; --cy: 0.1453; --cw: 0.2889; --ch: 0.3333; }
+.catalog-specimen--combo .catalog-art { --cx: 0.3111; --cy: 0.4658; --cw: 0.4333; --ch: 0.3846; }
+/* The plate behind the crop: the studio surface the still-life sits on. */
+.catalog-swatch .catalog-art { background: linear-gradient(180deg, var(--c-field), var(--c-paper)); }
+
+.catalog-spec {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 24px 8px 0;
+}
+
+.catalog-tag-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.catalog-tag-row .catalog-tag { margin: 0; }
+
+.catalog-tag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+.catalog-tag::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+.catalog-tag--life::before { background: var(--c-life); }
+.catalog-tag--health::before { background: var(--c-health); }
+.catalog-tag--combo::before { background: linear-gradient(135deg, var(--c-life) 50%, var(--c-health) 50%); }
+
+.catalog-best {
+  margin: 0;
+  padding: 3px 7px;
+  border-radius: 4px;
+  background: var(--gold);
+  color: #14161f;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.catalog-spec h2 {
+  margin: 0 0 8px;
+  font-size: 1.28rem;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  font-weight: 800;
+  color: var(--text);
+}
+.catalog-specimen--combo h2 { font-size: 1.5rem; }
+
+.catalog-desc {
+  margin: 0 0 20px;
+  font-size: 0.94rem;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.catalog-price {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.catalog-price span {
+  font-size: 0.92rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+.catalog-specimen--combo .catalog-price { font-size: 2.3rem; }
+
+.catalog-savings {
+  margin: 6px 0 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--accent-dark);
+}
+
+.catalog-meta {
+  margin: 6px 0 18px;
+  font-size: 0.86rem;
+  color: var(--muted);
+}
+
+.catalog-features {
+  list-style: none;
+  margin: 0;
+  padding: 16px 0 0;
+  border-top: 1px solid var(--c-line);
+  display: grid;
+  gap: 8px;
+}
+.catalog-features li {
+  position: relative;
+  padding-left: 22px;
+  font-size: 0.92rem;
+  color: var(--text);
+}
+.catalog-features li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 0.42em;
+  width: 9px;
+  height: 5px;
+  border-left: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  transform: rotate(-45deg);
+}
+
+.catalog-action { margin-top: auto; padding-top: 24px; }
+.catalog-action .btn { width: 100%; }
+
+/* Relationship marks: a drafted "+" and "=" in the gutters, level with
+   the middle of the swatches. */
+.catalog-op {
+  position: relative;
+  align-self: start;
+  height: 0;
+  padding-top: clamp(96px, 10.5vw, 128px);
+}
+.catalog-op span {
+  position: absolute;
+  left: 50%;
+  top: clamp(96px, 10.5vw, 128px);
+  width: 14px;
+  height: 14px;
+  transform: translate(-50%, -50%);
+}
+.catalog-op span::before,
+.catalog-op span::after {
+  content: "";
+  position: absolute;
+  background: var(--c-mark);
+}
+.catalog-op--plus span::before { left: 0; right: 0; top: 50%; height: 1px; }
+.catalog-op--plus span::after { top: 0; bottom: 0; left: 50%; width: 1px; }
+.catalog-op--equals span::before { left: 0; right: 0; top: 4px; height: 1px; }
+.catalog-op--equals span::after { left: 0; right: 0; bottom: 4px; height: 1px; }
+
+/* ==========================================================================
+   Comparison plate (a real table at every width)
+   ========================================================================== */
+.catalog-compare { padding: 28px 0 72px; }
+
+.catalog-plate {
+  position: relative;
+  padding: 8px 28px 16px;
+  border: 1px solid var(--c-line);
+  border-radius: 16px;
+  background: var(--c-panel);
+  box-shadow: var(--c-shadow);
+}
+
+/* Scrolls sideways only when the table is wider than the plate (narrow
+   phones); vertical scrolling always passes straight through to the page. */
+.catalog-table-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  border-radius: 8px;
+}
+
+.catalog-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-variant-numeric: tabular-nums;
+}
+.catalog-col-label { width: 22%; }
+.catalog-col-life, .catalog-col-health { width: 22%; }
+.catalog-col-combo { width: 34%; }
+
+.catalog-table caption {
+  caption-side: top;
+  text-align: left;
+  padding: 18px 0 14px;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.catalog-table th,
+.catalog-table td {
+  padding: 13px 14px;
+  text-align: left;
+  vertical-align: top;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: var(--text);
+}
+.catalog-table thead th {
+  padding-top: 10px;
+  padding-bottom: 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border-bottom: 1px solid var(--c-line-strong);
+  white-space: nowrap;
+}
+.catalog-table tbody th {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+/* Hairline column rules only, no rule under every row. */
+.catalog-table tr > :not(:first-child) { border-left: 1px solid var(--c-line); }
+
+.catalog-num { font-weight: 700; }
+.catalog-price-cell { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.01em; }
+.catalog-save-cell { color: var(--accent-dark); }
+.catalog-included-cell { color: var(--muted); font-size: 0.92rem; }
+
+.catalog-na {
+  display: inline-block;
+  width: 14px;
+  height: 1px;
+  margin-top: 0.7em;
+  background: var(--c-mark);
+}
+
+/* ==========================================================================
+   Included strip
+   ========================================================================== */
+.catalog-included {
+  padding: 72px 0;
+  border-top: 1px solid var(--c-line);
+}
+
+.catalog-included h2 {
+  margin: 0 0 36px;
+  font-size: clamp(1.7rem, 3vw, 2.3rem);
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  font-weight: 800;
+  color: var(--text);
+  text-wrap: balance;
+}
+
+.catalog-included-list {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.catalog-included-item { padding: 2px 24px 2px 0; }
+.catalog-included-item + .catalog-included-item {
+  padding-left: 24px;
+  border-left: 1px solid var(--c-line);
+}
+.catalog-included-item h3 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+.catalog-included-item p {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+/* ==========================================================================
+   Closing
+   ========================================================================== */
+.catalog-close { padding: 0 0 96px; }
+
+.catalog-close-panel {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: 48px;
+  align-items: center;
+  padding: 52px 56px;
+  border: 1px solid var(--c-line);
+  border-radius: 24px;
+  background:
+    radial-gradient(700px 360px at 100% 0%, var(--c-shaft), transparent 64%),
+    var(--c-field);
+}
+.catalog-close-panel .catalog-grid {
+  -webkit-mask-image: radial-gradient(ellipse 70% 90% at 80% 40%, #000 20%, transparent 100%);
+  mask-image: radial-gradient(ellipse 70% 90% at 80% 40%, #000 20%, transparent 100%);
+}
+
+.catalog-close-copy h2 {
+  margin: 0 0 12px;
+  font-size: clamp(1.7rem, 3vw, 2.3rem);
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  font-weight: 800;
+  color: var(--text);
+  text-wrap: balance;
+}
+.catalog-close-copy p {
+  margin: 0 0 24px;
+  max-width: 30rem;
+  color: var(--c-text-muted);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.catalog-sum {
+  position: relative;
+  padding: 26px 28px;
+  border: 1px solid var(--c-line);
+  border-radius: 16px;
+  background: var(--c-panel);
+  font-variant-numeric: tabular-nums;
+}
+.catalog-sum-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 12px;
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+.catalog-sum-row strong { font-weight: 800; margin-left: 0.3em; }
+.catalog-sum-item { display: inline-flex; align-items: center; white-space: nowrap; }
+.catalog-sum-item .catalog-chip { margin-right: 8px; }
+.catalog-sum-op { color: var(--muted); font-weight: 600; }
+.catalog-sum-separate { color: var(--muted); }
+.catalog-sum-separate strong { color: var(--text); margin: 0 0.3em 0 0; }
+.catalog-sum-row--combo {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--c-line-strong);
+  justify-content: space-between;
+}
+.catalog-sum-row--combo strong { margin-left: 6px; font-size: 1.2rem; }
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 1100px) {
+  .catalog-hero-inner { grid-template-columns: minmax(0, 6fr) minmax(0, 6fr); gap: 36px; }
+  .catalog-specimens { grid-template-columns: minmax(0, 1fr) 26px minmax(0, 1fr) 26px minmax(0, 1.3fr); }
+  .catalog-specimen { padding: 14px 12px 20px; }
+  .catalog-spec { padding: 22px 6px 0; }
+}
+
+/* Tablet: Life and Health side by side, the Combo full width below as a
+   landscape specimen (a wide strip of the weave over a two-column label),
+   joined to both by a drafted dimension bracket. */
+@media (max-width: 1023px) {
+  .catalog-specimens { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 20px; }
+  .catalog-op { display: none; }
+  .catalog-included-list { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 28px; }
+  .catalog-included-item:nth-child(3) { padding-left: 0; border-left: 0; }
+  .catalog-close-panel { grid-template-columns: minmax(0, 1fr); gap: 32px; padding: 44px 40px; }
+}
+
+@media (min-width: 600px) and (max-width: 1023px) {
+  .catalog-specimen--combo {
+    position: relative;
+    grid-column: 1 / -1;
+    margin-top: 52px;
+  }
+  .catalog-specimen--combo .catalog-art { --cx: 0.2944; --cy: 0.5385; --cw: 0.4556; --ch: 0.2051; }
+  .catalog-specimen--combo .catalog-spec {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    grid-auto-rows: auto;
+    column-gap: 32px;
+    padding: 22px 8px 0;
+  }
+  .catalog-specimen--combo .catalog-spec > * { grid-column: 1; }
+  .catalog-specimen--combo .catalog-tag-row { grid-column: 1 / -1; }
+  .catalog-specimen--combo .catalog-meta { margin-bottom: 0; }
+  .catalog-specimen--combo .catalog-features { grid-column: 2; grid-row: 2 / 6; align-self: start; }
+  .catalog-specimen--combo .catalog-action { grid-column: 2; grid-row: 6; align-self: end; padding-top: 16px; }
+  .catalog-specimen--combo::before {
+    content: "";
+    position: absolute;
+    left: 25%;
+    right: 25%;
+    top: -34px;
+    height: 20px;
+    pointer-events: none;
+    background:
+      linear-gradient(var(--c-mark), var(--c-mark)) left top / 100% 1px no-repeat,
+      linear-gradient(var(--c-mark), var(--c-mark)) left top / 1px 8px no-repeat,
+      linear-gradient(var(--c-mark), var(--c-mark)) right top / 1px 8px no-repeat,
+      linear-gradient(var(--c-mark), var(--c-mark)) 50% top / 1px 100% no-repeat;
+  }
+}
+
+@media (max-width: 819px) {
+  .catalog-hero { padding: 48px 0 44px; }
+  .catalog-hero-inner { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  .catalog-hero-art { margin: 0 6px 30px; }
+}
+
+/* Phone: stacked specimens, each swatch a short wide strip of its fabric. */
+@media (max-width: 599px) {
+  .catalog-book { padding-top: 28px; }
+  .catalog-specimens { grid-template-columns: minmax(0, 1fr); }
+  .catalog-op {
+    display: flex;
+    justify-content: center;
+    height: 34px;
+    padding: 0;
+    align-self: auto;
+  }
+  .catalog-op span { top: 50%; }
+  .catalog-specimen--life .catalog-art { --cx: 0.0611; --cy: 0.2479; --cw: 0.3611; --ch: 0.2385; }
+  .catalog-specimen--health .catalog-art { --cx: 0.6222; --cy: 0.2051; --cw: 0.3333; --ch: 0.2197; }
+  .catalog-specimen--combo .catalog-art { --cx: 0.3333; --cy: 0.5470; --cw: 0.3889; --ch: 0.2564; }
+  .catalog-specimen--combo .catalog-spec { padding-top: 22px; }
+  .catalog-specimen--combo h2 { font-size: 1.36rem; }
+  .catalog-specimen--combo .catalog-price { font-size: 2.1rem; }
+
+  .catalog-compare { padding-bottom: 56px; }
+  .catalog-plate { padding: 4px 12px 10px; }
+  .catalog-col-label { width: 27%; }
+  .catalog-col-life, .catalog-col-health { width: 22%; }
+  .catalog-col-combo { width: 29%; }
+  .catalog-table th,
+  .catalog-table td { padding: 10px 7px; font-size: 0.84rem; }
+  .catalog-table thead th { font-size: 0.82rem; white-space: normal; }
+  .catalog-table tbody th { font-size: 0.8125rem; }
+  .catalog-price-cell { font-size: 1.02rem; }
+  .catalog-included-cell { font-size: 0.82rem; }
+  .catalog-chip { width: 14px; height: 14px; margin-right: 5px; background-size: calc(14px / var(--chw)) auto; background-position: calc(-14px * var(--chx) / var(--chw)) calc(-14px * 0.65 * var(--chy) / var(--chw)); }
+
+  .catalog-included { padding: 56px 0; }
+  .catalog-included-list { grid-template-columns: minmax(0, 1fr); row-gap: 24px; }
+  .catalog-included-item,
+  .catalog-included-item + .catalog-included-item { padding: 0; border-left: 0; }
+
+  .catalog-close { padding-bottom: 72px; }
+  .catalog-close-panel { padding: 32px 22px; border-radius: 20px; }
+  .catalog-sum { padding: 20px 18px; }
+
+  /* The equation as a written sum: operators in a narrow gutter, amounts
+     right-aligned in one column, a rule above the separate-purchase total,
+     and the Combo price (with its saving) below it in the same column. */
+  .catalog-sum-row {
+    display: grid;
+    grid-template-columns: 1.25rem minmax(0, 1fr);
+    align-items: center;
+    gap: 10px 0;
+  }
+  .catalog-sum-row > * { grid-column: 2; }
+  .catalog-sum-row > .catalog-sum-op { grid-column: 1; }
+  .catalog-sum-item { display: flex; align-items: center; white-space: normal; }
+  .catalog-sum-row strong,
+  .catalog-sum-separate strong { margin: 0 0 0 auto; padding-left: 12px; white-space: nowrap; }
+  .catalog-sum-separate strong { order: 2; }
+  .catalog-sum-separate,
+  .catalog-sum-op:has(+ .catalog-sum-separate) { padding-top: 10px; border-top: 1px solid var(--c-line); }
+  .catalog-sum-row--combo { row-gap: 8px; }
+  .catalog-sum-row--combo .catalog-best { justify-self: end; }
+}
+
+/* Narrow phones: the table keeps readable type (13px row headers, 14px
+   values) and a minimum width that fits every word whole; where the plate
+   is narrower than that (below about 370px) it scrolls sideways inside
+   its wrapper instead of crushing the columns. */
+@media (max-width: 400px) {
+  .catalog-table { min-width: 18.75rem; }
+  .catalog-col-label { width: 27%; }
+  .catalog-col-life { width: 20%; }
+  .catalog-col-health { width: 26%; }
+  .catalog-col-combo { width: 27%; }
+  .catalog-table th,
+  .catalog-table td { padding: 9px 5px; font-size: 0.875rem; }
+  .catalog-table thead th { font-size: 0.875rem; white-space: nowrap; }
+  .catalog-table tbody th { font-size: 0.8125rem; }
+  .catalog-price-cell { font-size: 1rem; }
+  .catalog-included-cell { font-size: 0.8125rem; }
+  /* The scroller runs to the plate's border, so overflowing columns slide
+     under the plate edge; its focus ring sits just inside that border. */
+  .catalog-table-scroll { margin: 0 -12px; padding: 0 12px; border-radius: 14px; }
+  .catalog-table-scroll:focus-visible { outline-offset: -3px; }
+  /* The caption's text stays put while the columns scroll beneath it. */
+  .catalog-caption-text { position: sticky; left: 0; }
+}
+
+/* The narrowest phones: the Combo line uses the operator gutter too, so its
+   name breaks once at most. */
+@media (max-width: 359px) {
+  .catalog-sum-row--combo > .catalog-sum-item { grid-column: 1 / -1; }
+}
