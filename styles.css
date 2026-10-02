@@ -1904,7 +1904,7 @@ a { color: inherit; }
   .account-container { max-width: 820px; }
   .account-cards-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     align-items: start;
   }
 }
