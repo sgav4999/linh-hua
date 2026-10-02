@@ -132,19 +132,19 @@ a { color: inherit; }
 }
 
 /* Header */
+/* Header structure. Its colours, sizes and states are in the "Site header"
+   block at the end of this file (the Homepage bar, shared by every page). */
 .site-header {
   position: sticky;
   top: 0;
-  background: rgba(11, 14, 23, 0.85);
   backdrop-filter: blur(10px);
   z-index: 200;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .header-inner {
   display: flex;
   align-items: center;
-  height: 76px;
+  height: 68px;
   gap: 32px;
 }
 
@@ -186,39 +186,15 @@ a { color: inherit; }
 
 .nav a {
   position: relative;
-  color: rgba(255, 255, 255, 0.72);
   text-decoration: none;
   font-weight: 500;
-  font-size: 0.95rem;
-  padding-bottom: 4px;
-  transition: color 0.15s ease;
 }
 
 .nav a::after {
   content: "";
   position: absolute;
-  left: 0;
-  right: 100%;
-  bottom: 0;
   height: 2px;
-  background: var(--accent);
   border-radius: 2px;
-  transition: right 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.nav a:hover,
-.nav a.active {
-  color: #fff;
-}
-
-.nav a:hover::after,
-.nav a.active::after {
-  right: 0;
-}
-
-.btn-header {
-  padding: 10px 20px;
-  font-size: 0.9rem;
 }
 
 .nav-toggle {
@@ -235,7 +211,6 @@ a { color: inherit; }
 .nav-toggle span {
   width: 22px;
   height: 2px;
-  background: #fff;
   display: block;
 }
 
@@ -243,20 +218,11 @@ a { color: inherit; }
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid;
   background: transparent;
-  color: #fff;
   cursor: pointer;
   flex-shrink: 0;
-  transition: border-color 0.2s ease, background 0.2s ease;
-}
-
-.theme-toggle:hover {
-  border-color: rgba(255, 255, 255, 0.5);
-  background: rgba(255, 255, 255, 0.08);
 }
 
 .theme-toggle svg {
@@ -390,18 +356,11 @@ a { color: inherit; }
   border: 2px solid rgba(255, 255, 255, 0.25);
 }
 
-.user-menu-trigger:hover .user-avatar {
-  border-color: rgba(255, 255, 255, 0.6);
-}
-
 .user-menu-dropdown {
   position: absolute;
   top: calc(100% + 12px);
   right: 0;
   background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  box-shadow: 0 20px 44px rgba(11, 14, 23, 0.2);
   min-width: 230px;
   padding: 8px;
   z-index: 300;
@@ -1080,30 +1039,20 @@ a { color: inherit; }
 
 .input-icon input { padding-left: 42px; }
 
+/* The header's Log In link (its colours and states are in the "Site header"
+   block at the end of this file). */
 .btn-header-secondary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 20px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: 1px solid;
   background: transparent;
-  color: rgba(255, 255, 255, 0.85);
   font-weight: 600;
   font-size: 0.9rem;
   text-decoration: none;
   white-space: nowrap;
-  transition: border-color 0.2s ease, color 0.2s ease;
 }
-
-/* No lift on either header action (Log In here, Sign Up below): the header
-   stays still, as on the homepage header. */
-.btn-header-secondary:hover {
-  color: #fff;
-  border-color: #fff;
-}
-
-.site-header .btn-header:hover { transform: none; }
 
 /* Course cards */
 .course-grid {
@@ -3001,14 +2950,14 @@ body:has(#studyGuideRoot)::after {
   z-index: 1;
 }
 
-/* Keyboard focus states. Split into two groups since the header/hero/footer
+/* Keyboard focus states. Split into two groups since the hero/footer bands
    are permanently dark regardless of the site's light/dark theme toggle, so
    they need a theme-invariant ring. Everything else gets a 2px ring in the
    deeper (light) / lighter (dark) accent, --accent-dark,
    set 2px off the control, so the ring always sits on the page background
    (>= 3:1 against it in both themes, whatever the control's own fill);
-   on the permanently dark bands the ring turns white. */
-.site-header,
+   on the permanently dark bands the ring turns white. The site header sets
+   its own ring with its colours (the "Site header" block at the end). */
 .page-hero,
 .site-footer {
   --focus-ring: rgba(255, 255, 255, 0.85);
@@ -3052,7 +3001,6 @@ body:has(#studyGuideRoot)::after {
   z-index: 1;
 }
 
-.nav a:focus-visible,
 .footer-col a:focus-visible,
 .logo:focus-visible {
   outline: 2px solid rgba(255, 255, 255, 0.6);
@@ -3136,26 +3084,18 @@ body:has(#studyGuideRoot)::after {
     top: 100%;
     left: 0;
     right: 0;
-    background: var(--ink);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     display: none;
     flex-direction: column;
     align-items: stretch;
-    gap: 20px;
-    padding: 20px 24px 24px;
   }
 
   .nav-wrap.open { display: flex; }
 
-  .nav {
-    flex-direction: column;
-    gap: 18px;
-  }
+  .nav { flex-direction: column; }
 
   .btn-header,
   .btn-header-secondary {
     width: 100%;
-    padding: 12px 24px;
     text-align: center;
   }
 
@@ -3170,9 +3110,6 @@ body:has(#studyGuideRoot)::after {
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding: 0;
-    background: none;
-    border-bottom: 0;
   }
 
   .header-inner:not(:has(.nav)) .nav-toggle { display: none; }
@@ -3187,4 +3124,338 @@ body:has(#studyGuideRoot)::after {
   .hero-inner { padding: 96px 24px 72px; }
 
   .role-cards { grid-template-columns: 1fr; }
+}
+
+/* ==========================================================================
+   Site header. One shared bar for every page, taken from the Homepage:
+   a light bar in light mode, a deep navy bar with one restrained indigo
+   light behind the logo in dark mode, a quiet hairline, links that change
+   colour on hover, a short two-strand underline on the active page, and a
+   light/navy menu panel with pill rows on narrow screens. The header rules
+   earlier in this file hold only the structure (sticky bar, flex rows, the
+   panel's position, the shared .logo/.user-avatar also used outside the
+   header); everything visual lives here. home.css adds only what belongs to
+   the Homepage hero: its violet light continuing into the bar, and the
+   seamless top that gains its hairline as the page scrolls.
+   The ":root" prefix keeps these rules at the specificity they had as
+   Homepage rules, so they keep winning over the general .btn, focus-ring
+   and dark-mode rules exactly as on the approved Homepage.
+   ========================================================================== */
+:root {
+  --hdr-surface: rgba(248, 248, 253, 0.86);
+  --hdr-surface-solid: #f8f8fd;
+  --hdr-glow: none;
+  --hdr-line-rest: rgba(42, 31, 120, 0.07);
+  --hdr-line: rgba(42, 31, 120, 0.12);
+  --hdr-shadow: 0 10px 28px -18px rgba(40, 30, 110, 0.35);
+  --hdr-text: #14161f;
+  --hdr-link: #4a4f63;
+  --hdr-ghost-border: rgba(20, 22, 31, 0.16);
+  --hdr-ghost-border-hover: rgba(20, 22, 31, 0.34);
+  --hdr-ghost-fill: rgba(255, 255, 255, 0.7);
+  --hdr-primary: #5b4dfb;
+  --hdr-primary-hover: #4636e0;
+  --hdr-focus: #5b4dfb;
+  --hdr-panel: #fbfbfe;
+  --hdr-pill: rgba(91, 77, 251, 0.09);
+  --hdr-panel-shadow: 0 24px 40px -24px rgba(40, 30, 110, 0.35);
+  --hdr-drop-border: rgba(20, 22, 31, 0.08);
+  --hdr-drop-shadow: 0 18px 40px -12px rgba(20, 22, 31, 0.24);
+  --hdr-strand-a: var(--accent-dark);
+  --hdr-strand-b: #232f8f;
+  --hdr-ease: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+:root[data-theme="dark"] {
+  --hdr-surface: rgba(12, 16, 32, 0.84);
+  --hdr-surface-solid: #0d1120;
+  --hdr-glow: radial-gradient(420px 90px at 8% 0%, rgba(110, 95, 255, 0.2), transparent 70%);
+  --hdr-line-rest: rgba(160, 148, 255, 0.16);
+  --hdr-line: rgba(160, 148, 255, 0.22);
+  --hdr-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 12px 30px -18px rgba(0, 0, 0, 0.8);
+  --hdr-text: #ffffff;
+  --hdr-link: rgba(255, 255, 255, 0.68);
+  --hdr-ghost-border: rgba(255, 255, 255, 0.22);
+  --hdr-ghost-border-hover: rgba(255, 255, 255, 0.5);
+  --hdr-ghost-fill: rgba(255, 255, 255, 0.06);
+  --hdr-primary: #6c5ef5;
+  --hdr-primary-hover: #5b4de6;
+  --hdr-focus: rgba(255, 255, 255, 0.85);
+  --hdr-panel: #10152a;
+  --hdr-pill: rgba(124, 111, 255, 0.16);
+  --hdr-panel-shadow: 0 24px 40px -24px rgba(0, 0, 0, 0.7);
+  --hdr-drop-border: rgba(160, 148, 255, 0.18);
+  --hdr-drop-shadow: 0 18px 40px -12px rgba(0, 0, 0, 0.6);
+  --hdr-strand-a: #7c6fff;
+  --hdr-strand-b: #4b63e6;
+}
+
+:root .site-header {
+  --focus-ring: var(--hdr-focus);
+  background-color: var(--hdr-surface);
+  background-image: var(--hdr-glow);
+  border-bottom: 1px solid var(--hdr-line-rest);
+}
+
+:root[data-theme="dark"] .site-header {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+:root .site-header .logo { color: var(--hdr-text); }
+
+/* Links: color change only on hover (a high-frequency interaction gets no
+   movement); the active page carries a short static two-strand underline. */
+:root .site-header .nav a {
+  color: var(--hdr-link);
+  font-size: 0.94rem;
+  padding: 6px 0;
+  transition: color 150ms var(--hdr-ease);
+}
+
+:root .site-header .nav a:hover,
+:root .site-header .nav a.active { color: var(--hdr-text); }
+
+:root .site-header .nav a.active { font-weight: 600; }
+
+:root .site-header .nav a::after,
+:root .site-header .nav a:hover::after {
+  left: 50%;
+  right: auto;
+  bottom: -2px;
+  width: 16px;
+  background: linear-gradient(90deg, var(--hdr-strand-a), var(--hdr-strand-b));
+  transform: translateX(-50%) scaleX(0);
+  transition: none;
+}
+
+:root .site-header .nav a.active::after { transform: translateX(-50%) scaleX(1); }
+
+:root .header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+:root .site-header .btn-header-secondary {
+  padding: 9px 18px;
+  color: var(--hdr-text);
+  border-color: var(--hdr-ghost-border);
+  transition: border-color 150ms var(--hdr-ease), background-color 150ms var(--hdr-ease);
+}
+
+:root .site-header .btn-header-secondary:hover {
+  color: var(--hdr-text);
+  border-color: var(--hdr-ghost-border-hover);
+  background-color: var(--hdr-ghost-fill);
+  transform: none;
+}
+
+:root .site-header .btn-header {
+  padding: 9px 18px;
+  background: var(--hdr-primary);
+  box-shadow: 0 6px 16px -6px rgba(91, 77, 251, 0.55);
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 160ms var(--hdr-ease), box-shadow 0.25s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+:root .site-header .btn-header:hover {
+  background: var(--hdr-primary-hover);
+  box-shadow: 0 6px 16px -6px rgba(91, 77, 251, 0.55);
+  transform: none;
+}
+
+/* Press: a small settle on both header actions. The header's motion is
+   gated on the media query itself (not the .motion-ok class, which only the
+   redesigned pages set), so it runs the same on every page. */
+@media (prefers-reduced-motion: no-preference) {
+  :root .site-header .btn-header-secondary:active {
+    transform: scale(0.97);
+    transition: transform 160ms var(--hdr-ease);
+  }
+
+  :root .site-header .btn-header:active {
+    transform: scale(0.97);
+    transition: transform 160ms var(--hdr-ease), box-shadow 0.25s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+}
+
+:root .site-header .theme-toggle {
+  width: 36px;
+  height: 36px;
+  color: var(--hdr-text);
+  border-color: var(--hdr-ghost-border);
+  transition: border-color 150ms var(--hdr-ease), background-color 150ms var(--hdr-ease);
+}
+
+:root .site-header .theme-toggle:hover {
+  border-color: var(--hdr-ghost-border-hover);
+  background: var(--hdr-ghost-fill);
+}
+
+:root .site-header .user-avatar {
+  width: 34px;
+  height: 34px;
+  border: 0;
+  box-shadow: 0 0 0 2px var(--hdr-surface-solid), 0 0 0 3px var(--hdr-ghost-border);
+  transition: box-shadow 150ms var(--hdr-ease);
+}
+
+:root .site-header .user-menu-trigger:hover .user-avatar {
+  box-shadow: 0 0 0 2px var(--hdr-surface-solid), 0 0 0 3px var(--hdr-ghost-border-hover);
+}
+
+:root .site-header .user-menu-dropdown {
+  border: 1px solid var(--hdr-drop-border);
+  border-radius: 14px;
+  box-shadow: var(--hdr-drop-shadow);
+}
+
+/* The account menu scales in from its trigger (top right); it closes
+   instantly. Motion on only. */
+@media (prefers-reduced-motion: no-preference) {
+  :root .site-header .user-menu .user-menu-dropdown {
+    transform-origin: top right;
+    transition: opacity 160ms var(--hdr-ease), transform 160ms var(--hdr-ease);
+  }
+
+  @starting-style {
+    :root .site-header .user-menu .user-menu-dropdown {
+      opacity: 0;
+      transform: scale(0.97);
+    }
+  }
+}
+
+/* Focus: accent rings on the light bar, white rings on the dark bar. */
+:root .site-header .nav a:focus-visible,
+:root .site-header .logo:focus-visible {
+  outline: 2px solid var(--hdr-focus);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+:root .site-header .theme-toggle:focus-visible,
+:root .site-header .user-menu-trigger:focus-visible,
+:root .site-header .btn-header:focus-visible,
+:root .site-header .btn-header-secondary:focus-visible,
+:root .site-header .nav-toggle:focus-visible {
+  outline: 2px solid var(--hdr-focus);
+  outline-offset: 2px;
+}
+
+:root .site-header .nav-toggle span { background: var(--hdr-text); }
+
+/* Wide: logo, links truly centered, actions. The nav wrapper steps out of
+   the layout so its two children sit in the grid's middle and end cells.
+   Headers without the actions group (the app pages: an avatar, sometimes
+   one link) keep the base row, everything after the logo on the right. */
+@media (min-width: 1024px) {
+  :root .header-inner:has(.header-actions) {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+  }
+
+  :root .header-inner:has(.header-actions) .nav-wrap { display: contents; }
+  :root .header-actions { justify-self: end; }
+}
+
+@media (min-width: 900px) and (max-width: 1023px) {
+  :root .header-inner:has(.header-actions) .nav-wrap { flex: 1; justify-content: space-between; }
+  :root .site-header .nav { gap: 24px; }
+}
+
+/* Compact: the menu panel. */
+@media (max-width: 899px) {
+  :root .site-header .nav-toggle {
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    margin-right: -10px;
+  }
+
+  :root .site-header .nav-toggle span { transform-origin: center; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :root .site-header .nav-toggle span {
+      transition: transform 200ms var(--hdr-ease), opacity 150ms var(--hdr-ease);
+    }
+  }
+
+  :root .site-header .nav-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  :root .site-header .nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  :root .site-header .nav-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  :root .site-header .nav-wrap {
+    background: var(--hdr-panel);
+    border-bottom: 1px solid var(--hdr-line);
+    box-shadow: var(--hdr-panel-shadow);
+    padding: 10px 20px 20px;
+    gap: 14px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :root .site-header .nav-wrap.open {
+      transition: opacity 180ms var(--hdr-ease), transform 180ms var(--hdr-ease);
+    }
+
+    @starting-style {
+      :root .site-header .nav-wrap.open {
+        opacity: 0;
+        transform: translateY(-4px);
+      }
+    }
+  }
+
+  :root .site-header .nav { gap: 2px; }
+
+  :root .site-header .nav a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 1rem;
+  }
+
+  :root .site-header .nav a.active { background: var(--hdr-pill); }
+  :root .site-header .nav a::after { display: none; }
+
+  :root .header-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 10px;
+    max-width: 460px;
+  }
+
+  :root .site-header .btn-header,
+  :root .site-header .btn-header-secondary { padding: 12px 18px; }
+
+  :root .site-header .theme-toggle { width: 44px; height: 44px; }
+
+  :root .site-header .user-menu { grid-column: 1 / -1; }
+
+  :root .site-header .user-menu-dropdown {
+    left: 0;
+    right: auto;
+    transform-origin: top left;
+  }
+}
+
+/* App pages whose header holds only the avatar keep it in the bar from
+   721px up (see the base rule above): no panel styling there, and the
+   account menu still opens from the right edge. */
+@media (min-width: 721px) and (max-width: 899px) {
+  :root .site-header .header-inner:not(:has(.nav)) .nav-wrap {
+    padding: 0;
+    background: none;
+    border-bottom: 0;
+    box-shadow: none;
+  }
+
+  :root .site-header .header-inner:not(:has(.nav)) .user-menu-dropdown {
+    left: auto;
+    right: 0;
+    transform-origin: top right;
+  }
 }
