@@ -1916,9 +1916,37 @@ a { color: inherit; }
 
 .account-avatar-row {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 20px;
   margin-bottom: 8px;
+}
+
+/* The upload column takes the space beside the avatar, and drops below it
+   only when the Change Photo button no longer fits there (narrow phones). */
+.account-avatar-row > div {
+  flex: 1 1 0;
+  max-width: max-content;
+}
+
+/* The real file input stays in the tab order but out of sight; its label is
+   the visible Change Photo button and shows the focus ring for it. */
+.account-avatar-row input.account-avatar-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.account-avatar-row input.account-avatar-input:focus-visible + .btn {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
 }
 
 .account-avatar-preview {
@@ -1977,6 +2005,7 @@ a { color: inherit; }
 
 .account-current-email strong {
   color: var(--text);
+  overflow-wrap: anywhere;
 }
 
 /* Checkout */
