@@ -3,16 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script>(function(){try{if(localStorage.getItem("linhhoa_theme")==="dark"){document.documentElement.setAttribute("data-theme","dark");}}catch(e){}})();</script>
+<script>(function(){document.documentElement.classList.add("js","dash-pending");try{if(localStorage.getItem("linhhoa_theme")==="dark"){document.documentElement.setAttribute("data-theme","dark");}}catch(e){}try{if(!window.matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("motion-ok");}}catch(e){}})();</script>
 <title>Dashboard — Linh Hua</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css?v=20261015b">
+<link rel="stylesheet" href="dashboard.css?v=20261002a">
 <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="brand/apple-touch-icon.png">
 </head>
-<body>
+<body class="dashboard">
 
 <header class="site-header">
   <div class="container header-inner">
@@ -45,105 +46,57 @@
 </header>
 
 <main id="dashboardRoot">
-  <section class="page-hero">
-    <div class="hero-glow"></div>
-    <div class="container">
-      <div class="dashboard-header">
-        <div class="dashboard-header-info">
-          <span class="user-avatar dashboard-avatar" id="dashboardAvatar"></span>
-          <div>
-            <span class="eyebrow">Dashboard</span>
-            <h1 id="userName">&nbsp;</h1>
-            <p id="userEmail" class="dashboard-user-email">&nbsp;</p>
-          </div>
-        </div>
-        <span id="userRole" class="role-badge"></span>
-      </div>
-
-      <div class="dashboard-stats student-only" id="dashboardStats">
-        <div class="dashboard-stat">
-          <span class="dashboard-stat-num" id="statLessonsCompleted">0</span>
-          <span class="dashboard-stat-label">Lessons Completed</span>
-        </div>
+  <section class="dash-opening" aria-labelledby="userName">
+    <div class="container dash-opening-inner">
+      <span class="user-avatar dash-avatar" id="dashboardAvatar" aria-hidden="true"></span>
+      <div class="dash-identity">
+        <h1 id="userName" class="dash-greeting">Dashboard</h1>
+        <p class="dash-identity-meta"><span id="userEmail" class="dash-email"></span><span id="userRole" class="role-badge"></span></p>
       </div>
     </div>
   </section>
 
-  <section class="page-section">
+  <section class="dash-desk student-only" aria-labelledby="deskTitle">
     <div class="container">
-
-      <div class="student-only">
-        <div class="section-head" style="text-align:left; margin:0 0 32px;">
-          <span class="eyebrow eyebrow-dark">My Courses</span>
-          <h2>Continue where you left off</h2>
-        </div>
-        <div class="dashboard-grid">
-          <a href="course.html?course=life" class="dashboard-card reveal dashboard-card-link">
-            <span class="dashboard-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5C4 4.67 4.67 4 5.5 4H11a2 2 0 0 1 2 2v14a2 2 0 0 0-2-2H4V5.5Z"/><path d="M20 5.5c0-.83-.67-1.5-1.5-1.5H13a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h7V5.5Z"/></svg></span>
-            <h3>Life Insurance License</h3>
-            <div class="dashboard-card-progress">
-              <div class="progress-bar-track"><div class="progress-bar-fill" style="width:0%"></div></div>
-              <span id="courseProgressSummary-life" class="dashboard-card-progress-text">20 course hours &middot; Self-paced</span>
-            </div>
-          </a>
-          <a href="course.html?course=health" class="dashboard-card reveal dashboard-card-link" style="transition-delay: 0.08s;">
-            <span class="dashboard-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5C4 4.67 4.67 4 5.5 4H11a2 2 0 0 1 2 2v14a2 2 0 0 0-2-2H4V5.5Z"/><path d="M20 5.5c0-.83-.67-1.5-1.5-1.5H13a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h7V5.5Z"/></svg></span>
-            <h3>Health Insurance License</h3>
-            <div class="dashboard-card-progress">
-              <div class="progress-bar-track"><div class="progress-bar-fill" style="width:0%"></div></div>
-              <span id="courseProgressSummary-health" class="dashboard-card-progress-text">20 course hours &middot; Self-paced</span>
-            </div>
-          </a>
-          <a href="course.html?course=life-health-combo" class="dashboard-card reveal dashboard-card-link" style="transition-delay: 0.16s;">
-            <span class="dashboard-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5C4 4.67 4.67 4 5.5 4H11a2 2 0 0 1 2 2v14a2 2 0 0 0-2-2H4V5.5Z"/><path d="M20 5.5c0-.83-.67-1.5-1.5-1.5H13a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h7V5.5Z"/></svg></span>
-            <h3>Life &amp; Health Combo</h3>
-            <div class="dashboard-card-progress">
-              <div class="progress-bar-track"><div class="progress-bar-fill" style="width:0%"></div></div>
-              <span id="courseProgressSummary-life-health-combo" class="dashboard-card-progress-text">40 course hours &middot; Self-paced</span>
-            </div>
-          </a>
-          <a href="study-guide.html" class="dashboard-card reveal dashboard-card-link" style="transition-delay: 0.24s;">
-            <span class="dashboard-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg></span>
-            <h3>Study Guide</h3>
-            <p>A condensed, printable summary of the key facts from every lesson.</p>
-          </a>
-          <a href="practice-exam.html" class="dashboard-card reveal dashboard-card-link" style="transition-delay: 0.32s;">
-            <span class="dashboard-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="12" height="16" rx="2"/><path d="M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1"/><path d="m9.5 13 2 2 3.5-4"/></svg></span>
-            <h3>Practice Exam</h3>
-            <p>Test yourself with practice questions and review what you missed.</p>
-          </a>
-        </div>
+      <h2 id="deskTitle" class="dash-section-title">My courses</h2>
+      <div class="dash-overview dash-panel dash-ticks" id="dashCourses">
+        <article class="dash-course" data-course="life" aria-labelledby="dashName-life">
+          <h3 class="dash-course-name" id="dashName-life"><span class="dash-mark dash-mark--life" aria-hidden="true"></span>Life Insurance License</h3>
+          <p class="dash-course-meta">20 course hours &middot; Self-paced</p>
+          <div class="dash-course-actions">
+            <a class="btn btn-secondary dash-action" href="course.html?course=life">Open course<span class="dash-sr">: Life Insurance License</span></a>
+            <p class="dash-tool-links"><a href="study-guide.html?course=life">Study Guide<span class="dash-sr">, Life Insurance License</span></a><a href="practice-exam.html?course=life">Practice Exam<span class="dash-sr">, Life Insurance License</span></a></p>
+          </div>
+        </article>
+        <article class="dash-course" data-course="health" aria-labelledby="dashName-health">
+          <h3 class="dash-course-name" id="dashName-health"><span class="dash-mark dash-mark--health" aria-hidden="true"></span>Health Insurance License</h3>
+          <p class="dash-course-meta">20 course hours &middot; Self-paced</p>
+          <div class="dash-course-actions">
+            <a class="btn btn-secondary dash-action" href="course.html?course=health">Open course<span class="dash-sr">: Health Insurance License</span></a>
+            <p class="dash-tool-links"><a href="study-guide.html?course=health">Study Guide<span class="dash-sr">, Health Insurance License</span></a><a href="practice-exam.html?course=health">Practice Exam<span class="dash-sr">, Health Insurance License</span></a></p>
+          </div>
+        </article>
+        <article class="dash-course" data-course="life-health-combo" aria-labelledby="dashName-life-health-combo">
+          <h3 class="dash-course-name" id="dashName-life-health-combo"><span class="dash-mark dash-mark--combo" aria-hidden="true"></span>Life &amp; Health Combo</h3>
+          <p class="dash-course-meta">40 course hours &middot; Self-paced</p>
+          <div class="dash-course-actions">
+            <a class="btn btn-secondary dash-action" href="course.html?course=life-health-combo">Open course<span class="dash-sr">: Life &amp; Health Combo</span></a>
+            <p class="dash-tool-links"><a href="study-guide.html?course=life-health-combo">Study Guide<span class="dash-sr">, Life &amp; Health Combo</span></a><a href="practice-exam.html?course=life-health-combo">Practice Exam<span class="dash-sr">, Life &amp; Health Combo</span></a></p>
+          </div>
+        </article>
       </div>
+    </div>
+  </section>
 
-      <div class="admin-only">
-        <div class="section-head" style="text-align:left; margin:0 0 32px;">
-          <span class="eyebrow eyebrow-dark">Admin Tools</span>
-          <h2>Manage courses &amp; students</h2>
-        </div>
-        <div class="dashboard-grid">
-          <a href="students.html" class="dashboard-card reveal dashboard-card-link">
-            <span class="dashboard-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
-            <h3>Enrolled Students</h3>
-            <p>View everyone who has created an account.</p>
-          </a>
-          <a href="manage-course.html" class="dashboard-card reveal dashboard-card-link" style="transition-delay: 0.08s;">
-            <span class="dashboard-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"/></svg></span>
-            <h3>Course Content</h3>
-            <p>Add, edit, or remove modules and lessons.</p>
-          </a>
-          <a href="support-inbox.html" class="dashboard-card reveal dashboard-card-link" style="transition-delay: 0.16s;">
-            <span class="dashboard-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span>
-            <h3>Support Inbox</h3>
-            <p>Respond to student questions submitted through Contact.</p>
-          </a>
-          <a href="manage-exam.html" class="dashboard-card reveal dashboard-card-link" style="transition-delay: 0.24s;">
-            <span class="dashboard-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="12" height="16" rx="2"/><path d="M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1"/><path d="M10 13a2 2 0 1 1 2.5 1.94c-.5.14-.5.56-.5 1.06"/><path d="M12 18h.01"/></svg></span>
-            <h3>Practice Exam Questions</h3>
-            <p>Add, edit, or remove practice exam questions.</p>
-          </a>
-        </div>
-      </div>
-
+  <section class="dash-admin admin-only" aria-labelledby="adminTitle">
+    <div class="container">
+      <h2 id="adminTitle" class="dash-section-title">Manage courses &amp; students</h2>
+      <ul class="dash-admin-list">
+        <li><a class="dash-admin-link" href="students.html"><span class="dash-admin-name">Enrolled Students</span><span class="dash-admin-desc">View everyone who has created an account.</span></a></li>
+        <li><a class="dash-admin-link" href="manage-course.html"><span class="dash-admin-name">Course Content</span><span class="dash-admin-desc">Add, edit, or remove modules and lessons.</span></a></li>
+        <li><a class="dash-admin-link" href="support-inbox.html"><span class="dash-admin-name">Support Inbox</span><span class="dash-admin-desc">Respond to student questions submitted through Contact.</span></a></li>
+        <li><a class="dash-admin-link" href="manage-exam.html"><span class="dash-admin-name">Practice Exam Questions</span><span class="dash-admin-desc">Add, edit, or remove practice exam questions.</span></a></li>
+      </ul>
     </div>
   </section>
 </main>
@@ -160,54 +113,6 @@
 <script src="supabase-config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="auth.js"></script>
-<script>
-  (async function () {
-    const COURSES = [
-      { slug: "life", hours: 20 },
-      { slug: "health", hours: 20 },
-      { slug: "life-health-combo", hours: 40 },
-    ];
-    const { data: { session } } = await supabaseClient.auth.getSession();
-
-    const results = await Promise.all(
-      COURSES.map(async ({ slug, hours }) => {
-        const summary = document.getElementById("courseProgressSummary-" + slug);
-        if (!summary) return null;
-
-        const { data: course } = await supabaseClient.from("courses").select("id").eq("slug", slug).single();
-        if (!course) return null;
-
-        const { count: total } = await supabaseClient
-          .from("lessons")
-          .select("id, modules!inner(course_id)", { count: "exact", head: true })
-          .eq("modules.course_id", course.id);
-
-        let completedCount = 0;
-        if (session) {
-          const { count } = await supabaseClient
-            .from("lesson_progress")
-            .select("lesson_id, lessons!inner(modules!inner(course_id))", { count: "exact", head: true })
-            .eq("user_id", session.user.id)
-            .eq("lessons.modules.course_id", course.id);
-          completedCount = count || 0;
-        }
-
-        const percent = total ? Math.round((completedCount / total) * 100) : 0;
-        summary.textContent = `${percent}% complete · ${hours} course hours`;
-
-        const fill = summary.closest(".dashboard-card-progress")?.querySelector(".progress-bar-fill");
-        if (fill) fill.style.width = percent + "%";
-
-        return { completedCount, percent };
-      })
-    );
-
-    const statLessons = document.getElementById("statLessonsCompleted");
-    if (statLessons) {
-      const valid = results.filter(Boolean);
-      statLessons.textContent = valid.reduce((sum, r) => sum + r.completedCount, 0);
-    }
-  })();
-</script>
+<script src="dashboard.js"></script>
 </body>
 </html>

@@ -1,0 +1,581 @@
+/* ==========================================================================
+   Linh Hua: student Dashboard ("the Study Desk").
+   Dashboard-only. Everything is scoped under body.dashboard with dash-*
+   classes; the shared kit (styles.css: header, footer, buttons, tokens, focus
+   rings, .user-avatar, .role-badge) stays as is. The studio surfaces, rule and
+   mark ink and the ease-out mirror the approved Homepage, Courses, About and
+   Contact; Life violet and Health cobalt are the Courses page swatches, used
+   here only to mark which course a row belongs to (always beside its name).
+   ========================================================================== */
+
+body.dashboard {
+  --d-ease: cubic-bezier(0.23, 1, 0.32, 1);
+  --d-field: #f8f8fd;
+  --d-paper: #f6f7fb;
+  --d-panel: #fbfbfe;
+  --d-edge: rgba(74, 56, 176, 0.13);
+  --d-rule: rgba(74, 56, 176, 0.12);
+  --d-mark: rgba(74, 56, 176, 0.42);
+  --d-shaft: rgba(124, 111, 255, 0.12);
+  --d-label: rgba(20, 22, 31, 0.72);
+  --d-muted: #565c70;
+  --d-tint: rgba(91, 77, 251, 0.05);
+  --d-track: rgba(74, 56, 176, 0.12);
+  --d-life: #5d3ff6;
+  --d-health: #2141d0;
+  background: var(--d-paper);
+}
+
+:root[data-theme="dark"] body.dashboard {
+  --d-field: #131833;
+  --d-paper: #0d111d;
+  --d-panel: #10152a;
+  --d-edge: rgba(160, 148, 255, 0.16);
+  --d-rule: rgba(176, 164, 255, 0.14);
+  --d-mark: rgba(186, 176, 255, 0.58);
+  --d-shaft: rgba(124, 111, 255, 0.18);
+  --d-label: rgba(255, 255, 255, 0.78);
+  --d-muted: var(--muted);
+  --d-tint: rgba(160, 148, 255, 0.07);
+  --d-track: rgba(255, 255, 255, 0.1);
+  --d-life: #7c5dff;
+  --d-health: #3a5cff;
+}
+
+/* The shared ambient layers (film grain, the glow and pattern behind the top
+   of body) would draw a seam under the opening; the Dashboard draws its own
+   studio surface instead, as About and Contact do. */
+html:has(> body.dashboard)::before,
+body.dashboard::before,
+body.dashboard::after { display: none; }
+
+body.dashboard ::selection { background: rgba(91, 77, 251, 0.22); }
+:root[data-theme="dark"] body.dashboard ::selection { background: rgba(160, 148, 255, 0.32); }
+
+.dash-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* The page is a working surface: the studio field runs under the whole
+   main area (no band, no seam), and on a short desk the main area still
+   fills the window below the 69px shared bar, so the footer never floats
+   mid-screen. */
+body.dashboard > main {
+  min-height: calc(100vh - 69px);
+  min-height: calc(100dvh - 69px);
+  background:
+    radial-gradient(1100px 520px at 8% -8%, var(--d-shaft), transparent 64%),
+    linear-gradient(180deg, var(--d-field) 0, var(--d-paper) 360px);
+}
+
+/* ==========================================================================
+   Opening: who is studying. One line, continuous with the shared bar.
+   ========================================================================== */
+.dash-opening { padding: 40px 0 28px; }
+
+.dash-opening-inner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+body.dashboard .dash-avatar {
+  width: 48px;
+  height: 48px;
+  font-size: 1.15rem;
+  border: 0;
+  box-shadow: 0 0 0 1px var(--d-edge);
+}
+
+.dash-identity { min-width: 0; }
+
+.dash-greeting {
+  margin: 0;
+  font-size: clamp(1.5rem, 2.3vw, 2rem);
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+.dash-identity-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 10px;
+  margin: 4px 0 0;
+  font-size: 0.92rem;
+  color: var(--d-muted);
+}
+
+.dash-email { overflow-wrap: anywhere; }
+
+/* The role is plain text after the email (auth.js fills it), not a pill. */
+body.dashboard .dash-identity-meta .role-badge {
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--d-label);
+}
+body.dashboard .dash-identity-meta .role-badge:empty { display: none; }
+body.dashboard .dash-email:not(:empty) + .role-badge::before {
+  content: "\00B7";
+  margin-right: 10px;
+  color: var(--d-muted);
+}
+
+/* ==========================================================================
+   Sections and shared pieces
+   ========================================================================== */
+.dash-desk { padding: 8px 0 72px; }
+.dash-admin { padding: 8px 0 72px; }
+
+.dash-section-title {
+  margin: 0 0 16px;
+  font-size: 1.375rem;
+  line-height: 1.25;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--text);
+  text-wrap: balance;
+}
+.dash-section-title + * { margin-top: 0; }
+.dash-subsection { margin-top: 44px; }
+
+/* Course mark: a small swatch beside the course name (never colour alone). */
+.dash-mark {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  margin-right: 10px;
+  background: var(--d-life);
+}
+.dash-mark--health { background: var(--d-health); }
+.dash-mark--combo { background: linear-gradient(135deg, var(--d-life) 50%, var(--d-health) 50%); }
+
+/* Course-coloured fill for meters and bars. */
+[data-course="life"] { --d-fill: linear-gradient(var(--d-life), var(--d-life)); }
+[data-course="health"] { --d-fill: linear-gradient(var(--d-health), var(--d-health)); }
+[data-course="life-health-combo"] { --d-fill: linear-gradient(90deg, var(--d-life), var(--d-health)); }
+
+/* A plain progress bar; --f is the completed share (0-1), set from the data. */
+.dash-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--d-fill) 0 0 / calc(var(--f, 0) * 100%) 100% no-repeat, var(--d-track);
+}
+
+/* The working surface: one quiet panel with a hairline edge. */
+.dash-panel {
+  position: relative;
+  background: var(--d-panel);
+  border: 1px solid var(--d-edge);
+  border-radius: 16px;
+}
+
+/* Registration ticks at the corners of the main plate. */
+.dash-ticks::before {
+  content: "";
+  position: absolute;
+  inset: -7px;
+  pointer-events: none;
+  --t: var(--d-mark);
+  background:
+    linear-gradient(var(--t), var(--t)) left top / 10px 1px no-repeat,
+    linear-gradient(var(--t), var(--t)) left top / 1px 10px no-repeat,
+    linear-gradient(var(--t), var(--t)) right top / 10px 1px no-repeat,
+    linear-gradient(var(--t), var(--t)) right top / 1px 10px no-repeat,
+    linear-gradient(var(--t), var(--t)) left bottom / 10px 1px no-repeat,
+    linear-gradient(var(--t), var(--t)) left bottom / 1px 10px no-repeat,
+    linear-gradient(var(--t), var(--t)) right bottom / 10px 1px no-repeat,
+    linear-gradient(var(--t), var(--t)) right bottom / 1px 10px no-repeat;
+}
+
+/* Secondary per-course tool links: quieter than the course action. */
+.dash-tool-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 18px;
+  margin: 0;
+  font-size: 0.9rem;
+}
+.dash-tool-links a {
+  padding: 4px 0;
+  color: var(--d-muted);
+  text-decoration: underline;
+  text-decoration-color: var(--d-rule);
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+  transition: color 150ms var(--d-ease), text-decoration-color 150ms var(--d-ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .dash-tool-links a:hover { color: var(--accent-dark); text-decoration-color: currentColor; }
+}
+
+.dash-count {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--d-label);
+  font-variant-numeric: tabular-nums;
+}
+.dash-count strong { color: var(--text); font-weight: 700; }
+
+/* ==========================================================================
+   Overview: the three courses at equal weight (no data yet, nothing started,
+   or everything complete). One plate, three columns.
+   ========================================================================== */
+.dash-overview {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.dash-overview.dash-panel { overflow: visible; }
+
+.dash-course {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 28px 28px 26px;
+  min-width: 0;
+}
+.dash-course + .dash-course { border-left: 1px solid var(--d-rule); }
+
+.dash-course-name {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  font-size: 1.1rem;
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.dash-course-meta {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--d-muted);
+}
+
+.dash-course .dash-count { margin-top: 10px; }
+.dash-course .dash-bar { margin-top: 2px; }
+
+.dash-course-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 18px;
+}
+
+/* ==========================================================================
+   Focus: the course on the desk, its tools beside it.
+   ========================================================================== */
+.dash-deskgrid {
+  display: grid;
+  grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.dash-plate { padding: 32px 36px 30px; }
+
+.dash-plate-name {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  font-size: clamp(1.4rem, 2vw, 1.7rem);
+  line-height: 1.2;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: var(--text);
+}
+.dash-plate-name .dash-mark { width: 12px; height: 12px; }
+
+.dash-plate .dash-course-meta { margin-top: 6px; }
+.dash-plate .dash-count { margin-top: 22px; font-size: 1.05rem; }
+
+/* Module segments: one per module, sized by its lessons, filled by its
+   completed share. Decorative; the count above carries the value. */
+.dash-modules {
+  display: flex;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.dash-module {
+  flex: var(--n, 1) 1 0;
+  min-width: 0;
+}
+.dash-module .dash-bar { height: 8px; border-radius: 4px; }
+.dash-module-label {
+  display: block;
+  margin-top: 8px;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  color: var(--d-label);
+}
+.dash-module-count {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--d-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.dash-next {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 16px 24px;
+  margin-top: 26px;
+  padding-top: 22px;
+  border-top: 1px solid var(--d-rule);
+}
+.dash-next-label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--d-muted);
+}
+.dash-next-title {
+  display: block;
+  margin-top: 4px;
+  font-size: 1.1rem;
+  line-height: 1.35;
+  font-weight: 700;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+.dash-next-module {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.9rem;
+  color: var(--d-muted);
+}
+.dash-next .btn { white-space: nowrap; }
+
+/* The tool rail: this course's study tools. */
+.dash-rail { overflow: hidden; }
+.dash-rail-title {
+  margin: 0;
+  padding: 20px 24px 12px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.dash-rail-list { margin: 0; padding: 0; list-style: none; }
+.dash-tool {
+  display: block;
+  padding: 16px 24px 18px;
+  border-top: 1px solid var(--d-rule);
+  color: inherit;
+  text-decoration: none;
+  transition: background-color 150ms var(--d-ease);
+}
+.dash-tool:focus-visible { outline-offset: -3px; }
+@media (hover: hover) and (pointer: fine) {
+  .dash-tool:hover { background-color: var(--d-tint); }
+  .dash-tool:hover .dash-tool-name { color: var(--accent-dark); }
+}
+.dash-tool-name {
+  display: block;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  transition: color 150ms var(--d-ease);
+}
+.dash-tool-desc {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--d-muted);
+}
+
+/* The shelf: other courses as quiet rows. */
+.dash-shelf-list { margin: 0; padding: 0; list-style: none; }
+.dash-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px 28px;
+  padding: 20px 24px;
+}
+.dash-row + .dash-row { border-top: 1px solid var(--d-rule); }
+.dash-row-name {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  font-size: 1.02rem;
+  line-height: 1.3;
+  font-weight: 700;
+  color: var(--text);
+}
+.dash-row .dash-count { margin-top: 6px; font-size: 0.9rem; }
+.dash-row .dash-bar { max-width: 320px; height: 4px; margin-top: 8px; }
+.dash-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px 22px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* ==========================================================================
+   Admin: the four tools as rows in the same system.
+   ========================================================================== */
+.dash-admin-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: var(--d-panel);
+  border: 1px solid var(--d-edge);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.dash-admin-list li:nth-child(n + 3) { border-top: 1px solid var(--d-rule); }
+.dash-admin-list li:nth-child(2n) { border-left: 1px solid var(--d-rule); }
+.dash-admin-link {
+  display: block;
+  height: 100%;
+  padding: 22px 26px 24px;
+  color: inherit;
+  text-decoration: none;
+  transition: background-color 150ms var(--d-ease);
+}
+.dash-admin-link:focus-visible { outline-offset: -3px; }
+@media (hover: hover) and (pointer: fine) {
+  .dash-admin-link:hover { background-color: var(--d-tint); }
+  .dash-admin-link:hover .dash-admin-name { color: var(--accent-dark); }
+}
+.dash-admin-name {
+  display: block;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  transition: color 150ms var(--d-ease);
+}
+.dash-admin-desc {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--d-muted);
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 1023px) {
+  .dash-deskgrid { grid-template-columns: minmax(0, 1fr); }
+  .dash-rail-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dash-rail-list li + li .dash-tool { border-left: 1px solid var(--d-rule); }
+}
+
+@media (max-width: 819px) {
+  .dash-overview { grid-template-columns: minmax(0, 1fr); }
+  .dash-course + .dash-course { border-left: 0; border-top: 1px solid var(--d-rule); }
+  .dash-course { padding: 22px 24px; }
+  .dash-course-actions { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 12px 20px; padding-top: 12px; }
+  .dash-admin-list { grid-template-columns: minmax(0, 1fr); }
+  .dash-admin-list li:nth-child(n + 2) { border-top: 1px solid var(--d-rule); }
+  .dash-admin-list li:nth-child(2n) { border-left: 0; }
+  .dash-row { grid-template-columns: minmax(0, 1fr); }
+  .dash-row-actions { justify-content: flex-start; }
+}
+
+@media (max-width: 599px) {
+  .dash-opening { padding: 28px 0 20px; }
+  body.dashboard .dash-avatar { width: 40px; height: 40px; font-size: 1rem; }
+  /* Email and role on their own lines rather than a wrapped "· Student". */
+  .dash-identity-meta { flex-direction: column; gap: 0; }
+  body.dashboard .dash-email:not(:empty) + .role-badge::before { content: none; }
+  .dash-desk, .dash-admin { padding-bottom: 56px; }
+  .dash-plate { padding: 24px 22px 22px; }
+  /* Modules become labelled rows: title and count over a full-width bar. */
+  .dash-modules { flex-direction: column; gap: 14px; }
+  .dash-module { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 12px; }
+  .dash-module .dash-bar { grid-column: 1 / -1; grid-row: 2; margin-top: 6px; }
+  .dash-module-label { grid-column: 1; grid-row: 1; margin-top: 0; }
+  .dash-module-count { grid-column: 2; grid-row: 1; }
+  .dash-next { grid-template-columns: minmax(0, 1fr); }
+  .dash-next .btn,
+  .dash-course-actions .btn,
+  .dash-row-actions .btn { width: 100%; }
+  .dash-course-actions,
+  .dash-row-actions { flex-direction: column; align-items: stretch; }
+  .dash-rail-list { grid-template-columns: minmax(0, 1fr); }
+  .dash-rail-list li + li .dash-tool { border-left: 0; }
+  .dash-row { padding: 18px 20px; }
+  .dash-course { padding: 20px; }
+  .dash-tool { padding: 14px 20px 16px; }
+  .dash-rail-title { padding: 18px 20px 10px; }
+  .dash-admin-link { padding: 18px 20px 20px; }
+  .dash-ticks::before { inset: -5px; }
+}
+
+/* ==========================================================================
+   States (step 2): role handoff, loading, error, data arrival.
+   ========================================================================== */
+/* Until dashboard.js has read the session, neither the student desk nor the
+   admin tools show (so the two never appear together). If the script never
+   settles, only the neutral course list reappears after 4s; the admin tools
+   show only once the admin role is known. */
+html.dash-pending .dash-desk {
+  visibility: hidden;
+  animation: dash-unhide 0s linear 4s forwards;
+}
+@keyframes dash-unhide { to { visibility: visible; } }
+
+html.dash-pending .dash-admin,
+html[data-dash-role="admin"] .dash-desk,
+html[data-dash-role="student"] .dash-admin,
+html[data-dash-role="unknown"] .dash-admin { display: none; }
+
+/* Loading: a quiet static placeholder where each course's count will go. */
+.dash-skel {
+  display: block;
+  width: min(11rem, 70%);
+  height: 0.9rem;
+  margin-top: 12px;
+  border-radius: 4px;
+  background: var(--d-track);
+}
+
+/* The read failed: one quiet line; the courses and their links stay. */
+.dash-note {
+  margin: -6px 0 16px;
+  font-size: 0.92rem;
+  color: var(--d-muted);
+}
+
+/* Data arrival: one short fade, motion on only; no fill or count animation. */
+html.motion-ok .dash-arrive { animation: dash-arrive 200ms var(--d-ease) both; }
+@keyframes dash-arrive { from { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .dash-tool-links a,
+  .dash-tool,
+  .dash-tool-name,
+  .dash-admin-link,
+  .dash-admin-name { transition: none; }
+}
