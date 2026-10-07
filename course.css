@@ -1,0 +1,119 @@
+/* ==========================================================================
+   Linh Hua: Course page ("the same page, on the Study Desk's paper").
+   Course-only. Colour, border colour, shadow and motion properties only:
+   no size, spacing, type or position changes anywhere, and the lesson
+   content is styled exactly as before apart from the dark caption ink.
+   The course identity comes from #courseRoot[data-course], set by course.js
+   once the requested course is known; without it the existing accent stays.
+   ========================================================================== */
+
+body:has(#courseRoot) {
+  --c-field: #f8f8fd;
+  --c-paper: #f6f7fb;
+  --c-panel: #fbfbfe;
+  --c-edge: rgba(74, 56, 176, 0.13);
+  --c-rule: rgba(74, 56, 176, 0.12);
+  --c-shaft: rgba(124, 111, 255, 0.12);
+  --c-track: rgba(74, 56, 176, 0.12);
+  /* Progress bars */
+  --c-life: #5d3ff6;
+  --c-health: #2141d0;
+  /* Filled marks that carry a white check (>= 4.5:1 in both themes) */
+  --c-life-mark: #5d3ff6;
+  --c-health-mark: #2141d0;
+  background: var(--c-paper);
+}
+
+:root[data-theme="dark"] body:has(#courseRoot) {
+  --c-field: #131833;
+  --c-paper: #0d111d;
+  --c-panel: #10152a;
+  --c-edge: rgba(160, 148, 255, 0.16);
+  --c-rule: rgba(176, 164, 255, 0.14);
+  --c-shaft: rgba(124, 111, 255, 0.18);
+  --c-track: rgba(255, 255, 255, 0.1);
+  --c-life: #7c5dff;
+  /* One step lighter than #3a5cff so the bar keeps >= 3:1 against its
+     track (3.1:1; #3a5cff would be 2.7:1). The check marks keep #3a5cff. */
+  --c-health: #4a68ff;
+  --c-life-mark: #6c5ef5;
+  --c-health-mark: #3a5cff;
+}
+
+/* The shared ambient layers (film grain, top glow) give way to the studio
+   field, as on the Dashboard; the reading pattern was already off here. */
+html:has(#courseRoot)::before,
+body:has(#courseRoot)::before { display: none; }
+
+#courseRoot {
+  /* Before the course is known (and in its error states): the existing
+     site accent, unchanged */
+  --c-fill: var(--accent);
+  --c-mark: var(--accent);
+  --c-box: var(--accent);
+  background:
+    radial-gradient(1100px 520px at 8% -8%, var(--c-shaft), transparent 64%),
+    linear-gradient(180deg, var(--c-field) 0, var(--c-paper) 360px);
+}
+
+#courseRoot[data-course="life"] {
+  --c-fill: var(--c-life);
+  --c-mark: var(--c-life-mark);
+  --c-box: var(--c-life-mark);
+}
+
+#courseRoot[data-course="health"] {
+  --c-fill: var(--c-health);
+  --c-mark: var(--c-health-mark);
+  --c-box: var(--c-health-mark);
+}
+
+#courseRoot[data-course="life-health-combo"] {
+  --c-fill: linear-gradient(90deg, var(--c-life), var(--c-health));
+  --c-mark: linear-gradient(135deg, var(--c-life-mark) 50%, var(--c-health-mark) 50%);
+  --c-box: var(--c-life-mark);
+}
+
+/* Panels: quieter paper on a lilac hairline (the 1px border stays 1px) */
+#courseRoot .course-sidebar,
+#courseRoot .course-content {
+  background: var(--c-panel);
+  border-color: var(--c-edge);
+  box-shadow: none;
+}
+
+/* Internal rules */
+#courseRoot .lesson-actions {
+  border-top-color: var(--c-rule);
+  border-bottom-color: var(--c-rule);
+}
+
+#courseRoot .lesson-body h3 { border-top-color: var(--c-rule); }
+
+/* Progress: course colour, shown at its value with no fill animation */
+#courseRoot .progress-bar-track { background: var(--c-track); }
+
+#courseRoot .progress-bar-fill {
+  background: var(--c-fill);
+  transition: none;
+}
+
+/* Completed lessons and the Mark complete box carry the course colour */
+#courseRoot .lesson-item.completed .lesson-check {
+  background: var(--c-mark);
+  border-color: transparent;
+}
+
+#courseRoot .lesson-complete-toggle input { accent-color: var(--c-box); }
+
+/* Dark: the figure card stays white for the chart art, so its caption takes
+   a dark ink (6.6:1) instead of the dark-theme muted grey (2.9:1). Only the
+   glyph fill changes, so nothing else that follows the text colour does;
+   forced-colors mode keeps the system colours. */
+@media (forced-colors: none) {
+  :root[data-theme="dark"] #courseRoot .lesson-body figcaption { -webkit-text-fill-color: #565c70; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:has(#courseRoot) { scroll-behavior: auto; }
+}

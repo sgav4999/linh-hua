@@ -12,6 +12,14 @@ function initLessonQuizzes(container) {
     const explanation = item.querySelector(".lesson-quiz-explanation");
     const options = item.querySelectorAll(".lesson-quiz-option");
 
+    // The feedback line is a status message, and it takes focus once an
+    // answer is chosen (the chosen option becomes disabled, which would
+    // otherwise drop keyboard focus to the page).
+    if (feedback) {
+      feedback.setAttribute("role", "status");
+      feedback.setAttribute("tabindex", "-1");
+    }
+
     if (window.TTS) {
       const listenBtn = TTS.attach(() => item.innerText, { small: true, title: "Listen to this question" });
       if (listenBtn) item.appendChild(listenBtn);
@@ -36,6 +44,7 @@ function initLessonQuizzes(container) {
         }
         feedback.hidden = false;
         if (explanation) explanation.hidden = false;
+        feedback.focus({ preventScroll: true });
       });
     });
   });
@@ -59,6 +68,14 @@ async function initCourse() {
     return;
   }
 
+  // The course exists: its title, identity and tool links are set before the
+  // lessons load, so they hold in the loading, no-module and no-lesson states.
+  // An unknown course keeps the page's original tool links.
+  document.getElementById("courseTitle").textContent = course.title;
+  courseRoot.setAttribute("data-course", COURSE_SLUG);
+  document.getElementById("coursePracticeExamLink").href = "practice-exam.html?course=" + encodeURIComponent(COURSE_SLUG);
+  document.getElementById("courseStudyGuideLink").href = "study-guide.html?course=" + encodeURIComponent(COURSE_SLUG);
+
   const { data: moduleRows, error: modulesError } = await supabaseClient
     .from("modules")
     .select("id, title, position, lessons(id, title, duration, type, video_url, content, description, position)")
@@ -78,6 +95,12 @@ async function initCourse() {
       lessons.push({ ...lesson, moduleTitle: mod.title });
     });
   });
+
+  // Modules without a single lesson between them: same message as no modules.
+  if (!lessons.length) {
+    document.getElementById("lessonTitle").textContent = "No lessons have been added to this course yet.";
+    return;
+  }
 
   const { data: progressRows } = await supabaseClient
     .from("lesson_progress")
@@ -161,7 +184,10 @@ async function initCourse() {
         const link = document.createElement("a");
         link.href = "#" + lesson.id;
         link.className = "lesson-item";
-        if (lesson.id === currentLessonId()) link.classList.add("active");
+        if (lesson.id === currentLessonId()) {
+          link.classList.add("active");
+          link.setAttribute("aria-current", "page");
+        }
         if (completed.has(lesson.id)) link.classList.add("completed");
         if (lesson.type === "quiz") link.classList.add("lesson-item-quiz");
 
@@ -253,7 +279,8 @@ async function initCourse() {
     const index = lessons.findIndex((l) => l.id === currentLessonId());
     if (index < lessons.length - 1) {
       window.location.hash = lessons[index + 1].id;
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
     } else {
       window.location.href = "dashboard.html";
     }
@@ -261,9 +288,6 @@ async function initCourse() {
 
   window.addEventListener("hashchange", renderLesson);
 
-  document.getElementById("courseTitle").textContent = course.title;
-  document.getElementById("coursePracticeExamLink").href = "practice-exam.html?course=" + encodeURIComponent(COURSE_SLUG);
-  document.getElementById("courseStudyGuideLink").href = "study-guide.html?course=" + encodeURIComponent(COURSE_SLUG);
   renderLesson();
 }
 
