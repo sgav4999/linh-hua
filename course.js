@@ -57,13 +57,9 @@ async function initCourse() {
     return;
   }
 
-  const { data: course, error: courseError } = await supabaseClient
-    .from("courses")
-    .select("id, title")
-    .eq("slug", COURSE_SLUG)
-    .single();
+  const course = await LinhCourses.loadCourseBySlug(COURSE_SLUG);
 
-  if (courseError || !course) {
+  if (!course) {
     document.getElementById("lessonTitle").textContent = "This course couldn't be loaded.";
     return;
   }
@@ -72,7 +68,7 @@ async function initCourse() {
   // lessons load, so they hold in the loading, no-module and no-lesson states.
   // An unknown course keeps the page's original tool links.
   document.getElementById("courseTitle").textContent = course.title;
-  courseRoot.setAttribute("data-course", COURSE_SLUG);
+  LinhCourses.applyCourseIdentity(courseRoot, course);
   document.getElementById("coursePracticeExamLink").href = "practice-exam.html?course=" + encodeURIComponent(COURSE_SLUG);
   document.getElementById("courseStudyGuideLink").href = "study-guide.html?course=" + encodeURIComponent(COURSE_SLUG);
 

@@ -1,0 +1,74 @@
+/* ==========================================================================
+   Linh Hua: course identity registry.
+   Pages mark an element with data-identity (and optionally
+   data-identity-secondary); the element and its contents get two colours
+   per identity, for light and dark themes:
+     --id-fill    bars and swatches       (>= 3:1 against the track and panel)
+     --id-strong  filled marks carrying a white check (>= 4.5:1 with white)
+   plus --id2-fill / --id2-strong for the secondary.
+   No identity, or a name not listed here, keeps the neutral palette; no
+   secondary, or an unknown one, repeats the primary. The database stores only
+   these token names, never colours. New names are added here, after a
+   contrast check, before any course uses them.
+   ========================================================================== */
+
+/* Neutral (no identity or an unknown one): the site's muted inks */
+:root {
+  --id-fill: #565c70;
+  --id-strong: #565c70;
+}
+
+:root[data-theme="dark"] {
+  --id-fill: #9096ab;
+  --id-strong: #62687e;
+}
+
+/* Without a known secondary, the secondary repeats this element's primary */
+[data-identity] {
+  --id2-fill: var(--id-fill);
+  --id2-strong: var(--id-strong);
+}
+
+/* violet */
+[data-identity="violet"] {
+  --id-fill: #5d3ff6;
+  --id-strong: #5d3ff6;
+}
+
+:root[data-theme="dark"] [data-identity="violet"] {
+  --id-fill: #7c5dff;
+  --id-strong: #6c5ef5;
+}
+
+[data-identity-secondary="violet"] {
+  --id2-fill: #5d3ff6;
+  --id2-strong: #5d3ff6;
+}
+
+:root[data-theme="dark"] [data-identity-secondary="violet"] {
+  --id2-fill: #7c5dff;
+  --id2-strong: #6c5ef5;
+}
+
+/* cobalt */
+[data-identity="cobalt"] {
+  --id-fill: #2141d0;
+  --id-strong: #2141d0;
+}
+
+/* Dark fill is a step lighter than the strong #3a5cff so bars keep >= 3:1
+   against the dark track (3.1:1; #3a5cff would be 2.7:1). */
+:root[data-theme="dark"] [data-identity="cobalt"] {
+  --id-fill: #4a68ff;
+  --id-strong: #3a5cff;
+}
+
+[data-identity-secondary="cobalt"] {
+  --id2-fill: #2141d0;
+  --id2-strong: #2141d0;
+}
+
+:root[data-theme="dark"] [data-identity-secondary="cobalt"] {
+  --id2-fill: #4a68ff;
+  --id2-strong: #3a5cff;
+}

@@ -3,8 +3,9 @@
    Course-only. Colour, border colour, shadow and motion properties only:
    no size, spacing, type or position changes anywhere, and the lesson
    content is styled exactly as before apart from the dark caption ink.
-   The course identity comes from #courseRoot[data-course], set by course.js
-   once the requested course is known; without it the existing accent stays.
+   The course colours come from the shared identity registry (identity.css):
+   course.js marks #courseRoot with the course's identity tokens once the
+   course is known; without them the neutral palette applies.
    ========================================================================== */
 
 body:has(#courseRoot) {
@@ -15,12 +16,6 @@ body:has(#courseRoot) {
   --c-rule: rgba(74, 56, 176, 0.12);
   --c-shaft: rgba(124, 111, 255, 0.12);
   --c-track: rgba(74, 56, 176, 0.12);
-  /* Progress bars */
-  --c-life: #5d3ff6;
-  --c-health: #2141d0;
-  /* Filled marks that carry a white check (>= 4.5:1 in both themes) */
-  --c-life-mark: #5d3ff6;
-  --c-health-mark: #2141d0;
   background: var(--c-paper);
 }
 
@@ -32,12 +27,6 @@ body:has(#courseRoot) {
   --c-rule: rgba(176, 164, 255, 0.14);
   --c-shaft: rgba(124, 111, 255, 0.18);
   --c-track: rgba(255, 255, 255, 0.1);
-  --c-life: #7c5dff;
-  /* One step lighter than #3a5cff so the bar keeps >= 3:1 against its
-     track (3.1:1; #3a5cff would be 2.7:1). The check marks keep #3a5cff. */
-  --c-health: #4a68ff;
-  --c-life-mark: #6c5ef5;
-  --c-health-mark: #3a5cff;
 }
 
 /* The shared ambient layers (film grain, top glow) give way to the studio
@@ -46,32 +35,21 @@ html:has(#courseRoot)::before,
 body:has(#courseRoot)::before { display: none; }
 
 #courseRoot {
-  /* Before the course is known (and in its error states): the existing
-     site accent, unchanged */
-  --c-fill: var(--accent);
-  --c-mark: var(--accent);
-  --c-box: var(--accent);
+  /* Bar fill, completed marks and the Mark complete box, from the identity
+     registry (neutral until the course is known, and in its error states) */
+  --c-fill: var(--id-fill);
+  --c-mark: var(--id-strong);
+  --c-box: var(--id-strong);
   background:
     radial-gradient(1100px 520px at 8% -8%, var(--c-shaft), transparent 64%),
     linear-gradient(180deg, var(--c-field) 0, var(--c-paper) 360px);
 }
 
-#courseRoot[data-course="life"] {
-  --c-fill: var(--c-life);
-  --c-mark: var(--c-life-mark);
-  --c-box: var(--c-life-mark);
-}
-
-#courseRoot[data-course="health"] {
-  --c-fill: var(--c-health);
-  --c-mark: var(--c-health-mark);
-  --c-box: var(--c-health-mark);
-}
-
-#courseRoot[data-course="life-health-combo"] {
-  --c-fill: linear-gradient(90deg, var(--c-life), var(--c-health));
-  --c-mark: linear-gradient(135deg, var(--c-life-mark) 50%, var(--c-health-mark) 50%);
-  --c-box: var(--c-life-mark);
+/* A course with a secondary identity (the Combo) shows both: the bar runs
+   from one to the other and completed marks are split. */
+#courseRoot[data-identity-secondary] {
+  --c-fill: linear-gradient(90deg, var(--id-fill), var(--id2-fill));
+  --c-mark: linear-gradient(135deg, var(--id-strong) 50%, var(--id2-strong) 50%);
 }
 
 /* Panels: quieter paper on a lilac hairline (the 1px border stays 1px) */
