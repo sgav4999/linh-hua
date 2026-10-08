@@ -63,37 +63,65 @@ if (navToggle && navWrap) {
 //   itemSelector  - CSS selector matching each reorderable item
 //   handleSelector- selector (within each item) that starts the drag
 //   onDrop        - called after a drop with the item elements in new order
+// The list itself accepts the drop (over any item, the moved item or a gap), so
+// a release anywhere inside it saves exactly once; a drag that ends without a
+// drop puts the list back in its original order. Each list only accepts its
+// own item, so nested lists never take each other's drags.
+const draggableLists = new WeakMap();
+
 function makeListDraggable(containerEl, itemSelector, handleSelector, onDrop) {
   if (!containerEl) return;
-  let draggedEl = null;
+  // The container can outlive re-renders: its listeners are added only once.
+  let list = draggableLists.get(containerEl);
+  if (!list) {
+    list = { draggedEl: null, snapshot: null, dropped: false };
+    draggableLists.set(containerEl, list);
+    const items = () => Array.from(containerEl.children).filter((el) => el.matches(list.itemSelector));
+
+    containerEl.addEventListener("dragover", (e) => {
+      if (!list.draggedEl) return;
+      e.preventDefault();
+      const others = items().filter((el) => el !== list.draggedEl);
+      const next = others.find((el) => {
+        const rect = el.getBoundingClientRect();
+        return e.clientY < rect.top + rect.height / 2;
+      });
+      const last = others[others.length - 1];
+      const ref = next || (last ? last.nextSibling : null);
+      if (ref !== list.draggedEl && list.draggedEl.nextSibling !== ref) containerEl.insertBefore(list.draggedEl, ref);
+    });
+
+    containerEl.addEventListener("drop", (e) => {
+      if (!list.draggedEl) return;
+      e.preventDefault();
+      if (list.dropped) return;
+      list.dropped = true;
+      list.onDrop(items());
+    });
+  }
+  list.itemSelector = itemSelector;
+  list.onDrop = onDrop;
 
   containerEl.querySelectorAll(itemSelector).forEach((item) => {
     const handle = item.querySelector(handleSelector) || item;
     handle.setAttribute("draggable", "true");
 
     handle.addEventListener("dragstart", (e) => {
-      draggedEl = item;
+      list.draggedEl = item;
+      list.snapshot = Array.from(containerEl.childNodes);
+      list.dropped = false;
       e.dataTransfer.effectAllowed = "move";
-      setTimeout(() => item.classList.add("dragging"), 0);
+      setTimeout(() => {
+        if (list.draggedEl === item) item.classList.add("dragging");
+      }, 0);
     });
 
     handle.addEventListener("dragend", () => {
       item.classList.remove("dragging");
-      draggedEl = null;
-    });
-
-    item.addEventListener("dragover", (e) => {
-      if (!draggedEl || draggedEl === item) return;
-      e.preventDefault();
-      const rect = item.getBoundingClientRect();
-      const before = e.clientY - rect.top < rect.height / 2;
-      item.parentNode.insertBefore(draggedEl, before ? item : item.nextSibling);
-    });
-
-    item.addEventListener("drop", (e) => {
-      if (!draggedEl) return;
-      e.preventDefault();
-      onDrop(Array.from(containerEl.querySelectorAll(itemSelector)));
+      if (!list.dropped && list.snapshot) list.snapshot.forEach((node) => containerEl.appendChild(node));
+      list.draggedEl = null;
+      list.snapshot = null;
+      list.dropped = false;
     });
   });
 }

@@ -9,6 +9,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css?v=20261015b">
+<link rel="stylesheet" href="identity.css?v=20261007a">
+<link rel="stylesheet" href="admin.css?v=20261008a">
 <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="brand/apple-touch-icon.png">
 </head>
@@ -22,7 +24,7 @@
     </button>
     <div class="nav-wrap" id="navWrap">
       <nav class="nav">
-        <a href="practice-exam.html">Take Exam</a>
+        <a href="practice-exam.html" id="takeExamLink" hidden>Take Exam</a>
       </nav>
       <div class="user-menu" id="userMenu">
         <button class="user-menu-trigger" id="userMenuTrigger" type="button" aria-label="Account menu">
@@ -62,13 +64,9 @@
     <div class="container manage-container">
       <div id="formMessage" class="form-message"></div>
 
-      <div class="manage-toolbar" id="courseSwitcher" style="margin-bottom:20px;">
-        <a href="manage-exam.html?course=life" class="btn btn-secondary" data-course="life">Life</a>
-        <a href="manage-exam.html?course=health" class="btn btn-secondary" data-course="health">Health</a>
-        <a href="manage-exam.html?course=life-health-combo" class="btn btn-secondary" data-course="life-health-combo">Life &amp; Health Combo</a>
-      </div>
+      <div id="adminCourseBar"></div>
 
-      <div class="manage-toolbar">
+      <div class="manage-toolbar" id="questionToolbar" hidden>
         <button id="addQuestionBtn" class="btn btn-primary">+ Add Question</button>
       </div>
 
@@ -91,6 +89,8 @@
 <script src="supabase-config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="auth.js"></script>
-<script src="manage-exam.js"></script>
+<script src="courses-data.js?v=20261008a"></script>
+<script src="admin-course-bar.js?v=20261008a"></script>
+<script src="manage-exam.js?v=20261008a"></script>
 </body>
 </html>

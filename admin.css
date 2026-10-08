@@ -1,0 +1,157 @@
+/* ==========================================================================
+   Linh Hua: admin course bar, draft state and course details.
+   Admin pages only (Manage Course, Manage Exam). Small additions in the
+   existing admin visual language; no changes to the shared admin styles.
+   ========================================================================== */
+
+.admin-bar {
+  margin-bottom: 20px;
+}
+
+.admin-bar-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-bar-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.admin-bar-select {
+  flex: 1 1 260px;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  color: var(--text);
+  background: #fff;
+}
+
+[data-theme="dark"] .admin-bar-select {
+  background: var(--surface-alt);
+}
+
+.admin-draft-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border: 1px dashed currentColor;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.admin-bar-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 14px;
+}
+
+.admin-bar-tab {
+  padding: 6px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.admin-bar-tab:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.admin-bar-tab[aria-current="page"] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+}
+
+.admin-bar-note {
+  margin-top: 12px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.admin-bar-note--error {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+/* Course details / new course form additions */
+.admin-hint {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.admin-form-error {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--danger);
+}
+
+.admin-form-error:empty {
+  display: none;
+}
+
+.admin-note {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-soft);
+  font-size: 0.82rem;
+  color: var(--text);
+}
+
+.admin-course-form .manage-form-actions {
+  flex-wrap: wrap;
+}
+
+.manage-form input[readonly] {
+  color: var(--muted);
+  background: transparent;
+}
+
+.manage-form select:disabled {
+  opacity: 0.6;
+}
+
+/* Identity preview: the same tokens the Course page uses */
+.admin-identity-preview {
+  display: block;
+  max-width: 240px;
+  height: 6px;
+  margin-top: 8px;
+  border-radius: 3px;
+  background: var(--id-fill);
+}
+
+.admin-identity-preview[data-identity-secondary] {
+  background: linear-gradient(90deg, var(--id-fill), var(--id2-fill));
+}
+
+/* Position integrity warning (duplicates or gaps) */
+.admin-position-warning {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 12px;
+  padding: 8px 12px;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+/* .manage-toolbar sets display:flex, which would override the hidden attribute */
+.manage-toolbar[hidden] {
+  display: none;
+}

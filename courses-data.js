@@ -6,6 +6,9 @@
 //   loadCourseBySlug      -> the course, or null when it doesn't exist or
 //                            can't be read (callers show their own message)
 //   loadPublishedCourses  -> an array (possibly empty); throws on a read error
+//   loadAllCourses        -> published and draft courses, same shape and order;
+//                            throws on a read error (admin pages use it; what a
+//                            caller may read is decided by database rules)
 //   loadCourseCategories  -> an array (possibly empty); throws on a read error
 window.LinhCourses = (() => {
   const COURSE_FIELDS =
@@ -14,6 +17,10 @@ window.LinhCourses = (() => {
 
   // Identity tokens follow the database format check; anything else is ignored.
   const TOKEN = /^[a-z][a-z0-9-]{0,31}$/;
+
+  // The identity names identity.css defines (no identity = the neutral palette).
+  // Keep this list and identity.css in step.
+  const IDENTITY_TOKENS = Object.freeze(["violet", "cobalt"]);
 
   // Returns drafts as well as published courses, exactly as the Course page
   // always has. This is NOT the security boundary: draft protection comes
@@ -57,6 +64,16 @@ window.LinhCourses = (() => {
     return (data || []).slice().sort(byCatalogOrder);
   }
 
+  // Drafts included. No role check here: admin pages guard themselves and the
+  // database rules decide which rows a caller can read.
+  async function loadAllCourses() {
+    const { data, error } = await supabaseClient
+      .from("courses")
+      .select(COURSE_FIELDS);
+    if (error) throw new Error("Courses could not be loaded.");
+    return (data || []).slice().sort(byCatalogOrder);
+  }
+
   async function loadCourseCategories() {
     const { data, error } = await supabaseClient
       .from("course_categories")
@@ -90,5 +107,5 @@ window.LinhCourses = (() => {
     return label || text(course.title);
   }
 
-  return { loadCourseBySlug, loadPublishedCourses, loadCourseCategories, applyCourseIdentity, courseLabel };
+  return { loadCourseBySlug, loadPublishedCourses, loadAllCourses, loadCourseCategories, applyCourseIdentity, courseLabel, IDENTITY_TOKENS };
 })();

@@ -1,5 +1,6 @@
 const manageExamRoot = document.getElementById("manageExamRoot");
-const MANAGE_EXAM_COURSE_SLUG = new URLSearchParams(window.location.search).get("course") || "life-health-combo";
+// No default course: without ?course= the page asks the admin to choose one.
+const MANAGE_EXAM_COURSE_SLUG = new URLSearchParams(window.location.search).get("course");
 
 async function initManageExam() {
   const { data: { session } } = await supabaseClient.auth.getSession();
@@ -13,17 +14,12 @@ async function initManageExam() {
     return;
   }
 
-  document.querySelectorAll("#courseSwitcher [data-course]").forEach((tab) => {
-    const isActive = tab.dataset.course === MANAGE_EXAM_COURSE_SLUG;
-    tab.classList.toggle("btn-primary", isActive);
-    tab.classList.toggle("btn-secondary", !isActive);
+  const bar = await LinhAdminCourseBar.render(document.getElementById("adminCourseBar"), {
+    page: "exam",
+    slug: MANAGE_EXAM_COURSE_SLUG,
   });
-
-  const { data: course, error: courseError } = await supabaseClient
-    .from("courses")
-    .select("id, title")
-    .eq("slug", MANAGE_EXAM_COURSE_SLUG)
-    .single();
+  if (bar.status !== "ok") return;
+  const course = bar.course;
 
   const messageEl = document.getElementById("formMessage");
   let questions = [];
@@ -33,13 +29,12 @@ async function initManageExam() {
     messageEl.className = "form-message " + type;
   }
 
-  if (courseError || !course) {
-    showMessage("Could not load this course.", "error");
-    return;
-  }
-
   document.getElementById("manageExamTitle").textContent = "Manage Practice Exam: " + course.title;
   const courseId = course.id;
+  const takeExamLink = document.getElementById("takeExamLink");
+  takeExamLink.href = "practice-exam.html?course=" + encodeURIComponent(course.slug);
+  takeExamLink.hidden = false;
+  document.getElementById("questionToolbar").hidden = false;
 
   function button(label, onClick, extraClass) {
     const b = document.createElement("button");
@@ -79,6 +74,19 @@ async function initManageExam() {
       empty.textContent = "No questions yet. Click “+ Add Question” to create the first one.";
       container.appendChild(empty);
       return;
+    }
+
+    // Positions must read 1..n in display order; otherwise offer a Renumber.
+    if (!questions.every((q, i) => q.position === i + 1)) {
+      const warning = document.createElement("div");
+      warning.className = "admin-position-warning";
+      const text = document.createElement("span");
+      text.textContent = "Questions have duplicate or missing positions. The order shown is the saved order.";
+      warning.append(text, button("Renumber", async () => {
+        await setPositions(questions.map((q) => q.id));
+        refresh();
+      }));
+      container.appendChild(warning);
     }
 
     questions.forEach((q, index) => {
@@ -202,13 +210,18 @@ async function initManageExam() {
         if (error) return showMessage(error.message, "error");
         showMessage("Question updated.", "success");
       } else {
-        const { count } = await supabaseClient
+        // Next free position: max(position) + 1, or 1 when there are none.
+        const { data: last, error: positionError } = await supabaseClient
           .from("practice_questions")
-          .select("id", { count: "exact", head: true })
-          .eq("course_id", courseId);
+          .select("position")
+          .eq("course_id", courseId)
+          .order("position", { ascending: false })
+          .limit(1);
+        if (positionError) return showMessage(positionError.message, "error");
+        const position = last && last.length ? last[0].position + 1 : 1;
         const { error } = await supabaseClient
           .from("practice_questions")
-          .insert({ ...payload, course_id: courseId, position: (count || 0) + 1 });
+          .insert({ ...payload, course_id: courseId, position });
         if (error) return showMessage(error.message, "error");
         showMessage("Question added.", "success");
       }
@@ -227,11 +240,23 @@ async function initManageExam() {
     refresh();
   }
 
+  // One atomic call with the full ordered list; on failure the list is reloaded.
+  async function setPositions(ids) {
+    const { error } = await supabaseClient.rpc("admin_set_positions", {
+      p_entity: "practice_questions",
+      p_parent: courseId,
+      p_ids: ids,
+    });
+    if (error) {
+      showMessage("The new order could not be saved (" + error.message + "). The list has been reloaded from the server.", "error");
+      return false;
+    }
+    return true;
+  }
+
   async function reorderQuestions(items) {
     const ids = items.map((el) => el.dataset.questionId);
-    await Promise.all(
-      ids.map((id, index) => supabaseClient.from("practice_questions").update({ position: index + 1 }).eq("id", id))
-    );
+    if (await setPositions(ids)) showMessage("Question order saved.", "success");
     refresh();
   }
 
