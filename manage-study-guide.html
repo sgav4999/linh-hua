@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>(function(){try{if(localStorage.getItem("linhhoa_theme")==="dark"){document.documentElement.setAttribute("data-theme","dark");}}catch(e){}})();</script>
-<title>Manage Practice Exam — Linh Hua</title>
+<title>Manage Study Guide — Linh Hua</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css?v=20261015b">
 <link rel="stylesheet" href="identity.css?v=20261007a">
-<link rel="stylesheet" href="admin.css?v=20261008a">
+<link rel="stylesheet" href="admin.css?v=20261008b">
 <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="brand/apple-touch-icon.png">
 </head>
@@ -23,9 +23,6 @@
       <span></span><span></span><span></span>
     </button>
     <div class="nav-wrap" id="navWrap">
-      <nav class="nav">
-        <a href="practice-exam.html" id="takeExamLink" hidden>Take Exam</a>
-      </nav>
       <div class="user-menu" id="userMenu">
         <button class="user-menu-trigger" id="userMenuTrigger" type="button" aria-label="Account menu">
           <span class="user-avatar" id="userAvatar"></span>
@@ -49,14 +46,14 @@
   </div>
 </header>
 
-<main id="manageExamRoot">
+<main id="manageGuideRoot">
   <section class="page-hero">
     <div class="hero-glow"></div>
     <div class="container">
       <a href="dashboard.html" class="back-link">&larr; Back to Dashboard</a>
       <span class="eyebrow">Admin Only</span>
-      <h1 id="manageExamTitle">Manage Practice Exam</h1>
-      <p>Add, edit, or remove questions. Students see these changes the next time they start an exam.</p>
+      <h1 id="manageGuideTitle">Manage Study Guide</h1>
+      <p>Add, edit, reorder, or remove the authored sections of a course&rsquo;s Study Guide.</p>
     </div>
   </section>
 
@@ -66,13 +63,15 @@
 
       <div id="adminCourseBar"></div>
 
-      <div class="manage-toolbar" id="questionToolbar" hidden>
-        <button id="addQuestionBtn" class="btn btn-primary">+ Add Question</button>
+      <div id="guideNotes" class="admin-guide-notes"></div>
+
+      <div class="manage-toolbar" id="sectionToolbar" hidden>
+        <button type="button" id="addSectionBtn" class="btn btn-primary">+ Add section</button>
       </div>
 
-      <div id="questionFormContainer"></div>
+      <div id="sectionFormContainer"></div>
 
-      <div id="questionList"></div>
+      <div id="sectionList"></div>
     </div>
   </section>
 </main>
@@ -91,6 +90,6 @@
 <script src="auth.js"></script>
 <script src="courses-data.js?v=20261008a"></script>
 <script src="admin-course-bar.js?v=20261008b"></script>
-<script src="manage-exam.js?v=20261008a"></script>
+<script src="manage-study-guide.js?v=20261008b"></script>
 </body>
 </html>

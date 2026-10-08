@@ -1,4 +1,5 @@
-// Shared course selector for the admin pages (Manage Course, Manage Exam).
+// Shared course selector for the admin pages (Manage Course, Manage Study Guide,
+// Manage Exam).
 // UI only: it does no authentication or role checks (each admin page guards
 // itself, and the database rules are the security boundary). It never falls
 // back to a default course.
@@ -9,6 +10,7 @@
 window.LinhAdminCourseBar = (() => {
   const PAGES = [
     { key: "content", label: "Content", href: "manage-course.html" },
+    { key: "guide", label: "Study Guide", href: "manage-study-guide.html" },
     { key: "exam", label: "Practice Exam", href: "manage-exam.html" },
   ];
 
