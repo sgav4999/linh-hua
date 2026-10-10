@@ -191,8 +191,102 @@
   display: none;
 }
 
-.admin-guide-notes:not(:empty) {
+/* Study Guide release panel: state in words, never colour alone */
+.admin-release {
   margin-bottom: 20px;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.admin-release[hidden] {
+  display: none;
+}
+
+.admin-release-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+}
+
+.admin-release-title {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.admin-release-status {
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.admin-release-status[data-state="unreleased"] {
+  border-color: transparent;
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+.admin-release-status[data-state="released"] {
+  border-color: transparent;
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.admin-release-text {
+  margin: 10px 0 0;
+  font-size: 0.88rem;
+  color: var(--text);
+}
+
+.admin-release-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-top: 12px;
+}
+
+.admin-release .btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Editing a released guide changes what students see right away */
+.admin-live-note {
+  margin: 0 0 12px;
+  padding: 8px 12px;
+  border-left: 3px solid var(--success);
+  border-radius: var(--radius-sm);
+  background: var(--success-soft);
+  font-size: 0.85rem;
+  color: var(--text);
+}
+
+.admin-live-note strong {
+  margin-right: 4px;
+  color: var(--success);
+}
+
+.admin-live-note[hidden] {
+  display: none;
+}
+
+/* Markup the student page shows differently (images, h1/h2) */
+.admin-content-warning {
+  margin: 8px 0 0;
+  padding: 8px 12px;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  color: var(--text);
 }
 
 .admin-untitled {

@@ -1,0 +1,151 @@
+/* Student Study Guide: authored guides and page states.
+   The generated (legacy) guide keeps its styles in styles.css; everything here
+   is scoped to authored sections or to the tabs' hidden state, so the
+   generated guides render exactly as before. */
+
+/* .study-guide-tabs sets display:flex, which would override the hidden attribute */
+.study-guide-tabs[hidden] { display: none; }
+/* Set before first paint by study-guide.html for an explicit non-legacy ?course,
+   so the legacy tabs never flash before study-guide.js runs */
+html[data-guide-tabs="hidden"] .study-guide-tabs { display: none; }
+
+/* One authored section: DB heading (h2) and its sanitized content */
+.study-guide-section { margin-bottom: 36px; }
+.study-guide-section:last-child { margin-bottom: 0; }
+
+.study-guide-section > h2 {
+  font-size: 1.3rem;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--accent);
+  overflow-wrap: anywhere;
+}
+
+.study-guide-authored {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.study-guide-authored > :first-child { margin-top: 0; }
+.study-guide-authored > :last-child { margin-bottom: 0; }
+
+.study-guide-authored p,
+.study-guide-authored ul,
+.study-guide-authored ol,
+.study-guide-authored blockquote,
+.study-guide-authored pre,
+.study-guide-authored .study-guide-table-wrap,
+.study-guide-authored hr {
+  margin: 0 0 14px;
+}
+
+.study-guide-authored ul,
+.study-guide-authored ol { padding-left: 22px; }
+.study-guide-authored li { margin-bottom: 6px; }
+.study-guide-authored li > ul,
+.study-guide-authored li > ol { margin: 6px 0 0; }
+
+.study-guide-authored h3,
+.study-guide-authored h4,
+.study-guide-authored h5,
+.study-guide-authored h6 {
+  margin: 22px 0 10px;
+  line-height: 1.35;
+}
+.study-guide-authored h3 { font-size: 1.05rem; color: var(--accent-dark); }
+.study-guide-authored h4 { font-size: 1rem; }
+.study-guide-authored h5 { font-size: 0.95rem; }
+.study-guide-authored h6 { font-size: 0.9rem; color: var(--muted); }
+
+.study-guide-authored a {
+  color: var(--accent-dark);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+/* A link whose destination was removed is plain text */
+.study-guide-authored a:not([href]) { color: inherit; text-decoration: none; }
+.study-guide-authored a[href]:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.study-guide-authored blockquote {
+  padding: 4px 0 4px 16px;
+  border-left: 3px solid var(--line);
+  color: var(--muted);
+}
+
+.study-guide-authored code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.88em;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--surface-alt);
+}
+
+.study-guide-authored pre {
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-alt);
+  overflow-x: auto;
+  white-space: pre;
+  overflow-wrap: normal;
+}
+.study-guide-authored pre code { padding: 0; background: none; font-size: 0.85rem; }
+
+.study-guide-authored hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+}
+
+/* Tables scroll inside their own box on small screens */
+.study-guide-table-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+  border-radius: var(--radius-sm);
+}
+.study-guide-table-wrap:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+.study-guide-authored table {
+  border-collapse: collapse;
+  min-width: 100%;
+  font-size: 0.9rem;
+  overflow-wrap: normal;
+}
+.study-guide-authored th,
+.study-guide-authored td {
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+.study-guide-authored th { background: var(--surface-alt); font-weight: 700; }
+
+@media (max-width: 600px) {
+  .study-guide-authored table { font-size: 0.85rem; }
+  .study-guide-authored th,
+  .study-guide-authored td { padding: 6px 8px; }
+}
+
+@media print {
+  .study-guide-section { break-inside: auto; }
+  .study-guide-section > h2,
+  .study-guide-authored h3,
+  .study-guide-authored h4,
+  .study-guide-authored h5,
+  .study-guide-authored h6 { break-after: avoid; page-break-after: avoid; }
+  .study-guide-authored tr,
+  .study-guide-authored li,
+  .study-guide-authored blockquote,
+  .study-guide-authored pre { break-inside: avoid; page-break-inside: avoid; }
+  .study-guide-table-wrap { overflow: visible; }
+  .study-guide-authored pre { white-space: pre-wrap; overflow: visible; }
+  .study-guide-authored a { color: inherit; }
+  /* No URLs are printed after links */
+  .study-guide-authored a::after { content: none !important; }
+}

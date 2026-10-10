@@ -4,11 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>(function(){try{if(localStorage.getItem("linhhoa_theme")==="dark"){document.documentElement.setAttribute("data-theme","dark");}}catch(e){}})();</script>
+<!-- Before first paint only: an explicit ?course outside the three original courses hides their tabs. study-guide.js still resolves the course and decides what the page shows. -->
+<script>(function(){try{var c=new URLSearchParams(location.search).get("course");if(c&&["life","health","life-health-combo"].indexOf(c)<0){document.documentElement.setAttribute("data-guide-tabs","hidden");}}catch(e){}})();</script>
 <title>Study Guide — Linh Hua</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css?v=20261015b">
+<link rel="stylesheet" href="study-guide.css?v=20261009b">
 <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="brand/apple-touch-icon.png">
 </head>
@@ -50,8 +53,8 @@
     <div class="container">
       <a href="dashboard.html" class="back-link">&larr; Back to Dashboard</a>
       <span class="eyebrow" id="studyGuideEyebrow">Study Guide</span>
-      <h1>Study Guide</h1>
-      <p>A condensed summary of the key facts from every lesson — great for a final review before the exam.</p>
+      <h1 id="studyGuideTitle">Study Guide</h1>
+      <p id="studyGuideLede">A condensed summary of the key facts from every lesson — great for a final review before the exam.</p>
     </div>
   </section>
 
@@ -85,6 +88,7 @@
 <script src="supabase-config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="auth.js"></script>
-<script src="study-guide.js"></script>
+<script src="vendor/purify-3.4.16.min.js"></script>
+<script src="study-guide.js?v=20261009a"></script>
 </body>
 </html>
