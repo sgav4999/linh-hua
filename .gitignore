@@ -13,3 +13,13 @@ needs_missing_choices.md
 
 # Claude Code: personal settings (hooks, local permissions)
 /.claude/settings.local.json
+
+# Historical course-content SQL (lesson content and answer keys). Preserved outside
+# the repo in C:\Linh Hua Imports\historical\; never re-add to the published tree.
+/insert_progress_checks_general.sql
+/insert_progress_checks_health.sql
+/insert_progress_checks_life.sql
+/add_missing_content.sql
+/add_life_lesson_diagrams.sql
+/split_lessons.sql
+/verify_missing_content.sql
