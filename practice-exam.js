@@ -1,5 +1,8 @@
 const examRoot = document.getElementById("examRoot");
-const EXAM_COURSE_SLUG = new URLSearchParams(window.location.search).get("course") || "life-health-combo";
+// No default course: without ?course= the page asks the student to choose one
+// and never opens another course in its place.
+const EXAM_COURSE_SLUG = LinhExamConfig.requestedSlug(new URLSearchParams(window.location.search).get("course"));
+const EXAM_PAGE_SIZE = 1000;
 
 async function initExam() {
   const { data: { session } } = await supabaseClient.auth.getSession();
@@ -14,54 +17,105 @@ async function initExam() {
     messageEl.className = "form-message " + type;
   }
 
+  const introText = document.getElementById("examIntroText");
+  const startBtn = document.getElementById("startExamBtn");
+  // A state with no exam to start: the message stays, the Start button goes.
+  function noExam(text) {
+    introText.textContent = text;
+    startBtn.hidden = true;
+  }
+
+  if (!EXAM_COURSE_SLUG) {
+    noExam("Choose a course to start a practice exam. ");
+    const link = document.createElement("a");
+    link.href = "dashboard.html";
+    link.textContent = "Go to your dashboard";
+    introText.appendChild(link);
+    return;
+  }
+
+  // An unknown slug and a course this account can't read (an unpublished
+  // draft, for students) look the same here.
   const { data: course, error: courseError } = await supabaseClient
     .from("courses")
-    .select("id, title")
+    .select("id, slug, title")
     .eq("slug", EXAM_COURSE_SLUG)
     .single();
 
   if (courseError || !course) {
     showMessage("Could not load this course.", "error");
+    noExam("");
     return;
   }
 
   document.getElementById("examEyebrow").textContent = "Practice Exam · " + course.title;
+  const courseLink = document.getElementById("examCourseLink");
+  courseLink.href = "course.html?course=" + encodeURIComponent(course.slug);
+  courseLink.hidden = false;
 
-  const { data: questions, error } = await supabaseClient
-    .from("practice_questions")
-    .select("id, question, choice_a, choice_b, choice_c, choice_d, correct_choice, explanation")
-    .eq("course_id", course.id)
-    .order("position");
-
-  if (error) {
-    showMessage("Could not load practice questions: " + error.message, "error");
+  const config = LinhExamConfig.examConfigFor(course.slug);
+  if (!config) {
+    noExam("The practice exam for this course is not configured yet.");
     return;
   }
 
-  if (!questions || !questions.length) {
-    document.getElementById("examIntroText").textContent = "No practice questions have been added yet. Check back soon.";
-    document.getElementById("startExamBtn").disabled = true;
+  // The whole bank in its authoritative order, a page at a time; a failed
+  // page stops the exam rather than starting it with part of the bank.
+  let bank;
+  try {
+    bank = await LinhExamConfig.loadAllPages(
+      (from, to) =>
+        supabaseClient
+          .from("practice_questions")
+          .select("id, question, choice_a, choice_b, choice_c, choice_d, correct_choice, explanation")
+          .eq("course_id", course.id)
+          .order("position")
+          .order("id")
+          .range(from, to),
+      EXAM_PAGE_SIZE
+    );
+  } catch (err) {
+    showMessage("Could not load practice questions: " + err.message, "error");
+    noExam("");
     return;
   }
 
-  document.getElementById("examIntroText").textContent =
-    `${questions.length} question${questions.length === 1 ? "" : "s"}. Answer them all, then see your score and review anything you missed.`;
+  if (!bank.length) {
+    introText.textContent = "No practice questions have been added yet. Check back soon.";
+    startBtn.disabled = true;
+    return;
+  }
 
-  let currentIndex = 0;
-  let answers = new Array(questions.length).fill(null);
-  let submitted = new Array(questions.length).fill(false);
-  let optionOrders = questions.map(() => ["a", "b", "c", "d"]);
+  const rowsById = new Map(bank.map((q) => [q.id, q]));
+  const examSize = LinhExamConfig.attemptSize(config, bank.length);
+  const plural = (n) => `${n} question${n === 1 ? "" : "s"}`;
+  let sizeText;
+  if (config.length === "all") sizeText = `${plural(examSize)}.`;
+  else if (examSize < bank.length) sizeText = `${plural(examSize)} selected from ${bank.length} available.`;
+  else sizeText = `${plural(examSize)}, every question available for this course.`;
+  introText.textContent = sizeText + " Answer them all, then see your score and review anything you missed.";
+
+  // One attempt per Start: its questions and choice orders are fixed until
+  // the next Start, and grading uses exactly what was shown.
+  let attempt = null;
+  let questions = [];
   let timerInterval = null;
   let startTime = null;
   let elapsedSeconds = 0;
 
-  function shuffle(arr) {
-    for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr;
-  }
+  const questionHeading = document.getElementById("examQuestionHeading");
+  const questionProgress = document.getElementById("examQuestionProgress");
+  const optionsEl = document.getElementById("examOptions");
+  const checkBtn = document.getElementById("examCheckBtn");
+  const feedback = document.getElementById("examFeedback");
+  const explanation = document.getElementById("examExplanation");
+  const statusEl = document.getElementById("examStatus");
+  const prevBtn = document.getElementById("examPrevBtn");
+  const nextBtn = document.getElementById("examNextBtn");
+
+  const currentId = () => attempt.questionIds[attempt.currentIndex];
+  const choiceText = (q, key) => q["choice_" + key];
+  const labelled = (q, order, key) => `${LinhExamConfig.displayLabelFor(order, key)}. ${choiceText(q, key)}`;
 
   function formatTime(totalSeconds) {
     const m = Math.floor(totalSeconds / 60);
@@ -83,65 +137,85 @@ async function initExam() {
     clearInterval(timerInterval);
   }
 
-  function renderQuestion() {
-    const q = questions[currentIndex];
-    const isSubmitted = submitted[currentIndex];
-    document.getElementById("examProgress").textContent = `Question ${currentIndex + 1} of ${questions.length}`;
-    document.getElementById("examProgressFill").style.width = `${((currentIndex + 1) / questions.length) * 100}%`;
+  function feedbackText(q, order, answer) {
+    return answer === q.correct_choice
+      ? "Correct!"
+      : `Incorrect. Correct answer: ${labelled(q, order, q.correct_choice)}`;
+  }
+
+  // Selected-state and Check button follow the chosen radio in place, so the
+  // focused radio (and arrow-key movement between radios) is never rebuilt.
+  function selectAnswer(key) {
+    attempt.answers[currentId()] = key;
+    optionsEl.querySelectorAll(".quiz-option").forEach((option) => {
+      option.classList.toggle("selected", option.dataset.choice === key);
+    });
+    checkBtn.disabled = false;
+    updateNavigator();
+  }
+
+  function renderQuestion(focusQuestion) {
+    const id = currentId();
+    const q = rowsById.get(id);
+    const order = attempt.choiceOrders[id];
+    const answer = attempt.answers[id] || null;
+    const isChecked = !!attempt.checked[id];
+    const progress = `Question ${attempt.currentIndex + 1} of ${questions.length}`;
+
+    document.getElementById("examProgress").textContent = progress;
+    document.getElementById("examProgressFill").style.width = `${((attempt.currentIndex + 1) / questions.length) * 100}%`;
+    questionProgress.textContent = progress + ": ";
     document.getElementById("examQuestionText").textContent = q.question;
 
     if (window.TTS) {
       TTS.stop();
       const listenContainer = document.getElementById("examListenContainer");
       listenContainer.innerHTML = "";
-      const listenBtn = TTS.attach(() => getExamListenText(currentIndex), { title: "Listen to this question" });
+      const listenBtn = TTS.attach(() => getExamListenText(), { title: "Listen to this question" });
       if (listenBtn) listenContainer.appendChild(listenBtn);
     }
 
-    const optionsEl = document.getElementById("examOptions");
     optionsEl.innerHTML = "";
-    optionOrders[currentIndex].forEach((letter) => {
+    order.forEach((key, i) => {
       const option = document.createElement("label");
       option.className = "quiz-option";
-      if (answers[currentIndex] === letter) option.classList.add("selected");
+      option.dataset.choice = key;
+      if (answer === key) option.classList.add("selected");
 
-      if (isSubmitted) {
+      if (isChecked) {
         option.classList.add("locked");
-        if (letter === q.correct_choice) option.classList.add("correct");
-        else if (letter === answers[currentIndex]) option.classList.add("incorrect");
+        if (key === q.correct_choice) option.classList.add("correct");
+        else if (key === answer) option.classList.add("incorrect");
       }
 
       const input = document.createElement("input");
       input.type = "radio";
       input.name = "examOption";
-      input.value = letter;
-      input.checked = answers[currentIndex] === letter;
-      input.disabled = isSubmitted;
-      input.addEventListener("change", () => {
-        answers[currentIndex] = letter;
-        renderQuestion();
-      });
+      input.value = key;
+      input.checked = answer === key;
+      input.disabled = isChecked;
+      input.addEventListener("change", () => selectAnswer(key));
+
+      const letter = document.createElement("span");
+      letter.className = "quiz-option-letter";
+      letter.textContent = LinhExamConfig.displayLabel(i) + ".";
 
       const text = document.createElement("span");
-      text.textContent = q["choice_" + letter];
+      text.className = "quiz-option-text";
+      text.textContent = choiceText(q, key);
 
       option.appendChild(input);
+      option.appendChild(letter);
       option.appendChild(text);
       optionsEl.appendChild(option);
     });
 
-    const checkBtn = document.getElementById("examCheckBtn");
-    const feedback = document.getElementById("examFeedback");
-    const explanation = document.getElementById("examExplanation");
-
-    if (isSubmitted) {
+    if (isChecked) {
       checkBtn.hidden = true;
-      const isCorrect = answers[currentIndex] === q.correct_choice;
+      const isCorrect = answer === q.correct_choice;
       feedback.hidden = false;
       feedback.className = "lesson-quiz-feedback " + (isCorrect ? "correct" : "incorrect");
-      feedback.textContent = isCorrect
-        ? "Correct!"
-        : `Incorrect. Correct answer: ${q.correct_choice.toUpperCase()}) ${q["choice_" + q.correct_choice]}`;
+      feedback.textContent = feedbackText(q, order, answer);
       if (!isCorrect && q.explanation) {
         explanation.hidden = false;
         explanation.textContent = q.explanation;
@@ -150,17 +224,22 @@ async function initExam() {
       }
     } else {
       checkBtn.hidden = false;
-      checkBtn.disabled = !answers[currentIndex];
+      checkBtn.disabled = !answer;
       feedback.hidden = true;
       explanation.hidden = true;
     }
 
-    const prevBtn = document.getElementById("examPrevBtn");
-    const nextBtn = document.getElementById("examNextBtn");
-    prevBtn.disabled = currentIndex === 0;
-    nextBtn.textContent = currentIndex === questions.length - 1 ? "Finish" : "Next →";
+    prevBtn.disabled = attempt.currentIndex === 0;
+    nextBtn.textContent = attempt.currentIndex === questions.length - 1 ? "Finish" : "Next →";
 
     updateNavigator();
+    if (focusQuestion) questionHeading.focus();
+  }
+
+  function goTo(index) {
+    attempt.currentIndex = index;
+    statusEl.textContent = "";
+    renderQuestion(true);
   }
 
   function buildNavigator() {
@@ -170,29 +249,46 @@ async function initExam() {
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "exam-nav-item";
-      btn.textContent = i + 1;
-      btn.title = "Question " + (i + 1);
+      const num = document.createElement("span");
+      num.textContent = i + 1;
+      const mark = document.createElement("span");
+      mark.className = "exam-nav-mark";
+      mark.setAttribute("aria-hidden", "true");
+      btn.appendChild(num);
+      btn.appendChild(mark);
       btn.addEventListener("click", () => {
-        currentIndex = i;
-        renderQuestion();
         closeNavigator();
+        goTo(i);
       });
       nav.appendChild(btn);
     });
   }
 
+  // Status is shown by a mark and a label as well as by colour.
   function updateNavigator() {
     const items = document.getElementById("examNavigator").children;
     for (let i = 0; i < items.length; i++) {
       const btn = items[i];
-      btn.classList.remove("current", "answered", "correct", "incorrect");
-      if (i === currentIndex) {
-        btn.classList.add("current");
-      } else if (submitted[i]) {
-        btn.classList.add(answers[i] === questions[i].correct_choice ? "correct" : "incorrect");
-      } else if (answers[i]) {
-        btn.classList.add("answered");
+      const id = attempt.questionIds[i];
+      const answer = attempt.answers[id];
+      let status = "unanswered";
+      let mark = "";
+      if (attempt.checked[id]) {
+        const isCorrect = answer === rowsById.get(id).correct_choice;
+        status = isCorrect ? "correct" : "incorrect";
+        mark = isCorrect ? "✓" : "×";
+      } else if (answer) {
+        status = "answered";
+        mark = "•";
       }
+      const isCurrent = i === attempt.currentIndex;
+      btn.classList.remove("current", "answered", "correct", "incorrect");
+      if (isCurrent) btn.classList.add("current");
+      else if (status !== "unanswered") btn.classList.add(status);
+      btn.lastChild.textContent = mark;
+      btn.setAttribute("aria-label", `Question ${i + 1}, ${status}${isCurrent ? ", current" : ""}`);
+      if (isCurrent) btn.setAttribute("aria-current", "step");
+      else btn.removeAttribute("aria-current");
     }
   }
 
@@ -212,64 +308,55 @@ async function initExam() {
     document.getElementById("examNavToggleLabel").textContent = isOpen ? "Hide question list" : "Jump to question";
   });
 
-  // Built manually rather than read off the DOM, since the on-screen
-  // options have no "A)"/"B)" prefix — only spoken aloud does.
-  function getExamListenText(index) {
-    const q = questions[index];
-    const parts = [q.question];
-    optionOrders[index].forEach((letter) => {
-      if (q["choice_" + letter]) parts.push(letter.toUpperCase() + ". " + q["choice_" + letter]);
-    });
-    const feedback = document.getElementById("examFeedback");
+  // Read in the order shown, with the letters shown.
+  function getExamListenText() {
+    const id = currentId();
+    const q = rowsById.get(id);
+    const parts = [q.question].concat(LinhExamConfig.spokenChoices(q, attempt.choiceOrders[id]));
     if (!feedback.hidden) parts.push(feedback.textContent);
-    const explanation = document.getElementById("examExplanation");
     if (!explanation.hidden) parts.push("Explanation: " + explanation.textContent);
     return parts.join(". ");
   }
 
-  document.getElementById("examCheckBtn").addEventListener("click", () => {
-    if (!answers[currentIndex]) return;
-    submitted[currentIndex] = true;
-    renderQuestion();
+  checkBtn.addEventListener("click", () => {
+    const id = currentId();
+    if (!attempt.answers[id]) return;
+    attempt.checked[id] = true;
+    renderQuestion(false);
+    statusEl.textContent = feedback.textContent;
+    // The Check button is now hidden; keep focus on the way forward.
+    nextBtn.focus();
   });
 
-  document.getElementById("examPrevBtn").addEventListener("click", () => {
-    if (currentIndex > 0) {
-      currentIndex--;
-      renderQuestion();
-    }
+  prevBtn.addEventListener("click", () => {
+    if (attempt.currentIndex > 0) goTo(attempt.currentIndex - 1);
   });
 
-  document.getElementById("examNextBtn").addEventListener("click", () => {
-    if (currentIndex < questions.length - 1) {
-      currentIndex++;
-      renderQuestion();
-    } else {
-      submitExam();
-    }
+  nextBtn.addEventListener("click", () => {
+    if (attempt.currentIndex < questions.length - 1) goTo(attempt.currentIndex + 1);
+    else submitExam();
   });
 
   function submitExam() {
     if (window.TTS) TTS.stop();
     stopTimer();
     closeNavigator();
+    statusEl.textContent = "";
     document.getElementById("examQuiz").hidden = true;
     document.getElementById("examResults").hidden = false;
 
-    let correctCount = 0;
-    questions.forEach((q, i) => {
-      if (answers[i] === q.correct_choice) correctCount++;
-    });
-    const percent = Math.round((correctCount / questions.length) * 100);
-
-    document.getElementById("examScorePercent").textContent = `${percent}%`;
-    document.getElementById("examScoreLabel").textContent = `${correctCount} of ${questions.length} correct`;
+    const score = LinhExamConfig.scoreAttempt(attempt, rowsById);
+    document.getElementById("examScorePercent").textContent = `${score.percent}%`;
+    document.getElementById("examScoreLabel").textContent = `${score.correct} of ${score.total} correct`;
     document.getElementById("examTimeTaken").textContent = `Completed in ${formatTime(elapsedSeconds)}`;
 
     const reviewEl = document.getElementById("examReview");
     reviewEl.innerHTML = "";
-    questions.forEach((q, i) => {
-      const isCorrect = answers[i] === q.correct_choice;
+    attempt.questionIds.forEach((id, i) => {
+      const q = rowsById.get(id);
+      const order = attempt.choiceOrders[id];
+      const answer = attempt.answers[id];
+      const isCorrect = answer === q.correct_choice;
 
       const item = document.createElement("div");
       item.className = "review-item " + (isCorrect ? "review-correct" : "review-incorrect");
@@ -281,47 +368,46 @@ async function initExam() {
 
       const yourAnswer = document.createElement("p");
       yourAnswer.className = "review-answer";
-      yourAnswer.textContent = answers[i]
-        ? `Your answer: ${answers[i].toUpperCase()}. ${q["choice_" + answers[i]]}`
-        : "Your answer: (skipped)";
+      yourAnswer.textContent = answer ? `Your answer: ${labelled(q, order, answer)}` : "Your answer: (skipped)";
       item.appendChild(yourAnswer);
 
       if (!isCorrect) {
         const correctAnswer = document.createElement("p");
         correctAnswer.className = "review-correct-answer";
-        correctAnswer.textContent = `Correct answer: ${q.correct_choice.toUpperCase()}. ${q["choice_" + q.correct_choice]}`;
+        correctAnswer.textContent = `Correct answer: ${labelled(q, order, q.correct_choice)}`;
         item.appendChild(correctAnswer);
       }
 
       if (q.explanation) {
-        const explanation = document.createElement("p");
-        explanation.className = "review-explanation";
-        explanation.textContent = q.explanation;
-        item.appendChild(explanation);
+        const explanationEl = document.createElement("p");
+        explanationEl.className = "review-explanation";
+        explanationEl.textContent = q.explanation;
+        item.appendChild(explanationEl);
       }
 
       reviewEl.appendChild(item);
     });
+
+    document.getElementById("examScore").focus();
   }
 
-  document.getElementById("startExamBtn").addEventListener("click", () => {
+  startBtn.addEventListener("click", () => {
     document.getElementById("examIntro").hidden = true;
     document.getElementById("examResults").hidden = true;
     document.getElementById("examQuiz").hidden = false;
-    shuffle(questions);
-    optionOrders = questions.map(() => shuffle(["a", "b", "c", "d"]));
-    currentIndex = 0;
-    answers = new Array(questions.length).fill(null);
-    submitted = new Array(questions.length).fill(false);
+    attempt = LinhExamConfig.createAttempt(bank, config);
+    questions = attempt.questionIds.map((id) => rowsById.get(id));
+    statusEl.textContent = "";
     buildNavigator();
     closeNavigator();
     startTimer();
-    renderQuestion();
+    renderQuestion(true);
   });
 
   document.getElementById("retakeExamBtn").addEventListener("click", () => {
     document.getElementById("examResults").hidden = true;
     document.getElementById("examIntro").hidden = false;
+    startBtn.focus();
   });
 }
 

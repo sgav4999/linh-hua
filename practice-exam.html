@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=20261015b">
+<link rel="stylesheet" href="styles.css?v=20261014p7">
 <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="brand/apple-touch-icon.png">
 </head>
@@ -22,7 +22,7 @@
     </button>
     <div class="nav-wrap" id="navWrap">
       <nav class="nav">
-        <a href="course.html">Course</a>
+        <a href="course.html" id="examCourseLink" hidden>Course</a>
       </nav>
       <div class="user-menu" id="userMenu">
         <button class="user-menu-trigger" id="userMenuTrigger" type="button" aria-label="Account menu">
@@ -54,13 +54,13 @@
       <a href="dashboard.html" class="back-link">&larr; Back to Dashboard</a>
       <span class="eyebrow" id="examEyebrow">Practice Exam</span>
       <h1>Test your knowledge</h1>
-      <p>Unlimited practice questions pulled from the state exam content outline.</p>
+      <p>Practice with questions from this course’s question bank.</p>
     </div>
   </section>
 
   <section class="page-section">
     <div class="container exam-container">
-      <div id="formMessage" class="form-message"></div>
+      <div id="formMessage" class="form-message" aria-live="polite"></div>
 
       <div id="examIntro" class="exam-intro">
         <p id="examIntroText">Loading questions...</p>
@@ -80,12 +80,13 @@
         </button>
         <div id="examNavigator" class="exam-navigator"></div>
 
-        <h2 id="examQuestionText" class="exam-question"></h2>
+        <h2 id="examQuestionHeading" class="exam-question" tabindex="-1"><span id="examQuestionProgress" class="exam-sr"></span><span id="examQuestionText"></span></h2>
         <div id="examListenContainer"></div>
-        <div id="examOptions" class="exam-options"></div>
+        <div id="examOptions" class="exam-options" role="radiogroup" aria-labelledby="examQuestionText"></div>
         <button id="examCheckBtn" type="button" class="btn btn-secondary">Check Answer</button>
         <p id="examFeedback" class="lesson-quiz-feedback" hidden></p>
         <p id="examExplanation" class="lesson-quiz-explanation" hidden></p>
+        <p id="examStatus" class="exam-sr" role="status" aria-live="polite"></p>
 
         <div class="lesson-nav">
           <button id="examPrevBtn" class="btn btn-secondary">&larr; Previous</button>
@@ -94,7 +95,7 @@
       </div>
 
       <div id="examResults" class="exam-results" hidden>
-        <div class="exam-score">
+        <div id="examScore" class="exam-score" tabindex="-1">
           <span id="examScorePercent" class="exam-score-percent"></span>
           <span id="examScoreLabel" class="exam-score-label"></span>
         </div>
@@ -119,6 +120,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="auth.js"></script>
 <script src="tts.js"></script>
-<script src="practice-exam.js"></script>
+<script src="exam-config.js?v=20261014p7"></script>
+<script src="practice-exam.js?v=20261014p7"></script>
 </body>
 </html>

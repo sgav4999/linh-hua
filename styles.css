@@ -2410,7 +2410,7 @@ a { color: inherit; }
 
 .exam-navigator {
   display: none;
-  grid-template-columns: repeat(auto-fill, minmax(36px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
   gap: 8px;
   max-height: 260px;
   overflow-y: auto;
@@ -2426,7 +2426,8 @@ a { color: inherit; }
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 36px;
+  gap: 2px;
+  min-height: 44px;
   border-radius: 8px;
   border: 1.5px solid var(--line);
   background: var(--bg);
@@ -2449,10 +2450,36 @@ a { color: inherit; }
 
 .exam-nav-item.current { background: var(--accent-fill); border-color: var(--accent-fill); color: #fff; }
 
+/* Status mark beside the number (✓ correct, × incorrect, • answered), so the
+   status never rests on colour alone. */
+.exam-nav-mark { font-size: 0.75rem; line-height: 1; }
+
+/* Text read by screen readers only (the question count before each question,
+   the live status line). */
+.exam-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* The Course link appears once the exam knows its course. */
+:root .site-header .nav a[hidden] { display: none; }
+
 .exam-question {
   font-size: 1.4rem;
   margin-bottom: 24px;
+  overflow-wrap: anywhere;
 }
+
+/* Focused by script when a question is shown; no ring for that. */
+.exam-question:focus { outline: none; }
 
 .exam-options {
   display: flex;
@@ -2495,7 +2522,9 @@ a { color: inherit; }
 [data-theme="dark"] .quiz-option.correct { background: rgba(20, 108, 67, 0.22); }
 [data-theme="dark"] .quiz-option.incorrect { background: rgba(179, 38, 30, 0.18); }
 
-.quiz-option input { accent-color: var(--accent); width: 18px; height: 18px; }
+.quiz-option input { accent-color: var(--accent); width: 18px; height: 18px; flex: none; }
+.quiz-option-letter { flex: none; font-weight: 700; }
+.quiz-option-text { min-width: 0; overflow-wrap: anywhere; }
 
 #examCheckBtn { margin-bottom: 20px; }
 
