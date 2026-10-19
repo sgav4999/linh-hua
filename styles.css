@@ -1495,6 +1495,9 @@ a { color: inherit; }
   margin-bottom: 24px;
 }
 
+/* display:flex above would override the hidden attribute (no-access state) */
+.course-sidebar-actions[hidden] { display: none; }
+
 .course-progress-label {
   display: flex;
   justify-content: space-between;
@@ -2251,6 +2254,106 @@ a { color: inherit; }
   text-align: center;
   color: var(--muted);
   padding: 32px 20px !important;
+}
+
+.students-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Course access per student (admin): a panel row under the student's row.
+   Sticky to the left edge and no wider than the viewport, so it stays fully
+   usable while the roster table scrolls sideways on a phone. */
+.students-table tr.students-access-row > td {
+  padding: 0 !important;
+  white-space: normal;
+  background: var(--surface-alt);
+}
+.students-access {
+  position: sticky;
+  left: 0;
+  box-sizing: border-box;
+  width: min(100%, calc(100vw - 48px));
+  max-width: 760px;
+  padding: 16px 20px 18px;
+}
+.students-access-title {
+  font-size: 0.95rem;
+  margin: 0 0 6px;
+}
+.students-access-note {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin: 0 0 10px;
+}
+.students-access-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.students-access-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+}
+.students-access-course {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.students-access-course strong { font-weight: 600; }
+.students-access-meta {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+.students-access-status {
+  margin: 10px 0 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.students-access-status:empty { display: none; }
+.students-access-status.error { color: var(--danger); }
+
+/* Course content pages: signed in and the course exists, but the reader is
+   not enrolled (shown instead of the content). */
+.access-state {
+  max-width: 620px;
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.access-state-title {
+  font-size: 1.2rem;
+  line-height: 1.35;
+  margin: 0 0 18px;
+}
+.access-state-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.exam-intro .access-state {
+  margin: 0 auto;
+  text-align: left;
+}
+/* The course page's content column is already a bordered panel: no second
+   frame, and the lesson-heading size does not apply to this title. */
+.course-content .access-state {
+  max-width: none;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+.course-content .access-state-title {
+  font-size: 1.2rem;
+  margin: 0 0 18px;
 }
 
 /* Support inbox (admin) */

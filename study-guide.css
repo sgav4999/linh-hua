@@ -8,6 +8,10 @@
 /* Set before first paint by study-guide.html for an explicit non-legacy ?course,
    so the legacy tabs never flash before study-guide.js runs */
 html[data-guide-tabs="hidden"] .study-guide-tabs { display: none; }
+/* Until study-guide.js knows which legacy guides this reader may open, the
+   row keeps its space but shows nothing; a tab the reader can't open is hidden. */
+html[data-guide-tabs="pending"] .study-guide-tabs { visibility: hidden; }
+.study-guide-tab[hidden] { display: none; }
 
 /* One authored section: DB heading (h2) and its sanitized content */
 .study-guide-section { margin-bottom: 36px; }

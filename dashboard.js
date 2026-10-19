@@ -1,9 +1,10 @@
 // Student Dashboard: renders the Study Desk from the student's real progress.
 // auth.js stays the gate (signed-out redirect) and fills the name, email, avatar
 // and role. This file only reads: every published course with its modules and
-// lessons (LinhCourses.loadDashboardCourses) and the signed-in user's
-// lesson_progress rows. dashboard-model.js decides progress, status, tools and
-// focus; nothing here names a course. Everything visitor- or database-supplied
+// lessons (LinhCourses.loadDashboardCourses), the signed-in user's
+// lesson_progress rows and their enrollments. dashboard-model.js decides which
+// courses they see (enrolled only), progress, status, tools and focus; nothing
+// here names a course. Everything visitor- or database-supplied
 // is written with textContent; nothing is parsed as HTML.
 (function () {
   const root = document.documentElement;
@@ -227,12 +228,12 @@
     return frag;
   }
 
-  // No published course to show.
+  // No course this student is enrolled in.
   function emptyView() {
     const frag = document.createDocumentFragment();
     frag.append(heading("My courses"));
     const box = el("div", "dash-empty dash-panel");
-    const p = el("p", "dash-empty-text", "No courses are available in your Study Desk yet.");
+    const p = el("p", "dash-empty-text", "You're not enrolled in any courses yet.");
     p.setAttribute("role", "status");
     const link = el("a", "btn btn-secondary", "Browse courses");
     link.href = "courses.html";
@@ -288,7 +289,9 @@
 
     try {
       if (!Model || !window.LinhCourses) throw new Error("model missing");
-      const [rows, progress] = await Promise.all([
+      // Any failed read (enrollments included) lands in the error view: the
+      // desk is never drawn with every course or with an assumed-empty list.
+      const [rows, progress, access] = await Promise.all([
         LinhCourses.loadDashboardCourses(),
         // id is lesson_id (unique per user: the key is user_id + lesson_id),
         // which the pager uses to reject a row repeated across pages.
@@ -302,8 +305,9 @@
               .range(from, to),
           PROGRESS_PAGE
         ),
+        LinhCourses.loadMyEnrollments(session.user.id),
       ]);
-      render(Model.buildDesk(rows, progress));
+      render(Model.buildDesk(rows, progress, access));
     } catch (e) {
       show(errorView());
     }

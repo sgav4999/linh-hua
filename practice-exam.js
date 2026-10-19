@@ -34,21 +34,31 @@ async function initExam() {
     return;
   }
 
-  // An unknown slug and a course this account can't read (an unpublished
-  // draft, for students) look the same here.
-  const { data: course, error: courseError } = await supabaseClient
-    .from("courses")
-    .select("id, slug, title")
-    .eq("slug", EXAM_COURSE_SLUG)
-    .single();
-
-  if (courseError || !course) {
+  // The access gate runs before any question is requested. An unknown slug
+  // and a course this account can't read (an unpublished draft, for
+  // students) look the same here; a failed read says so.
+  const gate = await LinhCourses.loadCourseAccess(session, EXAM_COURSE_SLUG);
+  if (gate.state === "unavailable") {
     showMessage("Could not load this course.", "error");
     noExam("");
     return;
   }
+  if (gate.state === "error") {
+    showMessage("Could not load this course. Please refresh the page to try again.", "error");
+    noExam("");
+    return;
+  }
+  const course = gate.course;
 
   document.getElementById("examEyebrow").textContent = "Practice Exam · " + course.title;
+
+  // Published, but this student is not enrolled: no questions are read.
+  if (gate.state === "no-access") {
+    introText.hidden = true;
+    startBtn.hidden = true;
+    document.getElementById("examIntro").insertBefore(LinhAccessView.noAccess(), startBtn);
+    return;
+  }
   const courseLink = document.getElementById("examCourseLink");
   courseLink.href = "course.html?course=" + encodeURIComponent(course.slug);
   courseLink.hidden = false;

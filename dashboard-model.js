@@ -76,6 +76,7 @@
       id: row.id,
       slug: row.slug,
       title: row.title,
+      published: row.published === true,
       identity: row.identity || null,
       identity_secondary: row.identity_secondary || null,
       category: row.category || null,
@@ -90,10 +91,11 @@
     };
   }
 
-  // Phase 9 seam: which of the published courses this student sees. Phase 8
-  // shows every published course to every signed-in student.
-  function visibleCourses(courses /* , access */) {
-    return courses.slice();
+  // The courses this student sees: the published ones they are enrolled in
+  // (the shared client mirror of the database rule). Missing or invalid
+  // access shows nothing, never every course.
+  function visibleCourses(courses, access) {
+    return (courses || []).filter((c) => Courses.canAccessCourse(c, access));
   }
 
   // Rows arrive in catalog order (LinhCourses.loadDashboardCourses).

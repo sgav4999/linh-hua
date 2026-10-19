@@ -111,17 +111,54 @@ async function initStudyGuide() {
   const pageTitle = titleEl.textContent;
   const pageLede = ledeEl.textContent;
 
-  // Course tabs belong to the three original guides only.
-  const showTabs = (slug) => {
-    tabsEl.hidden = !LinhCourses.isLegacyGuideCourse(slug);
-  };
-  showTabs(currentSlug);
-
   const { data: { session } } = await supabaseClient.auth.getSession();
   if (!session) {
     window.location.href = "login.html";
     return;
   }
+
+  // The reader's enrollments, read exactly once for the page (admins need
+  // none). If that read fails the page stays failed: no tabs, the error state,
+  // and no further reads (loadGuide stops before the course gate, which would
+  // otherwise read enrollments again).
+  const isAdmin = LinhCourses.isAdminSession(session);
+  let access = null;
+  let accessFailed = false;
+  if (!isAdmin) {
+    try {
+      access = await LinhCourses.loadMyEnrollments(session.user.id);
+    } catch (e) {
+      accessFailed = true;
+    }
+  }
+
+  // The legacy courses whose guide this reader may open (admins: all of them).
+  async function openableLegacyGuides() {
+    if (!isAdmin && !access) return new Set();
+    try {
+      const { data, error } = await supabaseClient
+        .from("courses")
+        .select("id, slug, published")
+        .in("slug", LinhCourses.LEGACY_GUIDE_SLUGS);
+      if (error || !data) return new Set();
+      return new Set(data.filter((c) => isAdmin || LinhCourses.canAccessCourse(c, access)).map((c) => c.slug));
+    } catch (e) {
+      return new Set();
+    }
+  }
+
+  // Course tabs belong to the three original guides only, and list only the
+  // ones this reader may open. Until this point the pre-paint script keeps the
+  // tab row invisible, so an inaccessible tab never flashes.
+  const tabSlugs = await openableLegacyGuides();
+  tabsEl.querySelectorAll(".study-guide-tab").forEach((btn) => {
+    btn.hidden = !tabSlugs.has(btn.dataset.course);
+  });
+  const showTabs = (slug) => {
+    tabsEl.hidden = !LinhCourses.isLegacyGuideCourse(slug) || tabSlugs.size === 0;
+  };
+  showTabs(currentSlug);
+  document.documentElement.setAttribute("data-guide-tabs", "ready");
 
   function renderTabs() {
     tabsEl.querySelectorAll(".study-guide-tab").forEach((btn) => {
@@ -221,24 +258,34 @@ async function initStudyGuide() {
     const isCurrent = () => seq === loadSeq;
     bodyEl.innerHTML = '<p class="study-guide-loading">Loading study guide...</p>';
 
-    const { data: course, error: courseError } = await supabaseClient
-      .from("courses")
-      .select("id, slug, title, published, study_guide_released")
-      .eq("slug", slug)
-      .maybeSingle();
+    // The page's one enrollment read failed: error state, nothing else read.
+    if (accessFailed) {
+      showUnavailable("The Study Guide could not be loaded. Please refresh the page to try again.");
+      return;
+    }
+
+    // The access gate runs before any guide content is requested.
+    const gate = await LinhCourses.loadCourseAccess(session, slug, access);
     if (!isCurrent()) return;
 
-    if (courseError) {
+    if (gate.state === "error") {
       showUnavailable("The Study Guide could not be loaded. Please refresh the page to try again.");
       return;
     }
     // A course this reader cannot read (unknown, or a draft for a student:
     // database rules hide it) looks the same as an unknown one. A draft an
     // admin can read goes on to the shared guide rule like any other course.
-    if (!course) {
+    if (gate.state === "unavailable") {
       showUnavailable("This Study Guide isn't available.");
       return;
     }
+    // Published, but this student is not enrolled: no guide content is read.
+    if (gate.state === "no-access") {
+      setHeader("Study Guide", gate.course.title, false);
+      bodyEl.replaceChildren(LinhAccessView.noAccess());
+      return;
+    }
+    const course = gate.course;
 
     let sections = [];
     if (course.study_guide_released === true) {

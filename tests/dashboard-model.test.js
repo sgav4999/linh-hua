@@ -24,6 +24,8 @@ function course(slug, shape, extra) {
     study_guide_sections: [], category: cat("insurance-licensing", 1), modules,
   }, extra || {});
 }
+// Phase 8 behaviour tests use an all-enrolled student; access itself is tested below.
+const deskAll = (rows, prog) => M.buildDesk(rows, prog, { enrolledCourseIds: new Set(rows.map((r) => r.id)) });
 const lessonIds = (row) => row.modules.flatMap((m) => m.lessons.map((l) => l.id));
 const done = (ids, at) => ids.map((id, i) => ({ lesson_id: id, completed_at: at ? new Date(Date.parse(at) + i * 1000).toISOString() : "2026-10-01T00:00:00Z" }));
 
@@ -31,7 +33,7 @@ const done = (ids, at) => ids.map((id, i) => ({ lesson_id: id, completed_at: at 
 for (const n of [0, 1, 2, 3, 5, 8]) {
   test(`desk: ${n} published course(s) flow through the generic path`, () => {
     const rows = Array.from({ length: n }, (_, i) => course(i === n - 1 ? "sie" : "course-" + i, [2, 3], { position: i + 1 }));
-    const desk = M.buildDesk(rows, []);
+    const desk = deskAll(rows, []);
     assert.equal(desk.length, n);
     assert.deepEqual(desk.map((c) => c.slug), rows.map((r) => r.slug), "catalog order kept");
     const view = M.chooseView(desk);
@@ -41,7 +43,7 @@ for (const n of [0, 1, 2, 3, 5, 8]) {
 
 test("generic future course (sie): unknown identity, no tools, normal model", () => {
   const row = course("sie", [3, 2], { identity: "teal", hours: "12.5" });
-  const c = M.buildDesk([row], done(lessonIds(row).slice(0, 2), "2026-10-10T10:00:00Z"))[0];
+  const c = deskAll([row], done(lessonIds(row).slice(0, 2), "2026-10-10T10:00:00Z"))[0];
   assert.equal(c.slug, "sie");
   assert.equal(c.identity, "teal"); // passed through; identity.css falls back to neutral for unknown tokens
   assert.equal(c.meta, "12.5 course hours · Self-paced");
@@ -59,7 +61,7 @@ test("status: zero lessons, modules without lessons, new, partial, complete", ()
   const partial = course("d", [2, 2]);
   const full = course("e", [2, 1]);
   const prog = [...done(lessonIds(partial).slice(0, 1)), ...done(lessonIds(full))];
-  const [a, b, c, d, e] = M.buildDesk([empty, hollow, fresh, partial, full], prog);
+  const [a, b, c, d, e] = deskAll([empty, hollow, fresh, partial, full], prog);
   assert.deepEqual([a.status, b.status, c.status, d.status, e.status], ["empty", "empty", "new", "progress", "complete"]);
   assert.equal(a.total, 0); assert.equal(b.total, 0); assert.deepEqual(b.modules, []);
   assert.equal(c.nextLesson.id, "c-m0-l0");
@@ -70,7 +72,7 @@ test("status: zero lessons, modules without lessons, new, partial, complete", ()
 
 test("modules with zero lessons are dropped from segments but the course still counts", () => {
   const row = course("x", [0, 3, 0, 2]);
-  const c = M.buildDesk([row], done(["x-m1-l0"]))[0];
+  const c = deskAll([row], done(["x-m1-l0"]))[0];
   assert.deepEqual(c.modules.map((m) => [m.total, m.done]), [[3, 1], [2, 0]]);
   assert.equal(c.total, 5);
 });
@@ -79,7 +81,7 @@ test("stale progress ids are ignored; duplicate lesson ids count once; done neve
   const row = course("y", [2, 2]);
   row.modules[1].lessons.push({ ...row.modules[0].lessons[0], position: 9 }); // same id again
   const prog = [...done(lessonIds(course("y", [2, 2]))), { lesson_id: "deleted-lesson", completed_at: "2026-10-02T00:00:00Z" }, { lesson_id: "y-m0-l0", completed_at: "2026-10-03T00:00:00Z" }];
-  const c = M.buildDesk([row], prog)[0];
+  const c = deskAll([row], prog)[0];
   assert.equal(c.total, 4);
   assert.equal(c.done, 4);
   assert.equal(c.status, "complete");
@@ -88,8 +90,8 @@ test("stale progress ids are ignored; duplicate lesson ids count once; done neve
 test("reversible completion: removing a progress row lowers the count on the next build", () => {
   const row = course("r", [3]);
   const all = done(lessonIds(row));
-  assert.equal(M.buildDesk([row], all)[0].status, "complete");
-  const after = M.buildDesk([row], all.filter((p) => p.lesson_id !== "r-m0-l1"))[0];
+  assert.equal(deskAll([row], all)[0].status, "complete");
+  const after = deskAll([row], all.filter((p) => p.lesson_id !== "r-m0-l1"))[0];
   assert.equal(after.done, 2); assert.equal(after.status, "progress"); assert.equal(after.nextLesson.id, "r-m0-l1");
 });
 
@@ -98,17 +100,17 @@ test("module and lesson ordering by position, then id", () => {
   row.modules.reverse(); // module 2 first in the data
   row.modules.forEach((m) => m.lessons.reverse());
   row.modules[1].lessons.push({ id: "o-m0-a", title: "tie a", position: 2 }); // ties position 2 with o-m0-l1, sorts before it by id
-  const c = M.buildDesk([row], [])[0];
+  const c = deskAll([row], [])[0];
   assert.deepEqual(c.modules.map((m) => m.title), ["o module 1", "o module 2"]);
   assert.equal(c.nextLesson.id, "o-m0-l0");
-  const c2 = M.buildDesk([row], done(["o-m0-l0"]))[0];
+  const c2 = deskAll([row], done(["o-m0-l0"]))[0];
   assert.equal(c2.nextLesson.id, "o-m0-a");
 });
 
 test("mixed courses: overview heading 'Choose where to start'; all complete: 'My courses'", () => {
   const a = course("a", [1]), b = course("b", [1]);
-  assert.equal(M.chooseView(M.buildDesk([a, b], done(lessonIds(a)))).heading, "Choose where to start");
-  assert.equal(M.chooseView(M.buildDesk([a, b], done([...lessonIds(a), ...lessonIds(b)]))).heading, "My courses");
+  assert.equal(M.chooseView(deskAll([a, b], done(lessonIds(a)))).heading, "Choose where to start");
+  assert.equal(M.chooseView(deskAll([a, b], done([...lessonIds(a), ...lessonIds(b)]))).heading, "My courses");
 });
 
 // ---------------------------------------------------------------- focus
@@ -119,7 +121,7 @@ test("focus: several partial courses -> newest completed_at wins", () => {
     ...done(lessonIds(b).slice(0, 1), "2026-10-09T00:00:00Z"), // newest
     ...done(lessonIds(c).slice(0, 2), "2026-10-05T00:00:00Z"),
   ];
-  const v = M.chooseView(M.buildDesk([a, b, c], prog));
+  const v = M.chooseView(deskAll([a, b, c], prog));
   assert.equal(v.mode, "focus");
   assert.equal(v.focus.slug, "b");
   assert.deepEqual(v.others.map((x) => x.slug), ["a", "c"]);
@@ -129,26 +131,26 @@ test("focus: tied timestamps -> more lessons done, then catalog order", () => {
   const a = course("a", [4]), b = course("b", [4]), c = course("c", [4]);
   const t = "2026-10-05T00:00:00.000Z";
   const same = (ids) => ids.map((id) => ({ lesson_id: id, completed_at: t }));
-  let v = M.chooseView(M.buildDesk([a, b, c], [...same(lessonIds(a).slice(0, 1)), ...same(lessonIds(b).slice(0, 2)), ...same(lessonIds(c).slice(0, 2))]));
+  let v = M.chooseView(deskAll([a, b, c], [...same(lessonIds(a).slice(0, 1)), ...same(lessonIds(b).slice(0, 2)), ...same(lessonIds(c).slice(0, 2))]));
   assert.equal(v.focus.slug, "b"); // b and c tie on time and count; b is earlier in catalog order
-  v = M.chooseView(M.buildDesk([a, b, c], [...same(lessonIds(a).slice(0, 1)), ...same(lessonIds(b).slice(0, 1)), ...same(lessonIds(c).slice(0, 3))]));
+  v = M.chooseView(deskAll([a, b, c], [...same(lessonIds(a).slice(0, 1)), ...same(lessonIds(b).slice(0, 1)), ...same(lessonIds(c).slice(0, 3))]));
   assert.equal(v.focus.slug, "c"); // more done
 });
 
 test("focus: missing/invalid timestamps rank below valid ones, then by count and catalog order", () => {
   const a = course("a", [4]), b = course("b", [4]), c = course("c", [4]);
   const bad = (ids) => ids.map((id) => ({ lesson_id: id, completed_at: "not a date" }));
-  let v = M.chooseView(M.buildDesk([a, b, c], [...bad(lessonIds(a).slice(0, 3)), ...done(lessonIds(b).slice(0, 1), "2020-01-01T00:00:00Z"), ...bad(lessonIds(c).slice(0, 2))]));
+  let v = M.chooseView(deskAll([a, b, c], [...bad(lessonIds(a).slice(0, 3)), ...done(lessonIds(b).slice(0, 1), "2020-01-01T00:00:00Z"), ...bad(lessonIds(c).slice(0, 2))]));
   assert.equal(v.focus.slug, "b"); // the only valid timestamp
-  v = M.chooseView(M.buildDesk([a, b, c], [...bad(lessonIds(a).slice(0, 1)), ...bad(lessonIds(b).slice(0, 2)), ...bad(lessonIds(c).slice(0, 2))]));
+  v = M.chooseView(deskAll([a, b, c], [...bad(lessonIds(a).slice(0, 1)), ...bad(lessonIds(b).slice(0, 2)), ...bad(lessonIds(c).slice(0, 2))]));
   assert.equal(v.focus.slug, "b"); // all unavailable: count, then catalog order
 });
 
 test("focus: completed and new courses never take focus", () => {
   const a = course("a", [2]), b = course("b", [2]), c = course("c", [2]);
-  let v = M.chooseView(M.buildDesk([a, b, c], done(lessonIds(a), "2026-10-10T00:00:00Z")));
+  let v = M.chooseView(deskAll([a, b, c], done(lessonIds(a), "2026-10-10T00:00:00Z")));
   assert.equal(v.mode, "overview"); // a complete, b and c new
-  v = M.chooseView(M.buildDesk([a, b, c], [...done(lessonIds(a), "2026-10-10T00:00:00Z"), ...done(lessonIds(c).slice(0, 1), "2026-01-01T00:00:00Z")]));
+  v = M.chooseView(deskAll([a, b, c], [...done(lessonIds(a), "2026-10-10T00:00:00Z"), ...done(lessonIds(c).slice(0, 1), "2026-01-01T00:00:00Z")]));
   assert.equal(v.mode, "focus"); assert.equal(v.focus.slug, "c"); // the newer completion is in a complete course
 });
 
@@ -158,7 +160,7 @@ test("Study Guide availability: legacy courses, released authored guides with vi
   const authored = course("series-x", [1], { study_guide_released: true, study_guide_sections: [{ id: 1 }] });
   const releasedButEmpty = course("series-y", [1], { study_guide_released: true, study_guide_sections: [] });
   const unreleased = course("series-z", [1], { study_guide_released: false, study_guide_sections: [] });
-  const [a, b, c, d] = M.buildDesk([legacy, authored, releasedButEmpty, unreleased], []);
+  const [a, b, c, d] = deskAll([legacy, authored, releasedButEmpty, unreleased], []);
   assert.deepEqual([a, b, c, d].map((x) => x.tools.studyGuide), [true, true, false, false]);
   // the shared rule directly
   assert.equal(C.studyGuideMode({ published: true, slug: "health", study_guide_released: false, sectionCount: 0 }), "legacy");
@@ -201,19 +203,129 @@ test("Dashboard stays published-only: the loader filters published = true before
 
 test("Practice Exam availability follows exam-config.js only", () => {
   const rows = ["life", "health", "life-health-combo", "series-6", "series-63", "sie", "series-65"].map((s) => course(s, [1]));
-  const tools = M.buildDesk(rows, []).map((c) => c.tools.practiceExam);
+  const tools = deskAll(rows, []).map((c) => c.tools.practiceExam);
   assert.deepEqual(tools, [true, true, true, true, true, false, false]);
 });
 
-// ---------------------------------------------------------------- access seam
-test("Phase 8 visibleCourses returns every published input course (no enrollment filter)", () => {
+// ---------------------------------------------------------------- access (Phase 9)
+const access = (...ids) => ({ enrolledCourseIds: new Set(ids) });
+
+test("canAccessCourse: published + enrolled only; missing or invalid access is false", () => {
+  const pub = { id: "c1", published: true }, draft = { id: "c2", published: false };
+  assert.equal(C.canAccessCourse(pub, access("c1")), true);
+  assert.equal(C.canAccessCourse(pub, access("c9")), false, "published, not enrolled");
+  assert.equal(C.canAccessCourse(draft, access("c2")), false, "draft + enrolled grants nothing");
+  assert.equal(C.canAccessCourse(draft, access()), false, "draft, not enrolled");
+  assert.equal(C.canAccessCourse(pub, undefined), false, "missing access");
+  assert.equal(C.canAccessCourse(pub, null), false);
+  assert.equal(C.canAccessCourse(pub, { enrolledCourseIds: ["c1"] }), false, "invalid access (not a Set)");
+  assert.equal(C.canAccessCourse(pub, { enrollments: [{ course_id: "c1" }] }), false, "invalid access (wrong shape)");
+  assert.equal(C.canAccessCourse({ id: "c1", published: "true" }, access("c1")), false, "published must be true, not truthy");
+  assert.equal(C.canAccessCourse(null, access("c1")), false);
+});
+
+test("visibleCourses: only enrolled published courses; missing access shows nothing", () => {
   const rows = [course("a", [1]), course("b", [1]), course("c", [1])];
-  const desk = M.buildDesk(rows, [], { enrollments: [] });
-  assert.equal(desk.length, 3);
-  const input = [{ slug: "a" }, { slug: "b" }];
-  const out = M.visibleCourses(input, { enrollments: [{ course: "a" }] });
-  assert.deepEqual(out, input);
-  assert.notEqual(out, input, "a copy, not the same array");
+  const [a, b, c] = rows;
+  assert.equal(M.buildDesk(rows, [], access(a.id, b.id, c.id)).length, 3, "3 enrolled -> 3");
+  assert.deepEqual(M.buildDesk(rows, [], access(a.id, c.id)).map((x) => x.slug), ["a", "c"], "subset, catalog order kept");
+  assert.deepEqual(M.buildDesk(rows, [], access()), [], "0 enrolled -> []");
+  assert.deepEqual(M.buildDesk(rows, []), [], "missing access -> [] (never every course)");
+  assert.deepEqual(M.buildDesk(rows, [], { enrollments: [] }), [], "invalid access -> []");
+  assert.equal(M.chooseView(M.buildDesk(rows, [], access())).mode, "empty");
+  const input = M.buildDesk(rows, [], access(a.id, b.id, c.id));
+  assert.notEqual(M.visibleCourses(input, access(a.id, b.id, c.id)), input, "a copy, not the same array");
+});
+
+test("visibleCourses: a draft row with an enrollment never appears", () => {
+  const live = course("live", [1]), draft = course("draft", [1], { published: false });
+  assert.deepEqual(M.buildDesk([live, draft], [], access(live.id, draft.id)).map((x) => x.slug), ["live"]);
+});
+
+test("a future course needs only publication + enrollment (no slug list in the model)", () => {
+  const future = course("series-65", [2, 2], { identity: "teal" });
+  const desk = M.buildDesk([course("life", [1]), future], [], access(future.id));
+  assert.deepEqual(desk.map((x) => x.slug), ["series-65"]);
+  const src = require("node:fs").readFileSync(require("node:path").join(__dirname, "..", "dashboard-model.js"), "utf8");
+  assert.doesNotMatch(src, /["'](life|health|life-health-combo|series-6|series-63|sie|series-65)["']/);
+});
+
+// ---------------------------------------------------------------- access loaders (fake client)
+function fakeClient(tables) {
+  const calls = [];
+  const from = (table) => {
+    const q = { table, filters: [], select: null, range: null };
+    calls.push(q);
+    const b = {
+      select(sel) { q.select = sel; return b; }, eq(k, v) { q.filters.push([k, v]); return b; }, order() { return b; },
+      range(f2, t) { q.range = [f2, t]; return b; }, in() { return b; },
+      maybeSingle() { return Promise.resolve(tables[table](q)); },
+      then(res, rej) { return Promise.resolve(tables[table](q)).then(res, rej); },
+    };
+    return b;
+  };
+  return { calls, from };
+}
+async function withClient(client, fn) {
+  global.supabaseClient = client;
+  try { return await fn(); } finally { delete global.supabaseClient; }
+}
+const STUDENT = { user: { id: "u1", app_metadata: { provider: "email" } } };
+const ADMIN = { user: { id: "a1", app_metadata: { provider: "email", role: "admin" } } };
+
+test("loadMyEnrollments: own rows only -> { enrolledCourseIds: Set }", async () => {
+  const client = fakeClient({ enrollments: () => ({ data: [{ course_id: "c1" }, { course_id: "c2" }], error: null }) });
+  const a = await withClient(client, () => C.loadMyEnrollments("u1"));
+  assert.deepEqual([...a.enrolledCourseIds].sort(), ["c1", "c2"]);
+  assert.deepEqual(client.calls[0].filters, [["user_id", "u1"]]);
+  assert.equal(client.calls[0].select, "course_id");
+});
+
+test("loadMyEnrollments: a read error, a missing user or a full page throws (never all, never empty)", async () => {
+  const err = fakeClient({ enrollments: () => ({ data: null, error: { message: "boom" } }) });
+  await assert.rejects(withClient(err, () => C.loadMyEnrollments("u1")), /could not be loaded/);
+  await assert.rejects(withClient(err, () => C.loadMyEnrollments(null)), /could not be loaded/);
+  const full = fakeClient({ enrollments: () => ({ data: Array.from({ length: 1000 }, (_, i) => ({ course_id: "c" + i })), error: null }) });
+  await assert.rejects(withClient(full, () => C.loadMyEnrollments("u1")), /could not be loaded/);
+});
+
+test("loadCourseAccess: admin / enrolled / no-access / unavailable / error", async () => {
+  const pub = { id: "c1", slug: "x", title: "X", published: true };
+  const mk = (course, courseErr, enr) => fakeClient({
+    courses: () => (courseErr ? { data: null, error: { message: "boom" } } : { data: course, error: null }),
+    enrollments: () => enr,
+  });
+  const ok = (ids) => ({ data: ids.map((id) => ({ course_id: id })), error: null });
+  let c = mk(pub, false, ok(["c1"]));
+  assert.equal((await withClient(c, () => C.loadCourseAccess(STUDENT, "x"))).state, "enrolled");
+  c = mk(pub, false, ok([]));
+  let r = await withClient(c, () => C.loadCourseAccess(STUDENT, "x"));
+  assert.equal(r.state, "no-access");
+  assert.equal(r.course.title, "X");
+  c = mk(pub, false, { data: null, error: { message: "boom" } });
+  assert.equal((await withClient(c, () => C.loadCourseAccess(STUDENT, "x"))).state, "error", "enrollment error is an error, not no-access");
+  c = mk(null, false, ok(["c1"])); // database rules return no row for a student (draft) or the slug is unknown
+  assert.equal((await withClient(c, () => C.loadCourseAccess(STUDENT, "series-6"))).state, "unavailable");
+  c = mk(pub, true, ok(["c1"]));
+  assert.equal((await withClient(c, () => C.loadCourseAccess(STUDENT, "x"))).state, "error", "course read error");
+  c = mk({ ...pub, published: false }, false, ok([]));
+  r = await withClient(c, () => C.loadCourseAccess(ADMIN, "x"));
+  assert.equal(r.state, "admin");
+  assert.equal(c.calls.filter((q) => q.table === "enrollments").length, 0, "admins read no enrollments");
+  c = mk(pub, false, ok(["c1"]));
+  assert.equal((await withClient(c, () => C.loadCourseAccess(STUDENT, ""))).state, "unavailable");
+  assert.equal(c.calls.length, 0, "no slug: nothing read");
+  c = mk(pub, false, ok([]));
+  r = await withClient(c, () => C.loadCourseAccess(STUDENT, "x", access("c1")));
+  assert.equal(r.state, "enrolled");
+  assert.equal(c.calls.filter((q) => q.table === "enrollments").length, 0, "passed access is reused");
+});
+
+test("isAdminSession reads JWT app_metadata.role only", () => {
+  assert.equal(C.isAdminSession(ADMIN), true);
+  assert.equal(C.isAdminSession(STUDENT), false);
+  assert.equal(C.isAdminSession({ user: { id: "x", app_metadata: {}, user_metadata: { role: "admin" } } }), false, "user-supplied metadata is not authority");
+  assert.equal(C.isAdminSession(null), false);
 });
 
 // ---------------------------------------------------------------- catalog order (shared helper)
@@ -258,7 +370,7 @@ test("progress paging uses lesson_id as the row id (the Dashboard selects id:les
   const page = (rows) => async (from, to) => ({ data: rows.slice(from, to + 1), error: null });
   const out = await M.loadAllPages(page(aliased), 1000);
   assert.equal(out.length, 2500);
-  const desk = M.buildDesk([course("p", [3])], out);
+  const desk = deskAll([course("p", [3])], out);
   assert.equal(desk[0].done, 0); // unrelated lessons ignored
   await assert.rejects(M.loadAllPages(page(real.slice(0, 5)), 1000), /Duplicate/); // no id: refused, never a silent partial read
 });

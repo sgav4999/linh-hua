@@ -4,14 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>(function(){try{if(localStorage.getItem("linhhoa_theme")==="dark"){document.documentElement.setAttribute("data-theme","dark");}}catch(e){}})();</script>
-<!-- Before first paint only: an explicit ?course outside the three original courses hides their tabs. This static copy of the legacy list (canonical: LinhCourses.LEGACY_GUIDE_SLUGS in courses-data.js) is deliberate: it runs before any script loads, to avoid a flash of the wrong tabs. study-guide.js still resolves the course and decides what the page shows. -->
-<script>(function(){try{var c=new URLSearchParams(location.search).get("course");if(c&&["life","health","life-health-combo"].indexOf(c)<0){document.documentElement.setAttribute("data-guide-tabs","hidden");}}catch(e){}})();</script>
+<!-- Before first paint only: an explicit ?course outside the three original courses hides their tabs; otherwise the tab row stays invisible ("pending") until study-guide.js knows which of them this reader may open, so an inaccessible tab never flashes. This static copy of the legacy list (canonical: LinhCourses.LEGACY_GUIDE_SLUGS in courses-data.js) is deliberate: it runs before any script loads. study-guide.js still resolves the course and decides what the page shows. -->
+<script>(function(){try{var c=new URLSearchParams(location.search).get("course");document.documentElement.setAttribute("data-guide-tabs",c&&["life","health","life-health-combo"].indexOf(c)<0?"hidden":"pending");}catch(e){}})();</script>
 <title>Study Guide — Linh Hua</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=20261015b">
-<link rel="stylesheet" href="study-guide.css?v=20261009b">
+<link rel="stylesheet" href="styles.css?v=20261019p9">
+<link rel="stylesheet" href="study-guide.css?v=20261019p9">
 <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="brand/apple-touch-icon.png">
 </head>
@@ -89,7 +89,8 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="auth.js"></script>
 <script src="vendor/purify-3.4.16.min.js"></script>
-<script src="courses-data.js?v=20261019a"></script>
-<script src="study-guide.js?v=20261019a"></script>
+<script src="courses-data.js?v=20261019p9"></script>
+<script src="access-state.js?v=20261019p9"></script>
+<script src="study-guide.js?v=20261019p9"></script>
 </body>
 </html>

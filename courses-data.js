@@ -15,6 +15,10 @@
 //                            catalog order; throws on a read error
 //   studyGuideMode        -> "authored", "legacy" or null for a course (the one
 //                            Study Guide availability rule; see below)
+//   loadMyEnrollments     -> { enrolledCourseIds: Set } for the signed-in user;
+//                            throws on a read error
+//   canAccessCourse       -> true only for a published course the access lists
+//   loadCourseAccess      -> the page gate: { state, course, access } (see below)
 (function (root, factory) {
   const api = factory();
   if (typeof module === "object" && module.exports) module.exports = api;
@@ -150,9 +154,85 @@
     return (data || []).slice().sort(byCatalogOrder);
   }
 
+  // ---- Course access (Phase 9) --------------------------------------------
+  // A student may open a course's content when the course is published and
+  // they are enrolled in it; admins (JWT app_metadata.role, never
+  // profiles.role) may open every course. The database enforces this rule
+  // (RLS + public.can_access_course); this mirror only decides what a page
+  // lists, which message it shows and whether a content read is worth making.
+  // Every failure is reported, never turned into "all courses".
+
+  // One page of a user's own enrollments covers every course there will be;
+  // a full page is refused rather than read as a partial list.
+  const ENROLLMENT_LIMIT = 1000;
+  const ACCESS_FIELDS = COURSE_FIELDS + ", study_guide_released";
+
+  function isAdminSession(session) {
+    const meta = session && session.user && session.user.app_metadata;
+    return !!meta && meta.role === "admin";
+  }
+
+  const makeAccess = (courseIds) => Object.freeze({ enrolledCourseIds: new Set((courseIds || []).filter(Boolean)) });
+  const isAccess = (access) => !!access && access.enrolledCourseIds instanceof Set;
+
+  // The signed-in user's enrollments as { enrolledCourseIds: Set }; throws on
+  // any read error.
+  async function loadMyEnrollments(userId) {
+    if (!userId) throw new Error("Enrollments could not be loaded.");
+    const { data, error } = await supabaseClient
+      .from("enrollments")
+      .select("course_id")
+      .eq("user_id", userId)
+      .order("course_id")
+      .range(0, ENROLLMENT_LIMIT - 1);
+    if (error || !Array.isArray(data) || data.length >= ENROLLMENT_LIMIT) {
+      throw new Error("Enrollments could not be loaded.");
+    }
+    return makeAccess(data.map((row) => row.course_id));
+  }
+
+  // Student rule: published and enrolled. Missing or invalid access is false.
+  function canAccessCourse(course, access) {
+    if (!course || !isAccess(access)) return false;
+    return course.published === true && access.enrolledCourseIds.has(course.id);
+  }
+
+  // The page gate, run before any content read. Resolves to { state, course,
+  // access } where state is:
+  //   "admin"       an admin; every course, drafts included
+  //   "enrolled"    a student who may open this course
+  //   "no-access"   a student who may see the course but not open it
+  //   "unavailable" no such course, or one the database hides (a draft, for a student)
+  //   "error"       the course or enrollment read failed (never shown as no-access)
+  // `access` reuses an enrollment read the page already made.
+  async function loadCourseAccess(session, slug, access) {
+    if (!session || !session.user) return { state: "error", course: null };
+    if (!slug) return { state: "unavailable", course: null };
+    let course;
+    try {
+      const { data, error } = await supabaseClient.from("courses").select(ACCESS_FIELDS).eq("slug", slug).maybeSingle();
+      if (error) return { state: "error", course: null };
+      course = data;
+    } catch (e) {
+      return { state: "error", course: null };
+    }
+    if (!course) return { state: "unavailable", course: null };
+    if (isAdminSession(session)) return { state: "admin", course };
+    let mine = access;
+    if (!isAccess(mine)) {
+      try {
+        mine = await loadMyEnrollments(session.user.id);
+      } catch (e) {
+        return { state: "error", course };
+      }
+    }
+    return { state: canAccessCourse(course, mine) ? "enrolled" : "no-access", course, access: mine };
+  }
+
   return {
     loadCourseBySlug, loadPublishedCourses, loadAllCourses, loadCourseCategories, loadDashboardCourses,
     applyCourseIdentity, courseLabel, byCatalogOrder, studyGuideMode, isLegacyGuideCourse,
+    isAdminSession, loadMyEnrollments, canAccessCourse, loadCourseAccess,
     IDENTITY_TOKENS, LEGACY_GUIDE_SLUGS,
   };
 });

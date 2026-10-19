@@ -57,10 +57,18 @@ async function initCourse() {
     return;
   }
 
-  const course = await LinhCourses.loadCourseBySlug(COURSE_SLUG);
+  // The access gate runs before any lesson content is requested. A course the
+  // reader cannot see at all (unknown, or a draft for a student) is
+  // "unavailable"; a failed read is an error, never "no access".
+  const gate = await LinhCourses.loadCourseAccess(session, COURSE_SLUG);
+  const course = gate.course;
 
-  if (!course) {
+  if (gate.state === "unavailable") {
     document.getElementById("lessonTitle").textContent = "This course couldn't be loaded.";
+    return;
+  }
+  if (gate.state === "error") {
+    document.getElementById("lessonTitle").textContent = "This course couldn't be loaded. Please refresh the page to try again.";
     return;
   }
 
@@ -69,6 +77,14 @@ async function initCourse() {
   // An unknown course keeps the page's original tool links.
   document.getElementById("courseTitle").textContent = course.title;
   LinhCourses.applyCourseIdentity(courseRoot, course);
+
+  // Not enrolled: the course's name stays, its content and tools do not.
+  if (gate.state === "no-access") {
+    courseRoot.querySelector(".course-progress").hidden = true;
+    courseRoot.querySelector(".course-sidebar-actions").hidden = true;
+    courseRoot.querySelector(".course-content").replaceChildren(LinhAccessView.noAccess());
+    return;
+  }
   document.getElementById("coursePracticeExamLink").href = "practice-exam.html?course=" + encodeURIComponent(COURSE_SLUG);
   document.getElementById("courseStudyGuideLink").href = "study-guide.html?course=" + encodeURIComponent(COURSE_SLUG);
 
