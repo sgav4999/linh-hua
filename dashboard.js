@@ -1,36 +1,28 @@
 // Student Dashboard: renders the Study Desk from the student's real progress.
 // auth.js stays the gate (signed-out redirect) and fills the name, email, avatar
-// and role. This file only reads: the three courses with their modules and
-// lessons, and the signed-in user's lesson_progress rows. Everything visitor- or
-// database-supplied is written with textContent; nothing is parsed as HTML.
+// and role. This file only reads: every published course with its modules and
+// lessons (LinhCourses.loadDashboardCourses) and the signed-in user's
+// lesson_progress rows. dashboard-model.js decides progress, status, tools and
+// focus; nothing here names a course. Everything visitor- or database-supplied
+// is written with textContent; nothing is parsed as HTML.
 (function () {
   const root = document.documentElement;
   const desk = document.querySelector(".dash-desk .container");
   if (!desk) return;
 
-  // Course identity comes from the page (the same names, hours and order as the
-  // Courses page); the fixed order also breaks ties between in-progress courses.
-  const COURSES = [
-    { slug: "life", title: "Life Insurance License", hours: 20 },
-    { slug: "health", title: "Health Insurance License", hours: 20 },
-    { slug: "life-health-combo", title: "Life & Health Combo", hours: 40 },
-  ];
-  const ERROR_TEXT = "Progress could not be loaded. Your courses are still available.";
+  const Model = window.LinhDashboardModel;
+  const PROGRESS_PAGE = 1000;
+  const ERROR_TEXT = "Your courses could not be loaded. Please refresh the page to try again.";
 
   // Until the role is known, neither the student desk nor the admin tools show
   // (only for this page's own session check, never while waiting for data).
-  // If the role cannot be determined, the page settles on the neutral course
-  // list with the quiet notice; the admin tools are never shown on a guess.
+  // If the role cannot be determined, the page settles on the error state; the
+  // admin tools are never shown on a guess.
   root.classList.add("dash-pending");
   const settleRole = (role) => {
     root.setAttribute("data-dash-role", role || "unknown");
     root.classList.remove("dash-pending");
-    const stale = desk.querySelector(".dash-note");
-    if (role && stale) stale.remove(); // a slow session check recovered after the fallback
-    if (!role && !stale) {
-      const heading = desk.querySelector(".dash-section-title");
-      if (heading) heading.after(errorNote());
-    }
+    if (!role) show(errorView());
   };
   const safety = setTimeout(() => settleRole(null), 4000);
 
@@ -42,43 +34,20 @@
     return e;
   };
   const sr = (text) => el("span", "dash-sr", text);
-  const mark = (slug) => {
-    const m = el("span", "dash-mark dash-mark--" + (slug === "life-health-combo" ? "combo" : slug));
+  const mark = () => {
+    const m = el("span", "dash-mark");
     m.setAttribute("aria-hidden", "true");
     return m;
+  };
+  // The course's identity colours (identity.css) on its card, plate or row.
+  const marked = (node, c) => {
+    node.dataset.course = c.slug;
+    if (window.LinhCourses) LinhCourses.applyCourseIdentity(node, c);
+    return node;
   };
   const q = (slug) => encodeURIComponent(slug);
   let uid = 0;
   const nextId = (prefix) => prefix + "-" + (++uid);
-
-  // ---- data -------------------------------------------------------------------
-  const byPosition = (a, b) =>
-    (a.position ?? Infinity) - (b.position ?? Infinity) || String(a.id).localeCompare(String(b.id));
-
-  // doneIds is a Set of unique lesson ids, and each lesson counts once per
-  // course, so a duplicated row can never push completed past total.
-  function buildCourse(base, row, doneIds) {
-    if (!row) return { ...base, status: "unavailable" };
-    const seen = new Set();
-    const modules = (row.modules || []).slice().sort(byPosition).map((m) => {
-      const lessons = (m.lessons || []).slice().sort(byPosition).filter((l) => !seen.has(l.id) && seen.add(l.id));
-      return {
-        title: m.title,
-        lessons,
-        total: lessons.length,
-        done: lessons.filter((l) => doneIds.has(l.id)).length,
-      };
-    });
-    const total = modules.reduce((s, m) => s + m.total, 0);
-    const done = modules.reduce((s, m) => s + m.done, 0);
-    let nextLesson = null;
-    for (const m of modules) {
-      const l = m.lessons.find((x) => !doneIds.has(x.id));
-      if (l) { nextLesson = { id: l.id, title: l.title, module: m.title }; break; }
-    }
-    const status = total === 0 ? "empty" : done === 0 ? "new" : done === total ? "complete" : "progress";
-    return { ...base, modules: modules.filter((m) => m.total > 0), total, done, status, nextLesson };
-  }
 
   // ---- views ------------------------------------------------------------------
   const counted = (c) => c.status === "new" || c.status === "progress" || c.status === "complete";
@@ -90,6 +59,19 @@
       : "course.html?course=" + q(c.slug);
   const valueText = (c) =>
     c.status === "complete" ? "All " + c.total + " lessons complete" : c.done + " of " + c.total + " lessons complete";
+
+  // The tools a course has, in a fixed order; only available ones are listed.
+  const TOOLS = [
+    ["studyGuide", "study-guide", "Study Guide", "A condensed, printable summary of the key facts from every lesson."],
+    ["practiceExam", "practice-exam", "Practice Exam", "Test yourself with practice questions and review what you missed."],
+  ];
+  const toolsOf = (c) => TOOLS.filter(([key]) => c.tools[key]);
+
+  function heading(text) {
+    const h2 = el("h2", "dash-section-title", text);
+    h2.id = "deskTitle";
+    return h2;
+  }
 
   function countLine(c) {
     const p = el("p", "dash-count");
@@ -116,14 +98,15 @@
   }
 
   function toolLinks(c) {
+    const tools = toolsOf(c);
+    if (!tools.length) return null;
     const p = el("p", "dash-tool-links");
-    const guide = el("a", null, "Study Guide");
-    guide.href = "study-guide.html?course=" + q(c.slug);
-    guide.append(sr(", " + c.title));
-    const exam = el("a", null, "Practice Exam");
-    exam.href = "practice-exam.html?course=" + q(c.slug);
-    exam.append(sr(", " + c.title));
-    p.append(guide, exam);
+    tools.forEach(([, page, label]) => {
+      const a = el("a", null, label);
+      a.href = page + ".html?course=" + q(c.slug);
+      a.append(sr(", " + c.title));
+      p.append(a);
+    });
     return p;
   }
 
@@ -134,24 +117,22 @@
     return a;
   }
 
-  function overview(courses, heading, note) {
+  function overview(view) {
     const frag = document.createDocumentFragment();
-    const h2 = el("h2", "dash-section-title", heading);
-    h2.id = "deskTitle";
-    frag.append(h2);
-    if (note) frag.append(note);
+    frag.append(heading(view.heading));
     const grid = el("div", "dash-overview dash-panel dash-ticks");
-    courses.forEach((c) => {
-      const a = el("article", "dash-course");
-      a.dataset.course = c.slug;
+    view.courses.forEach((c) => {
+      const a = marked(el("article", "dash-course"), c);
       const name = el("h3", "dash-course-name");
       name.id = nextId("course");
-      name.append(mark(c.slug), c.title);
+      name.append(mark(), c.title);
       a.setAttribute("aria-labelledby", name.id);
-      a.append(name, el("p", "dash-course-meta", c.hours + " course hours · Self-paced"));
+      a.append(name, el("p", "dash-course-meta", c.meta));
       if (counted(c)) a.append(countLine(c), bar(c, name.id));
       const actions = el("div", "dash-course-actions");
-      actions.append(actionLink(c, "btn-secondary dash-action"), toolLinks(c));
+      actions.append(actionLink(c, "btn-secondary dash-action"));
+      const links = toolLinks(c);
+      if (links) actions.append(links);
       a.append(actions);
       grid.append(a);
     });
@@ -159,19 +140,16 @@
     return frag;
   }
 
-  function focusDesk(focus, others, note) {
+  function focusDesk(view) {
+    const { focus, others } = view;
     const frag = document.createDocumentFragment();
-    const h2 = el("h2", "dash-section-title", "Continue where you left off");
-    h2.id = "deskTitle";
-    frag.append(h2);
-    if (note) frag.append(note);
+    frag.append(heading("Continue where you left off"));
 
     const grid = el("div", "dash-deskgrid");
-    const plate = el("article", "dash-plate dash-panel dash-ticks");
-    plate.dataset.course = focus.slug;
+    const plate = marked(el("article", "dash-plate dash-panel dash-ticks"), focus);
     const name = el("h3", "dash-plate-name");
     name.id = nextId("focus");
-    name.append(mark(focus.slug), focus.title);
+    name.append(mark(), focus.title);
     plate.setAttribute("aria-labelledby", name.id);
 
     // Module segments, sized by each module's lessons; the group is the course's
@@ -195,29 +173,31 @@
     }
     next.append(info, actionLink(focus, "btn-primary"));
 
-    plate.append(name, el("p", "dash-course-meta", focus.hours + " course hours · Self-paced"), countLine(focus), mods, next);
+    plate.append(name, el("p", "dash-course-meta", focus.meta), countLine(focus), mods, next);
+    grid.append(plate);
 
-    const rail = el("aside", "dash-rail dash-panel");
-    const railTitle = el("h3", "dash-rail-title", "Study tools");
-    railTitle.id = nextId("rail");
-    railTitle.append(sr(": " + focus.title));
-    rail.setAttribute("aria-labelledby", railTitle.id);
-    const list = el("ul", "dash-rail-list");
-    [
-      ["study-guide", "Study Guide", "A condensed, printable summary of the key facts from every lesson."],
-      ["practice-exam", "Practice Exam", "Test yourself with practice questions and review what you missed."],
-    ].forEach(([page, label, desc]) => {
-      const li = el("li");
-      const a = el("a", "dash-tool");
-      a.href = page + ".html?course=" + q(focus.slug);
-      const n = el("span", "dash-tool-name", label);
-      n.append(sr(", " + focus.title));
-      a.append(n, el("span", "dash-tool-desc", desc));
-      li.append(a);
-      list.append(li);
-    });
-    rail.append(railTitle, list);
-    grid.append(plate, rail);
+    // The tool rail: this course's study tools, when it has any.
+    const tools = toolsOf(focus);
+    if (tools.length) {
+      const rail = el("aside", "dash-rail dash-panel");
+      const railTitle = el("h3", "dash-rail-title", "Study tools");
+      railTitle.id = nextId("rail");
+      railTitle.append(sr(": " + focus.title));
+      rail.setAttribute("aria-labelledby", railTitle.id);
+      const list = el("ul", "dash-rail-list");
+      tools.forEach(([, page, label, desc]) => {
+        const li = el("li");
+        const a = el("a", "dash-tool");
+        a.href = page + ".html?course=" + q(focus.slug);
+        const n = el("span", "dash-tool-name", label);
+        n.append(sr(", " + focus.title));
+        a.append(n, el("span", "dash-tool-desc", desc));
+        li.append(a);
+        list.append(li);
+      });
+      rail.append(railTitle, list);
+      grid.append(rail);
+    }
     frag.append(grid);
 
     if (others.length) {
@@ -227,16 +207,17 @@
       shelf.setAttribute("aria-labelledby", sh.id);
       const rows = el("ul", "dash-shelf-list dash-panel");
       others.forEach((c) => {
-        const li = el("li", "dash-row");
-        li.dataset.course = c.slug;
+        const li = marked(el("li", "dash-row"), c);
         const info = el("div");
         const rn = el("h3", "dash-row-name");
         rn.id = nextId("row");
-        rn.append(mark(c.slug), c.title);
+        rn.append(mark(), c.title);
         info.append(rn);
         if (counted(c)) info.append(countLine(c), bar(c, rn.id));
         const acts = el("div", "dash-row-actions");
-        acts.append(actionLink(c, "btn-secondary"), toolLinks(c));
+        acts.append(actionLink(c, "btn-secondary"));
+        const links = toolLinks(c);
+        if (links) acts.append(links);
         li.append(info, acts);
         rows.append(li);
       });
@@ -246,10 +227,28 @@
     return frag;
   }
 
-  function errorNote() {
+  // No published course to show.
+  function emptyView() {
+    const frag = document.createDocumentFragment();
+    frag.append(heading("My courses"));
+    const box = el("div", "dash-empty dash-panel");
+    const p = el("p", "dash-empty-text", "No courses are available in your Study Desk yet.");
+    p.setAttribute("role", "status");
+    const link = el("a", "btn btn-secondary", "Browse courses");
+    link.href = "courses.html";
+    box.append(p, link);
+    frag.append(box);
+    return frag;
+  }
+
+  // The read failed (or the session could not be read).
+  function errorView() {
+    const frag = document.createDocumentFragment();
+    frag.append(heading("My courses"));
     const p = el("p", "dash-note", ERROR_TEXT);
     p.setAttribute("role", "status");
-    return p;
+    frag.append(p);
+    return frag;
   }
 
   function show(frag) {
@@ -261,31 +260,11 @@
     desk.classList.add("dash-arrive");
   }
 
-  // Loading: the static courses stay (names and routes), the count lines are held
-  // by quiet static placeholders; no percentages are shown before the data.
-  function showLoading() {
-    desk.setAttribute("aria-busy", "true");
-    desk.querySelectorAll(".dash-course").forEach((course) => {
-      if (course.querySelector(".dash-skel")) return;
-      const s = el("span", "dash-skel");
-      s.setAttribute("aria-hidden", "true");
-      course.querySelector(".dash-course-meta").after(s);
-    });
-  }
-
   function render(courses) {
-    const failed = courses.some((c) => c.status === "unavailable");
-    const note = failed ? errorNote() : null;
-    const inProgress = courses.filter((c) => c.status === "progress");
-    if (!inProgress.length) {
-      const allDone = courses.every((c) => c.status === "complete");
-      show(overview(courses, allDone ? "My courses" : failed ? "My courses" : "Choose where to start", note));
-      return;
-    }
-    // Focus: the only in-progress course; among several, the most lessons
-    // completed; a tie keeps the fixed Life, Health, Combo order.
-    const focus = inProgress.slice().sort((a, b) => b.done - a.done || COURSES.findIndex((x) => x.slug === a.slug) - COURSES.findIndex((x) => x.slug === b.slug))[0];
-    show(focusDesk(focus, courses.filter((c) => c !== focus), note));
+    const view = Model.chooseView(courses);
+    if (view.mode === "empty") show(emptyView());
+    else if (view.mode === "overview") show(overview(view));
+    else show(focusDesk(view));
   }
 
   async function load() {
@@ -295,7 +274,7 @@
       ({ data: { session } } = await supabaseClient.auth.getSession());
     } catch (e) {
       clearTimeout(safety);
-      settleRole(null); // the session could not be read: neutral list, no admin tools
+      settleRole(null); // the session could not be read: error state, no admin tools
       return;
     }
     if (!session) { clearTimeout(safety); return; } // auth.js sends signed-out visitors to login.html
@@ -304,23 +283,29 @@
     clearTimeout(safety);
     if (isAdmin) { settleRole("admin"); return; } // admins see their tools; no progress reads
 
-    showLoading();
+    desk.setAttribute("aria-busy", "true");
     settleRole("student");
 
     try {
-      const [coursesRes, progressRes] = await Promise.all([
-        supabaseClient
-          .from("courses")
-          .select("id, slug, modules(id, title, position, lessons(id, title, position))")
-          .in("slug", COURSES.map((c) => c.slug)),
-        supabaseClient.from("lesson_progress").select("lesson_id").eq("user_id", session.user.id),
+      if (!Model || !window.LinhCourses) throw new Error("model missing");
+      const [rows, progress] = await Promise.all([
+        LinhCourses.loadDashboardCourses(),
+        // id is lesson_id (unique per user: the key is user_id + lesson_id),
+        // which the pager uses to reject a row repeated across pages.
+        Model.loadAllPages(
+          (from, to) =>
+            supabaseClient
+              .from("lesson_progress")
+              .select("id:lesson_id, lesson_id, completed_at")
+              .eq("user_id", session.user.id)
+              .order("lesson_id")
+              .range(from, to),
+          PROGRESS_PAGE
+        ),
       ]);
-      if (coursesRes.error || progressRes.error || !Array.isArray(coursesRes.data)) throw new Error("read failed");
-      const doneIds = new Set((progressRes.data || []).map((r) => r && r.lesson_id).filter((id) => id != null));
-      const rows = new Map(coursesRes.data.map((r) => [r.slug, r]));
-      render(COURSES.map((c) => buildCourse(c, rows.get(c.slug), doneIds)));
+      render(Model.buildDesk(rows, progress));
     } catch (e) {
-      render(COURSES.map((c) => ({ ...c, status: "unavailable" })));
+      show(errorView());
     }
   }
 

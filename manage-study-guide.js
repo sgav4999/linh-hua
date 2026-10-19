@@ -1,9 +1,6 @@
 const manageGuideRoot = document.getElementById("manageGuideRoot");
 // No default course: without ?course= the page asks the admin to choose one.
 const MANAGE_GUIDE_COURSE_SLUG = new URLSearchParams(window.location.search).get("course");
-// The three original courses; students see their generated guide until an authored
-// one is released. Must match LEGACY_GUIDE_COURSES in study-guide.js.
-const MANAGE_GUIDE_LEGACY_COURSES = ["life", "health", "life-health-combo"];
 
 // The preview iframe has no sandbox allowances and its document starts with this
 // policy, so authored HTML can render but cannot run scripts, submit forms,
@@ -48,7 +45,9 @@ async function initManageGuide() {
   if (bar.status !== "ok") return;
   const course = bar.course;
   const courseId = course.id;
-  const isLegacy = MANAGE_GUIDE_LEGACY_COURSES.includes(course.slug);
+  // The original courses (LinhCourses.isLegacyGuideCourse, shared with the
+  // Study Guide page) show their generated guide until an authored one is released.
+  const isLegacy = LinhCourses.isLegacyGuideCourse(course.slug);
   const studentFallback = isLegacy
     ? "the generated Study Guide"
     : "a “Study Guide isn’t available yet” message";

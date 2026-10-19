@@ -1,8 +1,6 @@
 const studyGuideRoot = document.getElementById("studyGuideRoot");
-// The three original courses. Their Study Guide is generated from lesson content
-// unless an authored guide has been released, and only they get the course tabs.
-// (The pre-paint script in study-guide.html repeats this list to hide the tabs early.)
-const LEGACY_GUIDE_COURSES = ["life", "health", "life-health-combo"];
+// Which guide a course has is decided by LinhCourses.studyGuideMode (shared with
+// the Dashboard); only the original (legacy) courses get the course tabs.
 // Opening the page without ?course keeps its original meaning: the Combo guide.
 const DEFAULT_GUIDE_COURSE = "life-health-combo";
 
@@ -115,7 +113,7 @@ async function initStudyGuide() {
 
   // Course tabs belong to the three original guides only.
   const showTabs = (slug) => {
-    tabsEl.hidden = !LEGACY_GUIDE_COURSES.includes(slug);
+    tabsEl.hidden = !LinhCourses.isLegacyGuideCourse(slug);
   };
   showTabs(currentSlug);
 
@@ -234,17 +232,17 @@ async function initStudyGuide() {
       showUnavailable("The Study Guide could not be loaded. Please refresh the page to try again.");
       return;
     }
-    // Unknown, and draft (students can't read drafts; admins are shown the
-    // student view), look the same.
-    if (!course || course.published !== true) {
+    // A course this reader cannot read (unknown, or a draft for a student:
+    // database rules hide it) looks the same as an unknown one. A draft an
+    // admin can read goes on to the shared guide rule like any other course.
+    if (!course) {
       showUnavailable("This Study Guide isn't available.");
       return;
     }
 
-    const isLegacy = LEGACY_GUIDE_COURSES.includes(course.slug);
-
+    let sections = [];
     if (course.study_guide_released === true) {
-      const { data: sections, error: sectionsError } = await supabaseClient
+      const { data, error: sectionsError } = await supabaseClient
         .from("study_guide_sections")
         .select("id, heading, content, position, created_at")
         .eq("course_id", course.id)
@@ -256,18 +254,21 @@ async function initStudyGuide() {
         showUnavailable("The Study Guide could not be loaded. Please refresh the page to try again.");
         return;
       }
-      if (sections && sections.length) {
-        // Authored HTML is only ever shown sanitized; without the sanitizer, fail closed.
-        if (!window.DOMPurify || !window.DOMPurify.isSupported) {
-          showUnavailable("The Study Guide could not be loaded. Please refresh the page to try again.");
-          return;
-        }
-        renderAuthoredGuide(course, sections);
-        return;
-      }
+      sections = data || [];
     }
 
-    if (isLegacy) {
+    const mode = LinhCourses.studyGuideMode({ ...course, sectionCount: sections.length });
+    if (mode === "authored") {
+      // Authored HTML is only ever shown sanitized; without the sanitizer, fail closed.
+      if (!window.DOMPurify || !window.DOMPurify.isSupported) {
+        showUnavailable("The Study Guide could not be loaded. Please refresh the page to try again.");
+        return;
+      }
+      renderAuthoredGuide(course, sections);
+      return;
+    }
+
+    if (mode === "legacy") {
       setHeader("Study Guide", pageTitle, true);
       await renderLegacyGuide(course, isCurrent);
       return;

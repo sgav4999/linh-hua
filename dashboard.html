@@ -9,7 +9,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css?v=20261015b">
-<link rel="stylesheet" href="dashboard.css?v=20261002a">
+<link rel="stylesheet" href="identity.css?v=20261019a">
+<link rel="stylesheet" href="dashboard.css?v=20261019a">
 <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="brand/apple-touch-icon.png">
 </head>
@@ -59,32 +60,14 @@
   <section class="dash-desk student-only" aria-labelledby="deskTitle">
     <div class="container">
       <h2 id="deskTitle" class="dash-section-title">My courses</h2>
-      <div class="dash-overview dash-panel dash-ticks" id="dashCourses">
-        <article class="dash-course" data-course="life" aria-labelledby="dashName-life">
-          <h3 class="dash-course-name" id="dashName-life"><span class="dash-mark dash-mark--life" aria-hidden="true"></span>Life Insurance License</h3>
-          <p class="dash-course-meta">20 course hours &middot; Self-paced</p>
-          <div class="dash-course-actions">
-            <a class="btn btn-secondary dash-action" href="course.html?course=life">Open course<span class="dash-sr">: Life Insurance License</span></a>
-            <p class="dash-tool-links"><a href="study-guide.html?course=life">Study Guide<span class="dash-sr">, Life Insurance License</span></a><a href="practice-exam.html?course=life">Practice Exam<span class="dash-sr">, Life Insurance License</span></a></p>
-          </div>
-        </article>
-        <article class="dash-course" data-course="health" aria-labelledby="dashName-health">
-          <h3 class="dash-course-name" id="dashName-health"><span class="dash-mark dash-mark--health" aria-hidden="true"></span>Health Insurance License</h3>
-          <p class="dash-course-meta">20 course hours &middot; Self-paced</p>
-          <div class="dash-course-actions">
-            <a class="btn btn-secondary dash-action" href="course.html?course=health">Open course<span class="dash-sr">: Health Insurance License</span></a>
-            <p class="dash-tool-links"><a href="study-guide.html?course=health">Study Guide<span class="dash-sr">, Health Insurance License</span></a><a href="practice-exam.html?course=health">Practice Exam<span class="dash-sr">, Health Insurance License</span></a></p>
-          </div>
-        </article>
-        <article class="dash-course" data-course="life-health-combo" aria-labelledby="dashName-life-health-combo">
-          <h3 class="dash-course-name" id="dashName-life-health-combo"><span class="dash-mark dash-mark--combo" aria-hidden="true"></span>Life &amp; Health Combo</h3>
-          <p class="dash-course-meta">40 course hours &middot; Self-paced</p>
-          <div class="dash-course-actions">
-            <a class="btn btn-secondary dash-action" href="course.html?course=life-health-combo">Open course<span class="dash-sr">: Life &amp; Health Combo</span></a>
-            <p class="dash-tool-links"><a href="study-guide.html?course=life-health-combo">Study Guide<span class="dash-sr">, Life &amp; Health Combo</span></a><a href="practice-exam.html?course=life-health-combo">Practice Exam<span class="dash-sr">, Life &amp; Health Combo</span></a></p>
-          </div>
-        </article>
+      <div class="dash-skeleton dash-panel" aria-hidden="true">
+        <span class="dash-skel"></span>
+        <span class="dash-skel dash-skel--short"></span>
       </div>
+      <p class="dash-stuck dash-note">Your courses could not be loaded. Please refresh the page to try again.</p>
+      <noscript>
+        <p class="dash-note">JavaScript is required to load your Study Desk. You can still <a href="courses.html">browse the courses</a>.</p>
+      </noscript>
     </div>
   </section>
 
@@ -113,6 +96,9 @@
 <script src="supabase-config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="auth.js"></script>
-<script src="dashboard.js"></script>
+<script src="courses-data.js?v=20261019a"></script>
+<script src="exam-config.js?v=20261014p7"></script>
+<script src="dashboard-model.js?v=20261019a"></script>
+<script src="dashboard.js?v=20261019a"></script>
 </body>
 </html>

@@ -10,7 +10,16 @@
 //                            throws on a read error (admin pages use it; what a
 //                            caller may read is decided by database rules)
 //   loadCourseCategories  -> an array (possibly empty); throws on a read error
-window.LinhCourses = (() => {
+//   loadDashboardCourses  -> every published course the reader can see, with its
+//                            modules, lessons and visible guide sections, in
+//                            catalog order; throws on a read error
+//   studyGuideMode        -> "authored", "legacy" or null for a course (the one
+//                            Study Guide availability rule; see below)
+(function (root, factory) {
+  const api = factory();
+  if (typeof module === "object" && module.exports) module.exports = api;
+  else root.LinhCourses = api;
+})(typeof self !== "undefined" ? self : this, function () {
   const COURSE_FIELDS =
     "id, slug, title, short_label, category_id, position, published, identity, identity_secondary, hours, description, " +
     "category:course_categories!courses_category_id_fkey(id, slug, title, position)";
@@ -107,5 +116,43 @@ window.LinhCourses = (() => {
     return label || text(course.title);
   }
 
-  return { loadCourseBySlug, loadPublishedCourses, loadAllCourses, loadCourseCategories, applyCourseIdentity, courseLabel, IDENTITY_TOKENS };
-})();
+  // The three original courses. Their Study Guide is generated from lesson
+  // content unless an authored guide has been released. (study-guide.html
+  // repeats this list in its pre-paint script to hide the course tabs early.)
+  const LEGACY_GUIDE_SLUGS = Object.freeze(["life", "health", "life-health-combo"]);
+  const isLegacyGuideCourse = (slug) => LEGACY_GUIDE_SLUGS.includes(slug);
+
+  // Which Study Guide a course has, if any: its authored guide once released
+  // with at least one section the reader can see, otherwise the generated
+  // guide of a legacy course, otherwise none. This is availability only;
+  // whether the reader may see the course at all is decided by the read that
+  // produced it (published filter, database rules, later Phase 9 access).
+  function studyGuideMode(course) {
+    if (!course) return null;
+    if (course.study_guide_released === true && Number(course.sectionCount) > 0) return "authored";
+    if (isLegacyGuideCourse(course.slug)) return "legacy";
+    return null;
+  }
+
+  // The Dashboard read: published courses only (database rules hide drafts
+  // from students as well), with what the Study Desk shows. Guide sections are
+  // listed by id only, to count the ones the reader can see.
+  const DASHBOARD_FIELDS =
+    COURSE_FIELDS + ", study_guide_released, study_guide_sections(id), " +
+    "modules(id, title, position, lessons(id, title, position))";
+
+  async function loadDashboardCourses() {
+    const { data, error } = await supabaseClient
+      .from("courses")
+      .select(DASHBOARD_FIELDS)
+      .eq("published", true);
+    if (error) throw new Error("Courses could not be loaded.");
+    return (data || []).slice().sort(byCatalogOrder);
+  }
+
+  return {
+    loadCourseBySlug, loadPublishedCourses, loadAllCourses, loadCourseCategories, loadDashboardCourses,
+    applyCourseIdentity, courseLabel, byCatalogOrder, studyGuideMode, isLegacyGuideCourse,
+    IDENTITY_TOKENS, LEGACY_GUIDE_SLUGS,
+  };
+});

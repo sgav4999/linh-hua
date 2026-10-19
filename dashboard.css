@@ -4,8 +4,9 @@
    classes; the shared kit (styles.css: header, footer, buttons, tokens, focus
    rings, .user-avatar, .role-badge) stays as is. The studio surfaces, rule and
    mark ink and the ease-out mirror the approved Homepage, Courses, About and
-   Contact; Life violet and Health cobalt are the Courses page swatches, used
-   here only to mark which course a row belongs to (always beside its name).
+   Contact. Course colours come from each course's identity (identity.css,
+   set from the database), used only to mark which course a row belongs to
+   (always beside its name); no identity keeps the neutral palette.
    ========================================================================== */
 
 body.dashboard {
@@ -21,8 +22,6 @@ body.dashboard {
   --d-muted: #565c70;
   --d-tint: rgba(91, 77, 251, 0.05);
   --d-track: rgba(74, 56, 176, 0.12);
-  --d-life: #5d3ff6;
-  --d-health: #2141d0;
   background: var(--d-paper);
 }
 
@@ -38,8 +37,6 @@ body.dashboard {
   --d-muted: var(--muted);
   --d-tint: rgba(160, 148, 255, 0.07);
   --d-track: rgba(255, 255, 255, 0.1);
-  --d-life: #7c5dff;
-  --d-health: #3a5cff;
 }
 
 /* The shared ambient layers (film grain, the glow and pattern behind the top
@@ -157,7 +154,8 @@ body.dashboard .dash-email:not(:empty) + .role-badge::before {
 .dash-section-title + * { margin-top: 0; }
 .dash-subsection { margin-top: 44px; }
 
-/* Course mark: a small swatch beside the course name (never colour alone). */
+/* Course mark: a small swatch beside the course name (never colour alone):
+   the identity colour, split diagonally with the secondary when there is one. */
 .dash-mark {
   display: inline-block;
   flex-shrink: 0;
@@ -165,15 +163,14 @@ body.dashboard .dash-email:not(:empty) + .role-badge::before {
   height: 10px;
   border-radius: 2px;
   margin-right: 10px;
-  background: var(--d-life);
+  background: linear-gradient(135deg, var(--id-fill) 50%, var(--id2-fill, var(--id-fill)) 50%);
 }
-.dash-mark--health { background: var(--d-health); }
-.dash-mark--combo { background: linear-gradient(135deg, var(--d-life) 50%, var(--d-health) 50%); }
 
-/* Course-coloured fill for meters and bars. */
-[data-course="life"] { --d-fill: linear-gradient(var(--d-life), var(--d-life)); }
-[data-course="health"] { --d-fill: linear-gradient(var(--d-health), var(--d-health)); }
-[data-course="life-health-combo"] { --d-fill: linear-gradient(90deg, var(--d-life), var(--d-health)); }
+/* Course-coloured fill for meters and bars, declared on the element that
+   carries the course's identity so each course resolves its own colours. */
+.dash-course,
+.dash-plate,
+.dash-row { --d-fill: linear-gradient(90deg, var(--id-fill), var(--id2-fill, var(--id-fill))); }
 
 /* A plain progress bar; --f is the completed share (0-1), set from the data. */
 .dash-bar {
@@ -238,12 +235,20 @@ body.dashboard .dash-email:not(:empty) + .role-badge::before {
 .dash-count strong { color: var(--text); font-weight: 700; }
 
 /* ==========================================================================
-   Overview: the three courses at equal weight (no data yet, nothing started,
-   or everything complete). One plate, three columns.
+   Overview: every course at equal weight (nothing in progress, or everything
+   complete). One plate of up to three columns, each a third of the desk; the
+   plate is only as wide as the cards in it, so one or two courses stay card
+   sized. Dividers are drawn inside each card from its column position, never
+   at the plate edge.
    ========================================================================== */
+.dash-desk .container { container-type: inline-size; }
+
 .dash-overview {
+  --cols: 3;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, calc(100cqi / var(--cols) - 1px));
+  width: fit-content;
+  max-width: 100%;
 }
 .dash-overview.dash-panel { overflow: visible; }
 
@@ -254,7 +259,8 @@ body.dashboard .dash-email:not(:empty) + .role-badge::before {
   padding: 28px 28px 26px;
   min-width: 0;
 }
-.dash-course + .dash-course { border-left: 1px solid var(--d-rule); }
+.dash-overview > .dash-course:not(:nth-child(3n + 1)) { border-left: 1px solid var(--d-rule); }
+.dash-overview > .dash-course:nth-child(n + 4) { border-top: 1px solid var(--d-rule); }
 
 .dash-course-name {
   display: flex;
@@ -294,6 +300,8 @@ body.dashboard .dash-email:not(:empty) + .role-badge::before {
   gap: 20px;
   align-items: start;
 }
+
+.dash-deskgrid:not(:has(.dash-rail)) { grid-template-columns: minmax(0, 1fr); }
 
 .dash-plate { padding: 32px 36px 30px; }
 
@@ -487,13 +495,20 @@ body.dashboard .dash-email:not(:empty) + .role-badge::before {
    ========================================================================== */
 @media (max-width: 1023px) {
   .dash-deskgrid { grid-template-columns: minmax(0, 1fr); }
+  .dash-overview { --cols: 2; }
+  .dash-overview > .dash-course:not(:nth-child(3n + 1)) { border-left: 0; }
+  .dash-overview > .dash-course:nth-child(n + 4) { border-top: 0; }
+  .dash-overview > .dash-course:nth-child(2n) { border-left: 1px solid var(--d-rule); }
+  .dash-overview > .dash-course:nth-child(n + 3) { border-top: 1px solid var(--d-rule); }
   .dash-rail-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .dash-rail-list li + li .dash-tool { border-left: 1px solid var(--d-rule); }
 }
 
 @media (max-width: 819px) {
-  .dash-overview { grid-template-columns: minmax(0, 1fr); }
-  .dash-course + .dash-course { border-left: 0; border-top: 1px solid var(--d-rule); }
+  .dash-overview { grid-template-columns: minmax(0, 1fr); width: auto; }
+  .dash-overview > .dash-course:nth-child(2n) { border-left: 0; }
+  .dash-overview > .dash-course:nth-child(n + 3) { border-top: 0; }
+  .dash-overview > .dash-course:nth-child(n + 2) { border-top: 1px solid var(--d-rule); }
   .dash-course { padding: 22px 24px; }
   .dash-course-actions { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 12px 20px; padding-top: 12px; }
   .dash-admin-list { grid-template-columns: minmax(0, 1fr); }
@@ -551,17 +566,51 @@ html[data-dash-role="admin"] .dash-desk,
 html[data-dash-role="student"] .dash-admin,
 html[data-dash-role="unknown"] .dash-admin { display: none; }
 
-/* Loading: a quiet static placeholder where each course's count will go. */
+/* Loading: one quiet static placeholder plate (no course names or links
+   before the data). Without JavaScript it gives way to the noscript note. */
+.dash-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 28px;
+}
+html:not(.js) .dash-skeleton { display: none; }
 .dash-skel {
   display: block;
-  width: min(11rem, 70%);
+  width: min(18rem, 70%);
   height: 0.9rem;
-  margin-top: 12px;
   border-radius: 4px;
   background: var(--d-track);
 }
+.dash-skel--short { width: min(11rem, 45%); }
 
-/* The read failed: one quiet line; the courses and their links stay. */
+/* The script never settled (still pending after 4s, see above): the
+   placeholder gives way to the failure line. */
+.dash-stuck { display: none; }
+html.dash-pending .dash-stuck {
+  display: block;
+  visibility: hidden;
+  animation: dash-unhide 0s linear 4s forwards;
+}
+html.dash-pending .dash-skeleton { animation: dash-hide 0s linear 4s forwards; }
+@keyframes dash-hide { to { visibility: hidden; } }
+
+/* No published course to show. */
+.dash-empty {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px 24px;
+  padding: 24px 28px;
+}
+.dash-empty-text {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--d-label);
+}
+
+/* The read failed: one quiet line under the heading. */
 .dash-note {
   margin: -6px 0 16px;
   font-size: 0.92rem;
