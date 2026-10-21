@@ -352,6 +352,24 @@ test("hours: 20 / 7.5 / 1 / NULL", () => {
   assert.equal(M.metaLine("abc"), "Self-paced");
 });
 
+// The hours line now lives in courses-data.js (shared with the Courses catalog);
+// the Dashboard model must produce exactly the same text through it.
+test("hours: Dashboard uses the shared courses-data.js helper with identical output", () => {
+  const samples = [20, "20.0", 7.5, "7.5", 1, "1.0", 0.5, "12.5", null, undefined, "", 0, -3, "abc", NaN, Infinity];
+  samples.forEach((h) => {
+    assert.equal(M.metaLine(h), C.metaLine(h), `metaLine(${String(h)})`);
+    assert.equal(M.formatHours(h), C.formatHours(h), `formatHours(${String(h)})`);
+  });
+  assert.equal(C.formatHours(null), null);
+  assert.equal(C.formatHours(1), "1 course hour");
+  assert.equal(C.formatHours("15.0"), "15 course hours");
+  assert.equal(C.formatHours(0.5), "0.5 course hours");
+  assert.equal(C.metaLine(12.5), "12.5 course hours · Self-paced");
+  const built = M.buildCourse(course("hours-check", [1], { hours: "7.5" }), new Map());
+  assert.equal(built.meta, "7.5 course hours · Self-paced");
+  assert.equal(M.buildCourse(course("no-hours", [1]), new Map()).meta, "Self-paced");
+});
+
 // ---------------------------------------------------------------- paging (shared pager)
 for (const n of [0, 999, 1000, 1001, 2500]) {
   test(`progress paging: ${n} rows load completely in order`, async () => {

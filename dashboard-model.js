@@ -25,18 +25,9 @@
     return done;
   }
 
-  // "20 course hours", "7.5 course hours", "1 course hour"; null when the
-  // course has no (valid) hours.
-  function formatHours(hours) {
-    if (hours === null || hours === undefined || hours === "") return null;
-    const n = Number(hours);
-    if (!Number.isFinite(n) || n <= 0) return null;
-    return `${n} course hour${n === 1 ? "" : "s"}`;
-  }
-  const metaLine = (hours) => {
-    const h = formatHours(hours);
-    return h ? `${h} · Self-paced` : "Self-paced";
-  };
+  // The course-hours line is shared with the Courses catalog (courses-data.js).
+  const formatHours = (hours) => Courses.formatHours(hours);
+  const metaLine = (hours) => Courses.metaLine(hours);
 
   // The tools a course has: its Study Guide only when the shared rule finds
   // one; its Practice Exam only when exam-config.js configures it.

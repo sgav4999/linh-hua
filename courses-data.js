@@ -19,6 +19,9 @@
 //                            throws on a read error
 //   canAccessCourse       -> true only for a published course the access lists
 //   loadCourseAccess      -> the page gate: { state, course, access } (see below)
+//   formatHours / metaLine -> the shared course-hours line ("Self-paced" when a
+//                            course has no hours); used by the Dashboard and the
+//                            Courses catalog
 (function (root, factory) {
   const api = factory();
   if (typeof module === "object" && module.exports) module.exports = api;
@@ -112,6 +115,20 @@
     if (secondary) el.setAttribute("data-identity-secondary", secondary);
     else el.removeAttribute("data-identity-secondary");
   }
+
+  // "20 course hours", "7.5 course hours", "1 course hour"; null when the
+  // course has no (valid) hours.
+  function formatHours(hours) {
+    if (hours === null || hours === undefined || hours === "") return null;
+    const n = Number(hours);
+    if (!Number.isFinite(n) || n <= 0) return null;
+    return `${n} course hour${n === 1 ? "" : "s"}`;
+  }
+  // The meta line under a course name: its hours when it has them, then "Self-paced".
+  const metaLine = (hours) => {
+    const h = formatHours(hours);
+    return h ? `${h} · Self-paced` : "Self-paced";
+  };
 
   // Short label when there is one, otherwise the full title.
   function courseLabel(course) {
@@ -231,7 +248,7 @@
 
   return {
     loadCourseBySlug, loadPublishedCourses, loadAllCourses, loadCourseCategories, loadDashboardCourses,
-    applyCourseIdentity, courseLabel, byCatalogOrder, studyGuideMode, isLegacyGuideCourse,
+    applyCourseIdentity, courseLabel, byCatalogOrder, studyGuideMode, isLegacyGuideCourse, formatHours, metaLine,
     isAdminSession, loadMyEnrollments, canAccessCourse, loadCourseAccess,
     IDENTITY_TOKENS, LEGACY_GUIDE_SLUGS,
   };
