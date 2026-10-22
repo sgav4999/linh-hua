@@ -85,52 +85,6 @@
 
   // ---------- Scroll-triggered reveals (each once, as it scrolls in) ----------
 
-  // The course convergence draws once as its stage scrolls in (the motion
-  // itself is CSS, in home.css). The hidden start is armed here, so without
-  // this script the art is simply complete. It waits for the visible view's
-  // layers (the loader marks that SVG data-ready), but never for long.
-  function coursePaths() {
-    var wrap = document.querySelector(".home-paths");
-    if (!wrap || !("IntersectionObserver" in window)) return;
-    var mobile = window.matchMedia("(max-width: 1023px)");
-    wrap.classList.add("is-armed");
-
-    // The strands leave from behind the two course cards, so they draw only
-    // once both cards are in: 350ms after the reveal starts, the fade's strong
-    // ease-out has both at 99% opacity or more (Health starts 80ms later), so
-    // no ribbon shows through a card. (Fallback if they never reveal.)
-    function play() {
-      var cards = wrap.querySelectorAll(".home-course-card--life, .home-course-card--health");
-      var done = false;
-      function go() { if (!done) { done = true; wrap.classList.add("is-drawn"); } }
-      function check() {
-        for (var i = 0; i < cards.length; i++) if (!cards[i].classList.contains("visible")) return false;
-        setTimeout(go, 350);
-        return true;
-      }
-      if (check()) return;
-      var watch = new MutationObserver(function () { if (check()) watch.disconnect(); });
-      for (var i = 0; i < cards.length; i++) watch.observe(cards[i], { attributes: true, attributeFilter: ["class"] });
-      setTimeout(function () { watch.disconnect(); go(); }, 2500);
-    }
-
-    var io = new IntersectionObserver(function (entries) {
-      if (!entries[0].isIntersecting) return;
-      io.disconnect();
-      var svg = wrap.querySelector(mobile.matches ? "svg.home-paths-svg--mobile" : "svg.home-paths-svg--desktop");
-      if (!svg || svg.hasAttribute("data-ready")) { play(); return; }
-      var timer = setTimeout(function () { mo.disconnect(); play(); }, 1500);
-      var mo = new MutationObserver(function () {
-        if (!svg.hasAttribute("data-ready")) return;
-        mo.disconnect();
-        clearTimeout(timer);
-        play();
-      });
-      mo.observe(svg, { attributes: true, attributeFilter: ["data-ready"] });
-    }, { threshold: 0.3 });
-    io.observe(wrap);
-  }
-
   // The practice exam study: one clockwise sweep reveals its band, once,
   // after its frame has faded in and its layers have loaded (motion itself
   // is CSS, in home.css; without this script the study is simply complete).
@@ -219,7 +173,6 @@
 
   function init() {
     heroParallax();
-    coursePaths();
     studySweep();
     stairsClimb();
     ctaDraw();

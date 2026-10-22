@@ -2,9 +2,10 @@
    Linh Hua homepage: "Satin Sculpture"
    Scoped entirely under body.home so it only affects index.html.
    Life (violet) and Health (indigo) are two satin strands; they cross
-   in the hero, converge at the Life & Health Combo, climb the
-   staircase in "How it works" and travel on together in the closing
-   CTA, all over one drafting grid. The art is pre-rendered WebP.
+   in the hero, climb the staircase in "How it works" and travel on
+   together in the closing CTA, all over one drafting grid. The art is
+   pre-rendered WebP. The course preview between them is drawn from the
+   database (home-courses.js), in plates coloured by identity.css.
 
    Progressive enhancement, throughout: every animated element is
    fully visible and complete by default (no JS, reduced motion, or
@@ -210,10 +211,23 @@ html.motion-ok .home .reveal.visible { opacity: 1; transform: none; }
 
 .home-hero .hero-actions { justify-content: flex-start; }
 
-:root[data-theme="dark"] .home-hero .btn-coming-soon {
-  background: rgba(255, 255, 255, 0.07);
-  color: rgba(255, 255, 255, 0.72);
-  border-color: rgba(255, 255, 255, 0.16);
+/* Beside the real action, a plain line of information (not a control):
+   the credentials' muted text and gold clock, centred on the button. */
+.home-hero-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--home-hero-text-muted);
+}
+
+.home-hero-status svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: var(--gold);
 }
 
 
@@ -362,22 +376,18 @@ html.motion-ok .satin-shadow { animation: satin-shadow-in 900ms var(--ease-out) 
 :root:not([data-theme="dark"]) .home-section-head .section-sub { color: #5a6072; }
 
 /* ============================================================
-   Courses: the convergence. Life and Health are two equal courses,
-   each keyed to its strand. Their satin strands leave from behind the
-   two cards, meet between them and twist down as one two-sided band
-   into the Combo, the course where both lines come together. The
-   section continues the hero's studio: its floor at the top, a light
-   pool behind the join, grain, and a fall-off into the next section.
+   Courses: a short preview of the published courses. home-courses.js
+   draws up to three plates (home-model.js picks one from each category
+   first); the full catalog is one link away. The section keeps the
+   hero's studio: its floor at the top, a soft pool of light, grain, and
+   a fall-off into the next section. Each plate takes its course's
+   colour from identity.css (data-identity), never from this file. The
+   plates are not links, so they carry no hover, press or pointer cue.
    ============================================================ */
 .home-courses {
   --paths-wall: #f4f3fb;
   --paths-pool: rgba(255, 255, 255, 0.95);
   --paths-glow: rgba(104, 78, 238, 0.09);
-  --paths-life: #5b3fe8;
-  --paths-life-soft: #efebff;
-  --paths-health: #2141d0;
-  --paths-health-soft: #e7ebff;
-  --paths-shadow-o: 0.85;
   position: relative;
   background:
     radial-gradient(22% 30% at 50% 50%, var(--paths-glow), transparent 72%),
@@ -389,11 +399,6 @@ html.motion-ok .satin-shadow { animation: satin-shadow-in 900ms var(--ease-out) 
   --paths-wall: #0b0f20;
   --paths-pool: rgba(86, 76, 214, 0.15);
   --paths-glow: rgba(124, 104, 255, 0.10);
-  --paths-life: #b7a8ff;
-  --paths-life-soft: rgba(124, 93, 255, 0.16);
-  --paths-health: #a6b8ff;
-  --paths-health-soft: rgba(58, 92, 255, 0.18);
-  --paths-shadow-o: 0.62;
 }
 
 .home-courses::after {
@@ -405,274 +410,150 @@ html.motion-ok .satin-shadow { animation: satin-shadow-in 900ms var(--ease-out) 
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .2 0 0 0 0 .16 0 0 0 0 .45 0 0 0 .05 0'/></filter><rect width='180' height='180' filter='url(%23n)'/></svg>");
 }
 
-/* Two courses on the top row with the stage between them; the Combo spans
-   the row below, where the band arrives. */
-.home-paths {
-  position: relative;
+/* The one way on to the full catalog: a text link under the heading. */
+.home-courses-link {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 6px 2px;
+  border-radius: 6px;
+  font-weight: 600;
+  color: var(--accent-dark);
+  text-decoration: none;
+  transition: color 150ms var(--ease-out);
+}
+
+:root[data-theme="dark"] .home-courses-link { color: #b7a8ff; }
+
+@media (hover: hover) and (pointer: fine) {
+  .home-courses-link:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 4px; }
+  :root[data-theme="dark"] .home-courses-link:hover { color: #d4caff; }
+}
+
+.home-courses-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* The plates: as many columns as there are courses (data-count, up to
+   three), each at most 360px wide, on the heading's left edge. */
+.home-course-preview {
   display: grid;
-  grid-template-columns: 1fr 1.04fr 1fr;
-  grid-template-areas:
-    "life . health"
-    "combo combo combo";
+  grid-template-columns: repeat(3, minmax(0, 360px));
   gap: 28px;
+  justify-content: start;
 }
 
-.home-paths > .course-card { position: relative; z-index: 1; }
-.home-course-card--life { grid-area: life; }
-.home-course-card--health { grid-area: health; }
-.home-paths-combo { grid-area: combo; }
+.home-course-preview[data-count="2"] { grid-template-columns: repeat(2, minmax(0, 360px)); }
+.home-course-preview[data-count="1"] { grid-template-columns: minmax(0, 360px); }
 
-.home-course-card { background: var(--surface); box-shadow: var(--home-shadow); }
-.home-course-card .course-price { font-variant-numeric: tabular-nums; }
-
-/* Course names stay on one line at every width, so neither course drops a
-   row against the other. */
-.home-course-card--life h3,
-.home-course-card--health h3 { font-size: clamp(1.1rem, 0.9rem + 0.55vw, 1.3rem); }
-
-/* At 600 to 619px the two-column cards are at their narrowest and "Health
-   Insurance License" would wrap by a fraction of a pixel, dropping its
-   price and features below Life's; a hair smaller keeps the rows level. */
-@media (min-width: 600px) and (max-width: 619px) {
-  .home-course-card--life h3,
-  .home-course-card--health h3 { font-size: 1.07rem; }
+/* While the read is pending (set by home-courses.js, so never without it),
+   about one plate's height is held; after 6s the space is let go even if
+   the read is still pending, and a late answer still draws normally. */
+html.js .home-course-preview[data-state="loading"] {
+  min-height: 280px;
+  animation: home-preview-release 0s linear 6s forwards;
 }
 
-/* Side by side, both descriptions hold three lines, so the prices and
-   feature lists of the two courses start level for comparison. */
-.home-course-card--life .course-desc,
-.home-course-card--health .course-desc { min-height: 4.8em; min-height: 3lh; }
+@keyframes home-preview-release { to { min-height: 0; } }
 
-/* Each course carries its strand's colour. */
-.home-course-card--life .course-tag { color: var(--paths-life); background: var(--paths-life-soft); }
-.home-course-card--health .course-tag { color: var(--paths-health); background: var(--paths-health-soft); }
-.home-course-card--health .course-features li::before {
-  background-color: var(--paths-health-soft);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.3l2.6 2.6L12 5.3' fill='none' stroke='%232141d0' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-}
-:root[data-theme="dark"] .home-course-card--health .course-features li::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.3l2.6 2.6L12 5.3' fill='none' stroke='%23a6b8ff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+.home-course-preview[data-state="empty"] { display: block; }
+.home-course-preview[data-state="failed"] { display: none; }
+
+/* The courses arrive with one short fade (motion allowed only). */
+html.motion-ok .home-course-preview.is-arriving { animation: home-preview-in 200ms var(--ease-out) both; }
+
+@keyframes home-preview-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-/* The Combo: one wide ink panel, lit from the top centre where the band
-   comes in, with its offer read left to right. */
-.home-course-card--featured {
-  --focus-ring: rgba(255, 255, 255, 0.85); /* dark panel in both themes */
-  position: relative;
-  overflow: hidden;
-  border-color: transparent;
-  color: #fff;
-  background:
-    radial-gradient(340px 200px at 52% 0%, rgba(124, 93, 255, 0.34), transparent 70%),
-    radial-gradient(640px 280px at 52% 0%, rgba(58, 92, 255, 0.16), transparent 72%),
-    var(--ink-panel-2);
-  box-shadow: var(--home-shadow-ink), inset 0 1px 0 var(--ink-rim);
-}
+.home-course-preview-note { margin: 0; max-width: 56ch; color: var(--muted); }
+:root:not([data-theme="dark"]) .home-course-preview-note { color: #5a6072; }
 
-:root[data-theme="dark"] .home-course-card--featured { border-color: rgba(160, 148, 255, 0.2); }
-
-.home-paths-combo {
-  display: grid;
-  grid-template-columns: 1.1fr 0.9fr 1.1fr;
-  column-gap: 44px;
-  align-items: start;
-  padding: 44px 48px;
-}
-
-.home-combo-price {
-  padding: 4px 0 4px 44px;
-  border-left: 1px solid rgba(255, 255, 255, 0.09);
-}
-
-.home-combo-detail {
+.home-course-plate {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 24px;
-  padding-left: 44px;
-  border-left: 1px solid rgba(255, 255, 255, 0.09);
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--home-shadow);
 }
 
-.home-combo-detail .course-features { margin: 0; flex-grow: 0; }
-
-.home-course-card--featured .course-badge {
-  position: static;
-  display: inline-block;
-  width: auto;
-  transform: none;
-  background: var(--gold);
-  color: #14161f;
-  font-size: 0.75rem;
-  line-height: 17.4px;
+/* The identity band: the course's colour (split with its secondary when it
+   has one) under fine drafting hatch, as on the Courses page. Decorative
+   only: the label and title always name the course. */
+.home-course-plate-band {
+  display: block;
+  height: 44px;
+  margin: 12px 12px 0;
   border-radius: 6px;
-  padding: 5px 10px;
-  box-shadow: none;
-  margin-bottom: 18px;
-}
-
-.home-course-card--featured h3 { font-size: 1.5rem; letter-spacing: -0.02em; }
-.home-course-card--featured .course-desc { color: var(--home-ink-text); margin-bottom: 0; max-width: 32ch; }
-.home-course-card--featured .course-price { color: #fff; font-size: 2.4rem; letter-spacing: -0.02em; line-height: 1.1; }
-.home-course-card--featured .course-price span { color: rgba(255, 255, 255, 0.62); letter-spacing: 0; }
-.home-course-card--featured .course-savings { color: #cdc6ff; margin: 8px 0 6px; }
-.home-course-card--featured .course-meta { color: rgba(255, 255, 255, 0.58); margin-bottom: 0; }
-.home-course-card--featured .course-features li { color: rgba(255, 255, 255, 0.88); }
-
-/* The art box matches its render's CSS frame: 770 x 700 at a 1112px-wide
-   grid (the arms start 176px inside it, behind the cards), 40px above the
-   top row. It sits behind every card; only the stage and gaps show it. */
-.home-paths-art {
-  position: absolute;
-  z-index: 0;
-  left: 50%;
-  top: 0;
-  width: 69.24%;
-  aspect-ratio: 770 / 700;
-  translate: -50% -5.714%;
-  pointer-events: none;
-}
-
-.home-paths-svg,
-.home-paths-static {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-  overflow: visible;
-}
-
-.home-paths-svg--mobile,
-.home-paths-static { display: none; }
-
-.home-paths-svg .art-dark { display: none; }
-.home-paths-svg[data-art="dark"] .art-light { display: none; }
-.home-paths-svg[data-art="dark"] .art-dark,
-.home-paths-svg[data-art="both"] .art-dark { display: inline; }
-.paths-shadow { opacity: var(--paths-shadow-o); }
-
-/* Without JS: the same layers as backgrounds (light art; theming needs JS). */
-html:not(.js) .home-paths-svg { display: none; }
-html:not(.js) .home-paths-static--desktop {
-  display: block;
   background:
-    url("assets/courses/paths-desktop-life-light.webp"),
-    url("assets/courses/paths-desktop-health-light.webp"),
-    url("assets/courses/paths-desktop-shadow-light.webp");
-  background-size: 100% 100%;
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.16) 0 1px, transparent 1px 8px),
+    linear-gradient(90deg, var(--id-fill) 50%, var(--id2-fill, var(--id-fill)) 50%);
 }
 
-/* The convergence, once, as the stage scrolls in: both strands draw from
-   their courses to the join together, then the band draws down into the
-   Combo; the shadow settles last. home.js arms the hidden start (only
-   with motion allowed), so without it the art is simply complete. */
-html.motion-ok .home-paths.is-armed .paths-reveal { stroke-dasharray: 1 2; stroke-dashoffset: 1.01; }
-html.motion-ok .home-paths.is-armed .paths-shadow { opacity: 0; }
-html.motion-ok .home-paths.is-drawn .paths-reveal { animation: paths-draw var(--rd, 800ms) var(--re, var(--ease-in-out)) var(--rs, 0ms) both; }
-html.motion-ok .home-paths.is-drawn .paths-shadow { animation: paths-shadow-in 800ms var(--ease-out) 700ms both; }
-
-/* An arm's run behind its card (--r0) counts as drawn from the start, so
-   the visible head leaves the card edge at 0ms. */
-@keyframes paths-draw {
-  from { stroke-dashoffset: var(--r0, 1.01); }
-  to { stroke-dashoffset: 0; }
+/* Database text can hold a very long unbroken word; it wraps rather than
+   widening the plate. */
+.home-course-plate-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 22px 24px 24px;
+  overflow-wrap: anywhere;
 }
 
-@keyframes paths-shadow-in {
-  from { opacity: 0; }
-  to { opacity: var(--paths-shadow-o); }
+.home-course-plate-context {
+  margin: 0 0 6px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--muted);
 }
 
-/* Narrower desktops: the Combo's offer reads on top, then its price beside
-   the details, so no column gets too narrow for its lines. */
-@media (max-width: 1199px) {
-  .home-paths-combo {
-    grid-template-columns: 1fr 1fr;
-    column-gap: 32px;
-    row-gap: 28px;
-    padding: 40px;
-  }
-
-  .home-combo-intro { grid-column: 1 / -1; }
-  .home-combo-price { padding-left: 0; border-left: 0; }
-  .home-combo-detail { padding-left: 32px; }
+.home-course-plate-label {
+  margin: 0 0 8px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
 
-/* Tablet: the two courses side by side, the join in a band beneath them
-   (its strands rise from under both cards) and the Combo below it. */
+.home-course-plate-title {
+  margin: 0;
+  font-size: 1.24rem;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  font-weight: 800;
+  color: var(--text);
+  text-wrap: balance;
+}
+
+.home-course-plate-desc {
+  margin: 12px 0 0;
+  font-size: 0.94rem;
+  line-height: 1.55;
+  color: var(--muted);
+  text-wrap: pretty;
+}
+
+/* The meta line sits at the plate's foot, so a row's lines align. */
+.home-course-plate-meta {
+  margin: auto 0 0;
+  padding-top: 20px;
+  font-size: 0.86rem;
+  color: var(--muted);
+}
+
+/* Tablet: two columns (a third plate wraps beneath); one plate stays narrow. */
 @media (max-width: 1023px) {
-  .home-paths {
-    grid-template-columns: 1fr 1fr;
-    grid-template-areas:
-      "life health"
-      "art art"
-      "combo combo";
-    column-gap: 20px;
-    row-gap: 0;
-  }
-
-  .home-paths-art {
-    grid-area: art;
-    position: relative;
-    left: auto;
-    top: auto;
-    width: auto;
-    aspect-ratio: auto;
-    translate: none;
-    height: clamp(230px, 34vw, 300px);
-    margin: -44px -24px -40px;
-  }
-
-  .home-paths-svg--desktop { display: none; }
-  .home-paths-svg--mobile { display: block; }
-  html:not(.js) .home-paths-svg--mobile { display: none; }
-  html:not(.js) .home-paths-static--desktop { display: none; }
-  html:not(.js) .home-paths-static--mobile {
-    display: block;
-    background:
-      url("assets/courses/paths-mobile-life-light.webp"),
-      url("assets/courses/paths-mobile-health-light.webp"),
-      url("assets/courses/paths-mobile-shadow-light.webp");
-    background-size: cover;
-    background-position: center;
-  }
-
-  html.motion-ok .home-paths.is-drawn .paths-shadow { animation-delay: 500ms; }
-
-  .home-paths-combo { padding: 36px; }
+  .home-course-preview,
+  .home-course-preview[data-count="2"] { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+  .home-course-preview[data-count="1"] { grid-template-columns: minmax(0, 420px); }
 }
 
-/* Phones: the courses stacked, each still complete for comparison, the
-   join between Health and the Combo. */
+/* Phones: one column. */
 @media (max-width: 599px) {
-  .home-paths {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "life"
-      "health"
-      "art"
-      "combo";
-    row-gap: 16px;
-  }
-
-  .home-paths-art {
-    height: clamp(210px, 60vw, 250px);
-    margin: -56px -24px -52px;
-  }
-
-  .home-paths-combo {
-    grid-template-columns: 1fr;
-    row-gap: 22px;
-    padding: 32px 24px;
-  }
-
-  .home-combo-detail { padding-left: 0; border-left: 0; }
-  .home-combo-detail .btn { align-self: stretch; }
-
-  /* Stacked, the courses no longer need level rows. */
-  .home-course-card--life .course-desc,
-  .home-course-card--health .course-desc { min-height: 0; }
-  .home-course-card--featured .course-price { font-size: 2.1rem; }
+  .home-course-preview,
+  .home-course-preview[data-count] { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .home-course-plate-body { padding: 20px 20px 22px; }
 }
 
 /* ============================================================
@@ -1265,9 +1146,7 @@ html.motion-ok .home-cta-panel.is-drawn .home-cta-svg { animation: cta-wipe 1100
 .home-grid::before,
 .home-grid::after,
 .home-grid > span,
-.home-grid > i,
-.home-paths-art::before,
-.home-paths-art::after {
+.home-grid > i {
   content: "";
   position: absolute;
   inset: 0;
@@ -1281,10 +1160,8 @@ html.motion-ok .home-cta-panel.is-drawn .home-cta-svg { animation: cta-wipe 1100
   background-position: 50% var(--gy, 0px);
 }
 
-.home-grid::after,
-.home-paths-art::before { --gc: var(--grid-fine); --gs: calc(var(--grid-step) / 4); }
-.home-grid > span,
-.home-paths-art::after { --gc: var(--grid-glow); }
+.home-grid::after { --gc: var(--grid-fine); --gs: calc(var(--grid-step) / 4); }
+.home-grid > span { --gc: var(--grid-glow); }
 .home-grid::after, .home-grid > span { display: none; }
 
 /* Major guides: the axis and rails (vertical, 568px pitch, centred) plus
@@ -1296,27 +1173,6 @@ html.motion-ok .home-cta-panel.is-drawn .home-cta-svg { animation: cta-wipe 1100
   background-size: var(--grid-major-step) 100%, 100% 100%;
   background-position: 50% 0, 0 0;
   background-repeat: repeat-x, no-repeat;
-}
-
-/* The course stage: primaries and quarter-steps, the most measured part
-   of the page, with the strands' light in its lines. Its box is centred
-   on the page at every width, so its lines stay on the page grid. */
-.home-paths-art::before {
-  background-image:
-    linear-gradient(90deg, transparent calc(50% - 0.5px), var(--grid-ink) calc(50% - 0.5px) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
-    linear-gradient(180deg, transparent calc(50% - 0.5px), var(--grid-ink) calc(50% - 0.5px) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
-    linear-gradient(90deg, transparent calc(50% - 0.5px), var(--grid-fine) calc(50% - 0.5px) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
-    linear-gradient(180deg, transparent calc(50% - 0.5px), var(--grid-fine) calc(50% - 0.5px) calc(50% + 0.5px), transparent calc(50% + 0.5px));
-  background-size: var(--grid-step) var(--grid-step), var(--grid-step) var(--grid-step), calc(var(--grid-step) / 4) calc(var(--grid-step) / 4), calc(var(--grid-step) / 4) calc(var(--grid-step) / 4);
-  background-position: 50% calc(40px - var(--grid-step) / 2), 50% calc(40px - var(--grid-step) / 2), 50% calc(40px - var(--grid-step) / 8), 50% calc(40px - var(--grid-step) / 8);
-  -webkit-mask-image: radial-gradient(ellipse 58% 54% at 50% 48%, #000 45%, transparent 82%);
-  mask-image: radial-gradient(ellipse 58% 54% at 50% 48%, #000 45%, transparent 82%);
-}
-
-.home-paths-art::after {
-  --gy: calc(40px - var(--grid-step) / 2);
-  -webkit-mask-image: radial-gradient(ellipse 32% 28% at 50% 72%, #000, transparent 72%);
-  mask-image: radial-gradient(ellipse 32% 28% at 50% 72%, #000, transparent 72%);
 }
 
 /* The staircase stands on the grid: the same drafting surface seen from
@@ -1376,7 +1232,7 @@ html.motion-ok .home-cta-panel.is-drawn .home-cta-svg { animation: cta-wipe 1100
     mask-image: radial-gradient(ellipse 420px 300px at calc(50% + 300px) 400px, #000, transparent 72%);
   }
 
-  .home-courses .home-grid { --gy: calc(250px - var(--grid-step) / 2); --guides: linear-gradient(180deg, transparent 250px, var(--grid-major) 250px 251px, transparent 251px), linear-gradient(180deg, transparent 739px, var(--grid-major) 739px 740px, transparent 740px); }
+  .home-courses .home-grid { --gy: calc(300px - var(--grid-step) / 2); --guides: linear-gradient(180deg, transparent 300px, var(--grid-major) 300px 301px, transparent 301px); }
   .home-courses .home-grid::before {
     -webkit-mask-image: radial-gradient(120% 100% at 50% 40%, rgba(0,0,0,0.9), rgba(0,0,0,0.6)),
       radial-gradient(ellipse 532px 118px at calc(50% + -246px) 151px, #000 70%, transparent 100%);
@@ -1585,21 +1441,6 @@ html.motion-ok .home-cta-panel.is-drawn .home-cta-svg { animation: cta-wipe 1100
    Hover and press feedback (Emil Kowalski: gated to real pointers,
    transform + box-shadow only, under 300ms)
    ============================================================ */
-@media (hover: hover) and (pointer: fine) {
-  /* The lift uses the independent `translate` property so it composes
-     with the reveal's `transform` instead of being overridden by it. */
-  html.motion-ok .home .home-course-card.reveal {
-    transition: opacity 420ms var(--ease-out), transform 420ms var(--ease-out), translate 200ms var(--ease-out), box-shadow 200ms var(--ease-out);
-  }
-  html.motion-ok .home .home-course-card:hover { translate: 0 -3px; }
-  .home-course-card:hover {
-    box-shadow: var(--home-shadow), 0 18px 30px rgba(40, 30, 110, 0.12);
-  }
-  :root[data-theme="dark"] .home-course-card:hover {
-    box-shadow: var(--home-shadow), 0 18px 30px rgba(0, 0, 0, 0.35);
-  }
-}
-
 .home .btn { -webkit-tap-highlight-color: transparent; }
 
 /* Buttons settle back with the same restrained ease-out as the press
