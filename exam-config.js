@@ -36,6 +36,12 @@
     // pass mark or time limit.
     "series-6": freezeEntry({ length: 55, shuffleQuestions: true, shuffleChoices: false, version: 1 }),
     "series-63": freezeEntry({ length: 65, shuffleQuestions: true, shuffleChoices: false, version: 1 }),
+    // SIE practice session: 75 questions per attempt, drawn and ordered at
+    // random from the bank, choices in stored order. Like the entries above it
+    // is a practice length only: every selected question counts toward the
+    // practice score, with no unscored items, topic weighting, scaled score,
+    // pass mark or time limit, and it does not reproduce the official exam.
+    sie: freezeEntry({ length: 75, shuffleQuestions: true, shuffleChoices: false, version: 1 }),
   });
 
   const SOURCE_KEYS = Object.freeze(["a", "b", "c", "d"]);

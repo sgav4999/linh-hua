@@ -271,6 +271,40 @@ async function initCourse() {
     renderProgress();
   }
 
+  // D1, phones: below the two-column breakpoint the lesson list sits above the
+  // lesson, so a long course's lesson can start thousands of pixels down the
+  // page. On that stacked layout every way of choosing a lesson (first load, a
+  // direct link, a lesson-list link, Previous/Next, Back/Forward) brings the
+  // lesson card to the top of the viewport, just below the sticky header; a
+  // lesson chosen after load also takes focus on its title, so keyboard and
+  // screen-reader users continue in the lesson rather than in the list. The
+  // two-column layout keeps its original behaviour. The move is an instant
+  // jump: the lesson is replaced, so a scroll animation would carry nothing
+  // (and a long smooth scroll is slow on a phone); reduced-motion preferences
+  // are therefore met as well. This only scrolls and moves focus: it never
+  // reads or writes progress.
+  const lessonCard = courseRoot.querySelector(".course-content");
+  const lessonTitleEl = document.getElementById("lessonTitle");
+
+  function isStackedLayout() {
+    const sidebar = courseRoot.querySelector(".course-sidebar");
+    return sidebar.getBoundingClientRect().bottom <= lessonCard.getBoundingClientRect().top + 1;
+  }
+
+  function revealLesson({ focus }) {
+    if (!isStackedLayout()) return;
+    const header = document.querySelector(".site-header");
+    const clearance = (header ? header.getBoundingClientRect().height : 0) + 12;
+    const top = Math.max(0, Math.round(window.scrollY + lessonCard.getBoundingClientRect().top - clearance));
+    // The page-wide smooth scroll-behavior is set aside for this one call.
+    const root = document.documentElement;
+    const previous = root.style.scrollBehavior;
+    root.style.scrollBehavior = "auto";
+    window.scrollTo(0, top);
+    root.style.scrollBehavior = previous;
+    if (focus) lessonTitleEl.focus({ preventScroll: true });
+  }
+
   document.getElementById("completeCheckbox").addEventListener("change", async (e) => {
     const lesson = lessons[lessons.findIndex((l) => l.id === currentLessonId())];
     const desiredState = e.target.checked;
@@ -291,16 +325,31 @@ async function initCourse() {
     const index = lessons.findIndex((l) => l.id === currentLessonId());
     if (index < lessons.length - 1) {
       window.location.hash = lessons[index + 1].id;
-      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+      if (!isStackedLayout()) {
+        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+      }
     } else {
       window.location.href = "dashboard.html";
     }
   });
 
-  window.addEventListener("hashchange", renderLesson);
+  window.addEventListener("hashchange", () => {
+    renderLesson();
+    revealLesson({ focus: true });
+  });
+
+  // The lesson that is already current: its link changes no hash, so no
+  // hashchange follows; bring it into view directly.
+  document.getElementById("moduleList").addEventListener("click", (e) => {
+    const link = e.target.closest("a.lesson-item");
+    if (link && link.getAttribute("href") === window.location.hash) {
+      revealLesson({ focus: true });
+    }
+  });
 
   renderLesson();
+  revealLesson({ focus: false });
 }
 
 if (courseRoot) {

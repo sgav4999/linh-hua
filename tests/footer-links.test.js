@@ -55,7 +55,7 @@ for (const file of PAGES) {
     assert.deepEqual(anchors(columns.Company).map((a) => a.text + " → " + a.href), ["About → about.html", "Courses → courses.html", "Contact → contact.html"]);
     assert.deepEqual(anchors(columns.Account).map((a) => a.text + " → " + a.href), ["Log In → login.html", "Sign Up → signup.html"]);
     assert.match(footer, /<div class="footer-brand">\s*<a href="index\.html" class="logo">/);
-    assert.ok(footer.includes("<p>Online courses to help you get licensed in life and health insurance.</p>"), "brand line unchanged");
+    assert.ok(footer.includes("<p>Online courses for insurance licensing and securities exam prep.</p>"), "brand line: Insurance + Securities wording");
     assert.match(footer, /<div class="footer-bottom">\s*<div class="container">\s*<p>&copy; <span id="year"><\/span> Linh Hua\. All rights reserved\.<\/p>/);
     assert.doesNotMatch(footer, /<script\b/, "the footer stays static");
   });

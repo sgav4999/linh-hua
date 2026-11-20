@@ -124,7 +124,7 @@ test("index: identity.css and the Phase 11 tokens", () => {
 test("course block: the static shell (heading, approved line, one Explore link, empty mount)", () => {
   assert.match(COURSE_BLOCK, /<div class="home-grid" aria-hidden="true">/);
   assert.equal((COURSE_BLOCK.match(/<h2>/g) || []).length, 1);
-  assert.match(COURSE_BLOCK, /<h2>Choose your licensing path<\/h2>/);
+  assert.match(COURSE_BLOCK, /<h2>Find your course<\/h2>/);
   assert.match(COURSE_BLOCK, /<p class="section-sub">Explore the courses available now, then view the full catalog to compare every option\.<\/p>/);
   assert.equal((COURSE_BLOCK.match(/href="courses\.html"/g) || []).length, 1, "exactly one link to the catalog");
   assert.match(COURSE_BLOCK, /<a href="courses\.html" class="home-courses-link">Explore all courses <span aria-hidden="true">&rarr;<\/span><\/a>/);

@@ -41,10 +41,10 @@ for (const n of [0, 1, 2, 3, 5, 8]) {
   });
 }
 
-test("generic future course (sie): unknown identity, no tools, normal model", () => {
-  const row = course("sie", [3, 2], { identity: "teal", hours: "12.5" });
+test("generic future course (series-65): unknown identity, no tools, normal model", () => {
+  const row = course("series-65", [3, 2], { identity: "teal", hours: "12.5" });
   const c = deskAll([row], done(lessonIds(row).slice(0, 2), "2026-10-10T10:00:00Z"))[0];
-  assert.equal(c.slug, "sie");
+  assert.equal(c.slug, "series-65");
   assert.equal(c.identity, "teal"); // passed through; identity.css falls back to neutral for unknown tokens
   assert.equal(c.meta, "12.5 course hours · Self-paced");
   assert.deepEqual(c.tools, { studyGuide: false, practiceExam: false });
@@ -204,7 +204,7 @@ test("Dashboard stays published-only: the loader filters published = true before
 test("Practice Exam availability follows exam-config.js only", () => {
   const rows = ["life", "health", "life-health-combo", "series-6", "series-63", "sie", "series-65"].map((s) => course(s, [1]));
   const tools = deskAll(rows, []).map((c) => c.tools.practiceExam);
-  assert.deepEqual(tools, [true, true, true, true, true, false, false]);
+  assert.deepEqual(tools, [true, true, true, true, true, true, false]);
 });
 
 // ---------------------------------------------------------------- access (Phase 9)

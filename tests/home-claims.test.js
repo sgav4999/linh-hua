@@ -62,11 +62,11 @@ test("hero: View Courses stays the one action beside the status", () => {
   assert.doesNotMatch(ACTIONS, /<(button|input|select|textarea)\b/);
 });
 
-test("hero: eyebrow, headline, supporting copy and page title are unchanged", () => {
-  assert.ok(HERO.includes('<span class="home-eyebrow"><i class="home-eyebrow-rule" aria-hidden="true"></i>Life &amp; health licensing</span>'));
-  assert.ok(HERO.includes('<h1>Get <span class="accent-text">licensed</span> to sell life &amp; health insurance.</h1>'));
-  assert.ok(HERO.includes('<p class="home-hero-sub">Self-paced online courses that prepare you to pass your state licensing exam, with lessons, quizzes, and a full practice exam included.</p>'));
-  assert.ok(INDEX.includes("<title>Linh Hua — Life &amp; Health Insurance Licensing Courses</title>"));
+test("hero: eyebrow, headline, supporting copy and page title carry the Insurance + Securities wording", () => {
+  assert.ok(HERO.includes('<span class="home-eyebrow"><i class="home-eyebrow-rule" aria-hidden="true"></i>Insurance &amp; securities exam prep</span>'));
+  assert.ok(HERO.includes('<h1>Get <span class="accent-text">ready</span> for your insurance or securities exam.</h1>'));
+  assert.ok(HERO.includes('<p class="home-hero-sub">Self-paced online courses that prepare you for your insurance licensing or securities industry exam, with lessons, quizzes, and a practice exam included.</p>'));
+  assert.ok(INDEX.includes("<title>Linh Hua — Insurance Licensing &amp; Securities Exam Prep Courses</title>"));
 });
 
 test("home.css: the hero status has no control or motion styling", () => {
@@ -99,7 +99,7 @@ test("closing CTA: the approved sentence replaces the lesson-today promise", () 
 });
 
 test("closing CTA: heading and both actions are unchanged", () => {
-  assert.ok(CTA.includes("<h2>Ready to get licensed?</h2>"));
+  assert.ok(CTA.includes("<h2>Ready to get started?</h2>"));
   const actions = element(CTA, '<div class="home-cta-actions">');
   assert.ok(actions.includes('<a href="signup.html" class="btn btn-primary btn-lg">Sign Up</a>'));
   assert.ok(actions.includes('<a href="courses.html" class="home-cta-link">View Courses &rarr;</a>'));
@@ -116,9 +116,9 @@ test("claims scan: stale strings absent, approved strings present", () => {
   }
 });
 
-test("out of scope copy is untouched: How it works and the footer brand line", () => {
-  assert.ok(INDEX.includes("<h2>From sign-up to licensed agent</h2>"));
-  assert.ok(INDEX.includes("<h3>Take the State Exam</h3>"));
-  assert.ok(INDEX.includes("<p>Pass your exam, submit your application, and start selling as a licensed agent.</p>"));
-  assert.ok(INDEX.includes("<p>Online courses to help you get licensed in life and health insurance.</p>"));
+test("How it works and the footer brand line carry the Insurance + Securities wording", () => {
+  assert.ok(INDEX.includes("<h2>From sign-up to exam day</h2>"));
+  assert.ok(INDEX.includes("<h3>Take Your Exam</h3>"));
+  assert.ok(INDEX.includes("<p>After you pass, complete the licensing or registration steps that apply to you.</p>"));
+  assert.ok(INDEX.includes("<p>Online courses for insurance licensing and securities exam prep.</p>"));
 });

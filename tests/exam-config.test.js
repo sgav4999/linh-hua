@@ -54,12 +54,16 @@ test("config: series-63 = 65, questions shuffled, choices in source order", () =
   assert.deepEqual({ ...X.examConfigFor("series-63") }, { length: 65, shuffleQuestions: true, shuffleChoices: false, version: 1 });
 });
 
-test("config: exactly the five approved courses are configured", () => {
-  assert.deepEqual(Object.keys(X.EXAMS).sort(), ["health", "life", "life-health-combo", "series-6", "series-63"]);
+test("config: sie = 75, questions shuffled, choices in source order", () => {
+  assert.deepEqual({ ...X.examConfigFor("sie") }, { length: 75, shuffleQuestions: true, shuffleChoices: false, version: 1 });
+});
+
+test("config: exactly the six approved courses are configured", () => {
+  assert.deepEqual(Object.keys(X.EXAMS).sort(), ["health", "life", "life-health-combo", "series-6", "series-63", "sie"]);
 });
 
 test("config: unknown / unusual slugs are NOT configured (no implicit all-bank)", () => {
-  for (const slug of ["sie", "series-65", "SERIES-6", " series-6", "", null, undefined, 6, "__proto__", "constructor", "toString", "hasOwnProperty"]) {
+  for (const slug of ["series-65", "SIE", " sie", "sie ", "SERIES-6", " series-6", "", null, undefined, 6, "__proto__", "constructor", "toString", "hasOwnProperty"]) {
     assert.equal(X.examConfigFor(slug), null, String(slug));
   }
 });
@@ -69,9 +73,11 @@ test("config: entries and the map are frozen", () => {
   for (const slug of Object.keys(X.EXAMS)) assert.ok(Object.isFrozen(X.EXAMS[slug]), slug);
   const c = X.examConfigFor("series-6");
   assert.throws(() => { "use strict"; c.length = 900; }, TypeError);
-  assert.throws(() => { "use strict"; X.EXAMS.sie = { length: "all" }; }, TypeError);
+  assert.throws(() => { "use strict"; X.EXAMS["series-65"] = { length: "all" }; }, TypeError);
+  assert.throws(() => { "use strict"; X.examConfigFor("sie").length = 1770; }, TypeError);
   assert.equal(X.examConfigFor("series-6").length, 55);
-  assert.equal(X.examConfigFor("sie"), null);
+  assert.equal(X.examConfigFor("sie").length, 75);
+  assert.equal(X.examConfigFor("series-65"), null);
 });
 
 // ---------------------------------------------------------------- slug handling
@@ -112,8 +118,8 @@ test("selection: bank smaller than, equal to and larger than the requested lengt
   }
 });
 
-test("selection: Series 6 style 900 -> 55 and Series 63 style 364 -> 65 via createAttempt", () => {
-  for (const [slug, n, k] of [["series-6", 900, 55], ["series-63", 364, 65]]) {
+test("selection: Series 6 style 900 -> 55, Series 63 style 364 -> 65 and SIE style 1770 -> 75 via createAttempt", () => {
+  for (const [slug, n, k] of [["series-6", 900, 55], ["series-63", 364, 65], ["sie", 1770, 75]]) {
     const bank = bankOf(n);
     const snapshot = JSON.stringify(bank);
     const a = X.createAttempt(bank, X.examConfigFor(slug), seeded(7));
@@ -192,8 +198,8 @@ test("choices: all four source slots are kept even when a (malformed) fixture ha
   assert.deepEqual(X.choiceOrder(odd, false), ["a", "b", "c", "d"]);
 });
 
-test("choices: Series 6 / 63 attempts keep every question in source a/b/c/d order", () => {
-  for (const slug of ["series-6", "series-63"]) {
+test("choices: Series 6 / 63 / SIE attempts keep every question in source a/b/c/d order", () => {
+  for (const slug of ["series-6", "series-63", "sie"]) {
     const a = X.createAttempt(bankOf(400), X.examConfigFor(slug), seeded(11));
     a.questionIds.forEach((id) => assert.deepEqual(a.choiceOrders[id], ["a", "b", "c", "d"], `${slug} ${id}`));
   }
