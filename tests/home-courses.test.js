@@ -104,9 +104,9 @@ test("exports: only the pure helper and its two constants", () => {
 test("index: dependency scripts run in order, synchronously, after auth.js", () => {
   const at = (re) => { const m = re.exec(INDEX); assert.ok(m, String(re)); return m.index; };
   const auth = at(/<script src="auth\.js"><\/script>/);
-  const data = at(/<script src="courses-data\.js\?v=20261020p10"><\/script>/);
-  const model = at(/<script src="home-model\.js\?v=20261021p11"><\/script>/);
-  const view = at(/<script src="home-courses\.js\?v=20261021p11"><\/script>/);
+  const data = at(/<script src="courses-data\.js\?v=20261121o1"><\/script>/);
+  const model = at(/<script src="home-model\.js\?v=20261121o1"><\/script>/);
+  const view = at(/<script src="home-courses\.js\?v=20261121o1"><\/script>/);
   assert.ok(auth < data && data < model && model < view, "auth.js < courses-data.js < home-model.js < home-courses.js");
   for (const f of ["courses-data", "home-model", "home-courses"]) {
     assert.doesNotMatch(INDEX, new RegExp('<script[^>]*src="' + f + '\\.js[^"]*"[^>]*\\b(async|defer)\\b'), f + " is a plain classic script");
@@ -228,7 +228,7 @@ test("renderer: reads only published courses; no session, enrollment, content or
     /lesson_progress/, /loadMyEnrollments/, /loadDashboardCourses/, /loadAllCourses/, /loadCourseBySlug/, /loadCourseAccess/, /isAdminSession/, /\brpc\(/, /\bfetch\(/]) {
     assert.doesNotMatch(RENDERER_CODE, banned, String(banned));
   }
-  for (const used of ["loadPublishedCourses", "selectPreview", "applyCourseIdentity", "courseLabel", "metaLine", "textContent"]) {
+  for (const used of ["loadOfferedCourses", "selectPreview", "applyCourseIdentity", "courseLabel", "metaLine", "textContent"]) {
     assert.ok(RENDERER_CODE.includes(used), used + " used");
   }
 });

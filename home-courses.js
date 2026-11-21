@@ -1,7 +1,7 @@
-// Homepage course preview: up to three published courses from the database,
+// Homepage course preview: up to three offered courses from the database,
 // chosen by home-model.js (one from each category first), drawn as plain
-// plates under "Choose your licensing path". Reads only the published courses
-// (LinhCourses.loadPublishedCourses, readable signed out); nothing here looks
+// plates under "Find your course". Reads only the offered courses
+// (LinhCourses.loadOfferedCourses, readable signed out); nothing here looks
 // at who is signed in. Everything database-supplied is written with
 // textContent. The plates are not links: the section's static "Explore all
 // courses" link is the way on to the full catalog, and any failure here simply
@@ -81,7 +81,7 @@
     const Courses = root.LinhCourses;
     const Model = root.LinhHomeModel;
     if (!Courses || !Model) throw new Error("Course preview unavailable.");
-    const { items } = Model.selectPreview(await Courses.loadPublishedCourses());
+    const { items } = Model.selectPreview(await Courses.loadOfferedCourses());
     if (!items.length) {
       const note = el("p", "home-course-preview-note", EMPTY_TEXT);
       note.setAttribute("role", "status");

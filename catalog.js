@@ -1,5 +1,5 @@
-// Courses catalog: renders the published courses from the database, grouped by
-// category. Reads only: the published courses (LinhCourses.loadPublishedCourses,
+// Courses catalog: renders the offered courses from the database, grouped by
+// category. Reads only: the offered courses (LinhCourses.loadOfferedCourses,
 // readable signed out) and, for a signed-in student, their own enrollments.
 // Admins and signed-out visitors make no enrollment read. catalog-model.js
 // decides grouping, card content and each card's action; nothing here names a
@@ -145,7 +145,7 @@
     const viewerP = readViewer();
     viewerP.then((v) => showAccount(Model.accountLink(v)));
     const [courses, viewer] = await Promise.all([
-      LinhCourses.loadPublishedCourses().then((rows) => ({ rows }), () => ({ failed: true })),
+      LinhCourses.loadOfferedCourses().then((rows) => ({ rows }), () => ({ failed: true })),
       viewerP,
     ]);
     if (courses.failed) {

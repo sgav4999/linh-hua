@@ -5,7 +5,13 @@
 // Return contract:
 //   loadCourseBySlug      -> the course, or null when it doesn't exist or
 //                            can't be read (callers show their own message)
-//   loadPublishedCourses  -> an array (possibly empty); throws on a read error
+//   loadOfferedCourses    -> the public offering: published courses that are
+//                            listed for new customers (courses.listed), as an
+//                            array (possibly empty); throws on a read error.
+//                            Public discovery only (homepage, catalog). Learning
+//                            access, the Dashboard and admin pages never use it:
+//                            a course taken off the public list stays open to the
+//                            students already enrolled in it.
 //   loadAllCourses        -> published and draft courses, same shape and order;
 //                            throws on a read error (admin pages use it; what a
 //                            caller may read is decided by database rules)
@@ -71,11 +77,12 @@
     );
   }
 
-  async function loadPublishedCourses() {
+  async function loadOfferedCourses() {
     const { data, error } = await supabaseClient
       .from("courses")
-      .select(COURSE_FIELDS)
-      .eq("published", true);
+      .select(COURSE_FIELDS + ", listed")
+      .eq("published", true)
+      .eq("listed", true);
     if (error) throw new Error("Courses could not be loaded.");
     return (data || []).slice().sort(byCatalogOrder);
   }
@@ -247,7 +254,7 @@
   }
 
   return {
-    loadCourseBySlug, loadPublishedCourses, loadAllCourses, loadCourseCategories, loadDashboardCourses,
+    loadCourseBySlug, loadOfferedCourses, loadAllCourses, loadCourseCategories, loadDashboardCourses,
     applyCourseIdentity, courseLabel, byCatalogOrder, studyGuideMode, isLegacyGuideCourse, formatHours, metaLine,
     isAdminSession, loadMyEnrollments, canAccessCourse, loadCourseAccess,
     IDENTITY_TOKENS, LEGACY_GUIDE_SLUGS,

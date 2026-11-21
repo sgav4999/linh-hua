@@ -1,4 +1,4 @@
-// Homepage course preview model: pure functions over the published-course read
+// Homepage course preview model: pure functions over the offered-course read
 // (no DOM, no Supabase). From the course rows it picks a short, fair preview:
 // up to `cap` courses, one from each category first, then a second from each,
 // and so on, in catalog order. Nothing here names a course or a category:
@@ -12,8 +12,9 @@
   const DEFAULT_CAP = 3;
   const OTHER = "other";
 
-  // Published (strictly true, as on the Courses page) with a usable slug.
-  const isListed = (r) => !!r && r.published === true && typeof r.slug === "string" && r.slug.trim() !== "";
+  // Published (strictly true, as on the Courses page), not taken off the public
+  // list (listed === false), with a usable slug.
+  const isListed = (r) => !!r && r.published === true && r.listed !== false && typeof r.slug === "string" && r.slug.trim() !== "";
 
   // The catalog's category identity; courses without a category share one group.
   const groupKey = (r) => (r.category ? "category:" + String(r.category.id || r.category.slug || "") : OTHER);

@@ -1,4 +1,4 @@
-// Courses catalog model: pure functions over the published-course read (no DOM,
+// Courses catalog model: pure functions over the offered-course read (no DOM,
 // no Supabase). catalog.js loads the data and draws; this file decides which
 // courses are listed, how they are grouped by category, what each card says
 // and which action or status a visitor gets. Nothing here names a course or a
@@ -76,7 +76,7 @@
   // courses without a category last under "Other courses". Only categories
   // that have a published course appear.
   function buildCatalog(rows, who) {
-    const list = (rows || []).filter((r) => r && r.published === true && r.slug).slice().sort(Courses.byCatalogOrder);
+    const list = (rows || []).filter((r) => r && r.published === true && r.listed !== false && r.slug).slice().sort(Courses.byCatalogOrder);
     const groups = [];
     const byKey = new Map();
     list.forEach((r) => {

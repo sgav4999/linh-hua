@@ -58,47 +58,16 @@
   </div>
 </header>
 
-<section class="page-hero">
-  <div class="hero-glow"></div>
-  <div class="container reveal visible">
-    <span class="eyebrow">Checkout</span>
-    <h1>Enrollment coming soon</h1>
-    <p>Online payment isn&#39;t available yet. Here&#39;s a summary of the course you selected.</p>
-  </div>
-</section>
-
+<!-- Payment-disabled holding state. The same page for every link (any ?course value, none, or an
+     unknown one): no course, price or payment control is shown and no payment function is called. -->
 <main>
-  <section class="page-section">
-    <div class="container checkout-layout">
-      <div class="checkout-summary">
-        <h2>Order Summary</h2>
-        <div class="checkout-course-card">
-          <span class="course-tag" id="checkoutTag">Life + Health</span>
-          <h3 id="checkoutTitle">Life &amp; Health Combo</h3>
-          <p class="course-desc" id="checkoutDesc"></p>
-          <ul class="course-features" id="checkoutFeatures"></ul>
-        </div>
-        <div class="checkout-total">
-          <span>Total</span>
-          <span id="checkoutPrice">$249</span>
-        </div>
-      </div>
-
-      <div class="contact-card checkout-form-card">
-        <div id="formMessage" class="form-message"></div>
-        <form class="contact-form" id="checkoutForm">
-          <div>
-            <label for="name">Full name</label>
-            <input type="text" id="name" name="name" required disabled>
-          </div>
-          <div>
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" required disabled>
-          </div>
-          <button type="submit" class="btn btn-lg btn-coming-soon" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Enrollment Coming Soon</button>
-          <p class="checkout-note">Payment isn't connected yet, so no order can be placed and nothing will be charged.</p>
-        </form>
-      </div>
+  <section class="page-hero" aria-labelledby="checkoutHoldingTitle">
+    <div class="hero-glow"></div>
+    <div class="container reveal visible">
+      <span class="eyebrow">Checkout</span>
+      <h1 id="checkoutHoldingTitle">Enrollment opens soon</h1>
+      <p>Online enrollment isn&#39;t available yet. Browse our current courses for more information.</p>
+      <p><a href="courses.html" class="btn btn-primary">Browse courses</a></p>
     </div>
   </section>
 </main>
@@ -115,6 +84,5 @@
 <script src="supabase-config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="auth.js"></script>
-<script src="checkout.js"></script>
 </body>
 </html>
